@@ -1,13 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator, Button } from 'react-native';
 import React, { useState } from 'react';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 
-export default function Login() {
+export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const auth = FIREBASE_AUTH;
+
+    const signIn = async () => {
+        setLoading(true);
+        try {
+            const response = await signInWithEmailAndPassword(auth, email, password);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+            alert('Sign in failed: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
 
   return (
     <View style={styles.container}>
@@ -17,16 +31,25 @@ export default function Login() {
         placeholder="Email"
         keyboardType="email-address"
         autoCapitalize="none"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
         secureTextEntry
+        value={password}
+        onChangeText={(text) => setPassword(text)}
       />
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity>
+      {loading ? <ActivityIndicator size={"large"} color={"#0000ff"}/> :
+      <>
+        <TouchableOpacity style={styles.button} onPress={() => signIn()}>
+            <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+      </>
+    }
+      
+      <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
         <Text style={styles.linkText}>Don't have an account? Register here</Text>
       </TouchableOpacity>
     </View>
