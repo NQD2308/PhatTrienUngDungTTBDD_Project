@@ -4,9 +4,9 @@ Clothes's Shop (ReactNative)
 Product(id, idCategory, name, quantity, image, priceUnit, description)
 ProductAttribute(id, idProduct, color, size, material)
 Category(id, name, description)
+
 User(id, username, password, fullName, address, phone)
 
-Extends:
-Order(id, idUser, dateOrder, discount, total)
-OrderDetail(id, idOrder, idProduct, quantityItem, price)
-
+Cart(id, idProduct, quantityItem , total)
+Order(id, idUser, idCart, dateOrder, totalOrder, statusOrder)
+Bill(id, idOrder, idUser, discount, totalBill)
