@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   Dimensions,
 } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
@@ -42,11 +42,14 @@ export default function Home() {
 
   // Hiển thị danh sách sản phẩm
   const renderItem = ({ item }) => (
-    <View style={styles.productCard} onTouchStart={() => navigation.navigate('Detail', { product: item })}>
+    <View
+      style={styles.productCard}
+      onTouchStart={() => navigation.navigate("Detail", { productId: item.id })}
+    >
       <Image source={{ uri: item.images[0] }} style={styles.productImage} />
       <Text style={styles.productName}>{item.productName}</Text>
       <Text style={styles.productPrice}>
-        {parseInt(item.price).toLocaleString('vi-VN') } {item.priceUnit};
+        {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
       </Text>
       <Text style={styles.productDescription}>{item.description}</Text>
     </View>

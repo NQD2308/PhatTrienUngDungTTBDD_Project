@@ -15,7 +15,7 @@ import User from "./views/account/User";
 
 // Store page
 import Home from "./views/store/Home";
-import Card from "./views/store/Card";
+import Cart from "./views/store/Cart";
 import Detail from "./views/store/Detail";
 
 // ========= Inital ========= //
@@ -80,8 +80,8 @@ function TabNavigator() {
         }}
       />
       <Tab.Screen
-        name="Card"
-        component={Card}
+        name="Cart"
+        component={Cart}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -109,7 +109,7 @@ function TabNavigator() {
                   textAlign: "center",
                 }}
               >
-                Card
+                Cart
               </Text>
             </View>
           ),

@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Card() {
+export default function Cart() {
   return (
     <View style={styles.container}>
       <Text>Card Page!</Text>
