@@ -62,7 +62,6 @@ export default function SignUp() {
       await setDoc(userDoc, {
         username: username,
         email: email,
-        password: password,
         phone: phone,
       });
 
