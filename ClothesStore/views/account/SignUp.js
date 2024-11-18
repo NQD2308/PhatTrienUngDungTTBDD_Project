@@ -10,10 +10,13 @@ import {
 } from "react-native";
 
 import React, { useState } from "react";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
 export default function SignUp() {
+  const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -35,6 +38,35 @@ export default function SignUp() {
         password
       );
       console.log(response);
+
+      // Lấy giá trị counter hiện tại
+      const counterDocRef = doc(FIREBASE_DB, "Counters", "UserCounter");
+      const counterDoc = await getDoc(counterDocRef);
+
+      let newId;
+      if (counterDoc.exists()) {
+        // Lấy giá trị hiện tại và tăng lên 1
+        const currentId = counterDoc.data().currentId;
+        newId = currentId + 1;
+
+        // Cập nhật giá trị mới cho counter
+        await updateDoc(counterDocRef, { currentId: newId });
+      } else {
+        // Nếu chưa có Counter, khởi tạo giá trị ban đầu là 1
+        newId = 1;
+        await setDoc(counterDocRef, { currentId: newId });
+      }
+
+      // Lưu thông tin vào Firestore
+      const userDoc = doc(FIREBASE_DB, "User", String(newId));
+      await setDoc(userDoc, {
+        username: username,
+        email: email,
+        password: password,
+        phone: phone,
+      });
+
+      alert("Registration successful!");
     } catch (error) {
       console.log(error);
       alert("Registration failed: " + error.message);
@@ -49,8 +81,10 @@ export default function SignUp() {
 
       <TextInput
         style={styles.input}
-        placeholder="Full Name"
+        placeholder="Username"
         autoCapitalize="words"
+        value={username}
+        onChangeText={(text) => setUsername(text)}
       />
 
       <TextInput
@@ -64,8 +98,10 @@ export default function SignUp() {
 
       <TextInput
         style={styles.input}
-        placeholder="Phone Number"
+        placeholder="Phone Num  ber"
         keyboardType="phone-pad"
+        value={phone}
+        onChangeText={(text) => setPhone(text)}
       />
 
       <TextInput
