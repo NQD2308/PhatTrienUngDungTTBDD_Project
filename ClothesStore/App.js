@@ -16,6 +16,7 @@ import User from "./views/account/User";
 // Store page
 import Home from "./views/store/Home";
 import Card from "./views/store/Card";
+import Detail from "./views/store/Detail";
 
 // ========= Inital ========= //
 
@@ -163,6 +164,7 @@ function InsideLayout() {
         component={TabNavigator}
         options={{ headerShown: false }}
       />
+      <InsideStack.Screen name="Detail" component={Detail}/>
     </InsideStack.Navigator>
   );
 }
