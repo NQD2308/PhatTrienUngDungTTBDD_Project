@@ -106,8 +106,8 @@ const Cart = ({ route }) => {
         <Text>Mô tả: {item.description}</Text>
         <Text>Size: {item.selectedSize}</Text>
         <Text>Số lượng: {item.quantity}</Text>
-        <Text>Giá: {item.price} VND</Text>
-        <Text>Tổng: {item.totalPrice} VND</Text>
+        <Text>Giá: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}</Text>
+        <Text>Tổng: {parseInt(item.totalPrice).toLocaleString("vi-VN")} {item.priceUnit}</Text>
         <View style={styles.buttons}>
           <Button
             title={selectedOrders.includes(item.id) ? "Bỏ chọn" : "Chọn"}

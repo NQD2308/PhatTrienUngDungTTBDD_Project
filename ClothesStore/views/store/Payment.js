@@ -29,7 +29,7 @@ const Payment = () => {
               <View style={styles.productDetails}>
                 <Text style={styles.productName}>{item.productName}</Text>
                 <Text>Số lượng: {item.quantity}</Text>
-                <Text>Tổng: {item.totalPrice} VND</Text>
+                <Text>Tổng: {parseInt(item.totalPrice).toLocaleString("vi-VI")} {item.priceUnit}</Text>
               </View>
             </View>
           )}
