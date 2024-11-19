@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, SafeAreaView, TouchableOpacity, FlatList } from "react-native";
-import { FIREBASE_DB } from "../../firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  FlatList,
+  Pressable,
+  Alert,
+} from "react-native";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
+import { doc, getDoc, setDoc, collection, query, orderBy, getDocs } from "firebase/firestore";
 
 export default function Detail({ route }) {
   const { productId } = route.params; // Nhận productId từ màn hình trước
   const [product, setProduct] = useState(null);
-  
+  const [selectedSize, setSelectedSize] = useState(null); // Lưu size được chọn
+  const [quantity, setQuantity] = useState(1); // Số lượng mặc định là 1
+
   useEffect(() => {
     // Hàm để lấy dữ liệu sản phẩm từ Firestore
     const fetchProduct = async () => {
@@ -31,6 +43,74 @@ export default function Detail({ route }) {
     return <Text>Loading...</Text>;
   }
 
+  // ========== Xử lý số lượng mua hàng ========== //
+  const handleIncrease = () => {
+    setQuantity(quantity + 1); // Tăng số lượng
+  };
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1); // Giảm số lượng, nhưng không dưới 1
+    }
+  };
+  // ========== Kết thúc xử lý số lượng mua hàng ========== //
+
+  // ========== Xử lý thêm vào giỏ hàng ========== //
+  const handleAddToCart = async () => {
+    if (!selectedSize) {
+      Alert.alert("Thông báo", "Vui lòng chọn size sản phẩm!");
+      return;
+    }
+
+    try {
+      // Lấy userId từ Firebase Auth
+      const user = FIREBASE_AUTH.currentUser;
+      if (!user) {
+        console.error("User not logged in!");
+        return;
+      }
+      const userId = user.uid;
+  
+      // Tính toán tổng giá
+      const totalPrice = quantity * parseInt(product.price);
+  
+      // Lấy ID tài liệu tiếp theo
+      const orderRef = doc(FIREBASE_DB, "Order", "metadata"); // Document chứa metadata
+      let nextOrderId = 1;
+  
+      const orderSnap = await getDoc(orderRef);
+      if (orderSnap.exists()) {
+        nextOrderId = orderSnap.data().nextOrderId || 1;
+      }
+  
+      // Tạo đơn hàng mới
+      const orderData = {
+        userId,
+        productId,
+        image: product.images,
+        productName: product.productName,
+        description: product.description,
+        selectedSize,
+        quantity,
+        price: product.price,
+        totalPrice,
+        priceUnit: product.priceUnit,
+        status: "pending", // Tùy chỉnh trạng thái đơn hàng
+        createdAt: new Date().toISOString(), // Ngày tạo đơn hàng
+      };
+  
+      await setDoc(doc(FIREBASE_DB, "Order", nextOrderId.toString()), orderData);
+  
+      // Cập nhật metadata với ID tiếp theo
+      await setDoc(orderRef, { nextOrderId: nextOrderId + 1 });
+  
+      console.log("Order added successfully:", orderData);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+  // ========== Kết thúc xử lý thêm vào giỏ hàng ========== //
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
@@ -38,9 +118,9 @@ export default function Detail({ route }) {
           data={product.images}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <Image 
-              source={{ uri: item }} 
-              style={styles.image} 
+            <Image
+              source={{ uri: item }}
+              style={styles.image}
               resizeMode="contain" // Giữ nguyên kích thước gốc mà không bị cắt
             />
           )}
@@ -51,12 +131,51 @@ export default function Detail({ route }) {
           {parseInt(product.price).toLocaleString("vi-VN")} {product.priceUnit}
         </Text>
         <Text style={styles.description}>{product.description}</Text>
+        {/* Xử lý số lượng mua hàng */}
+        <View style={styles.quantityContainer}>
+          <Pressable onPress={handleDecrease} style={styles.quantityButton}>
+            <Text style={styles.quantityButtonText}>-</Text>
+          </Pressable>
+          <Text style={styles.quantityText}>{quantity}</Text>{" "}
+          {/* Hiển thị số lượng */}
+          <Pressable onPress={handleIncrease} style={styles.quantityButton}>
+            <Text style={styles.quantityButtonText}>+</Text>
+          </Pressable>
+        </View>
+        {/* Kết thúc xử lý số lượng mua hàng */}
+        {/* Xử lý chọn size */}
+        <FlatList
+          data={product.size}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() => setSelectedSize(item)} // Gán size được chọn
+              style={[
+                styles.sizeBox,
+                selectedSize === item && styles.selectedSizeBox, // Highlight nếu được chọn
+              ]}
+            >
+              <Text
+                style={[
+                  styles.sizeText,
+                  selectedSize === item && styles.selectedSizeText, // Thay đổi text khi chọn
+                ]}
+              >
+                {item}
+              </Text>
+            </Pressable>
+          )}
+          contentContainerStyle={styles.sizeList}
+        />
+        {/* Kết thúc xử lý chọn size */}
       </View>
       <View style={styles.bottomArea}>
-        <TouchableOpacity style={styles.btnAddToCart}>
+        <TouchableOpacity style={styles.btnAddToCart} onPress={handleAddToCart}>
           <Text>Add To Cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.btnAddToCart, { backgroundColor: "#3b82f6" }]}>
+        <TouchableOpacity
+          style={[styles.btnAddToCart, { backgroundColor: "#3b82f6" }]}
+        >
           <Text style={{ color: "white" }}>Buy Now</Text>
         </TouchableOpacity>
       </View>
@@ -70,7 +189,7 @@ const styles = StyleSheet.create({
     // padding: 16,
   },
   image: {
-    width: '100%', // Chiếm toàn bộ chiều ngang
+    width: "100%", // Chiếm toàn bộ chiều ngang
     height: undefined, // Để tự động điều chỉnh theo tỷ lệ gốc
     aspectRatio: 1, // Giữ nguyên tỷ lệ ảnh (có thể điều chỉnh nếu cần)
     marginBottom: 16,
@@ -88,6 +207,58 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     color: "#555",
+  },
+  sizeList: {
+    flexDirection: "row", // Sắp xếp hàng ngang
+    flexWrap: "wrap", // Tự động xuống dòng
+    justifyContent: "flex-start",
+    marginVertical: 10,
+    gap: 8, // Khoảng cách giữa các ô
+  },
+  sizeBox: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc", // Màu viền mặc định
+    borderRadius: 5,
+    margin: 4,
+    backgroundColor: "#f0f0f0", // Màu nền mặc định
+  },
+  selectedSizeBox: {
+    borderColor: "#007bff", // Màu viền khi được chọn
+    backgroundColor: "#d0eaff", // Màu nền khi được chọn
+  },
+  sizeText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  selectedSizeText: {
+    color: "#007bff", // Màu chữ khi được chọn
+    fontWeight: "bold",
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: 120, // Độ rộng cố định
+    marginVertical: 10, // Khoảng cách trên dưới
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 5,
+    backgroundColor: '#f9f9f9',
+  },
+  quantityButton: {
+    padding: 10,
+  },
+  quantityButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#007bff', // Màu chữ của nút
+  },
+  quantityText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
   },
   bottomArea: {
     width: "100%",
