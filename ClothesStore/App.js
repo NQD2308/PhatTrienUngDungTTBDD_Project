@@ -17,6 +17,7 @@ import User from "./views/account/User";
 import Home from "./views/store/Home";
 import Cart from "./views/store/Cart";
 import Detail from "./views/store/Detail";
+import Payment from "./views/store/Payment";
 
 // ========= Inital ========= //
 
@@ -30,7 +31,14 @@ const Tab = createBottomTabNavigator();
 // ========= Function ========= //
 
 //Buttom tab
-function TabNavigator() {
+function TabNavigator({ route }) {
+  const { userId } = route.params; // Nhận userId từ initialParams của InsideLayout
+
+  useEffect(() => {
+    console.log("userId tại App.js: " + userId);
+    
+  })
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -82,6 +90,7 @@ function TabNavigator() {
       <Tab.Screen
         name="Cart"
         component={Cart}
+        initialParams={{ userId }}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -156,15 +165,19 @@ function TabNavigator() {
 }
 
 // Inside views
-function InsideLayout() {
+function InsideLayout({ route }) {
+  const { userId } = route.params; // Nhận userId từ App.js
+
   return (
     <InsideStack.Navigator screenOptions={{ headerShown: false }}>
       <InsideStack.Screen
         name="TabNavigator"
-        component={TabNavigator}
         options={{ headerShown: false }}
-      />
+        component={TabNavigator}
+        initialParams={{ userId }} // Truyền userId thông qua initialParams
+      /> 
       <InsideStack.Screen name="Detail" component={Detail}/>
+      <InsideStack.Screen name="Payment" component={Payment}/>
     </InsideStack.Navigator>
   );
 }
@@ -173,9 +186,9 @@ export default function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      // console.log("user ", user);
-      setUser(user);
+    onAuthStateChanged(FIREBASE_AUTH, (currentUser) => {
+      // console.log("user ", currentUser);
+      setUser(currentUser);
     });
   }, []);
 
@@ -187,6 +200,7 @@ export default function App() {
             name="Inside"
             component={InsideLayout}
             options={{ headerShown: false }}
+            initialParams={{ userId: user.uid }} // Truyền userId từ user.uid
           />
         ) : (
           <>
