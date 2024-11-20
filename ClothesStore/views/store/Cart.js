@@ -30,7 +30,24 @@ const Cart = ({ route }) => {
 
   // Lấy dữ liệu từ Firestore
   useEffect(() => {
+    if (userId === "guest") {
+      return (
+        <View style={styles.guestContainer}>
+          <Text style={styles.guestText}>
+            Bạn cần đăng nhập để truy cập vào giỏ hàng.
+          </Text>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => navigation.navigate("Login")}
+          >
+            <Text style={styles.loginText}>Đăng nhập</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
     // console.log("userId tại Cart.js: " + userId);
+    
     const q = query(
       collection(FIREBASE_DB, "Order"),
       where("userId", "==", userId)

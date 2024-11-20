@@ -32,12 +32,11 @@ const Tab = createBottomTabNavigator();
 
 //Buttom tab
 function TabNavigator({ route }) {
-  const { userId } = route.params; // Nhận userId từ initialParams của InsideLayout
+  const { userId } = route.params || {}; // Nhận userId từ initialParams của InsideLayout
+  const safeUserId = userId || "guest"; // Giá trị mặc định là "guest"
 
-  useEffect(() => {
-    console.log("userId tại App.js: " + userId);
-    
-  })
+    console.log("userId tại App.js: " + safeUserId);
+  
 
   return (
     <Tab.Navigator
@@ -61,7 +60,7 @@ function TabNavigator({ route }) {
                 alignItems: "center",
                 justifyContent: "center",
                 flex: 1,
-                marginTop: 14 
+                marginTop: 14,
               }}
             >
               <Image
@@ -98,7 +97,7 @@ function TabNavigator({ route }) {
                 alignItems: "center",
                 justifyContent: "center",
                 flex: 1,
-                marginTop: 14
+                marginTop: 14,
               }}
             >
               <Image
@@ -134,7 +133,7 @@ function TabNavigator({ route }) {
                 alignItems: "center",
                 justifyContent: "center",
                 flex: 1,
-                marginTop: 14
+                marginTop: 14,
               }}
             >
               <Image
@@ -166,7 +165,10 @@ function TabNavigator({ route }) {
 
 // Inside views
 function InsideLayout({ route }) {
-  const { userId } = route.params; // Nhận userId từ App.js
+  const { userId } = route.params || {}; // Nhận userId từ App.js
+  const safeUserId = userId || "guest"; // Giá trị mặc định là "guest"
+
+  console.log("User ID tại InsideLayout: ", safeUserId);
 
   return (
     <InsideStack.Navigator screenOptions={{ headerShown: false }}>
@@ -174,10 +176,10 @@ function InsideLayout({ route }) {
         name="TabNavigator"
         options={{ headerShown: false }}
         component={TabNavigator}
-        initialParams={{ userId }} // Truyền userId thông qua initialParams
-      /> 
-      <InsideStack.Screen name="Detail" component={Detail}/>
-      <InsideStack.Screen name="Payment" component={Payment}/>
+        initialParams={{ userId: safeUserId }} // Truyền userId thông qua initialParams
+      />
+      <InsideStack.Screen name="Detail" component={Detail} />
+      <InsideStack.Screen name="Payment" component={Payment} />
     </InsideStack.Navigator>
   );
 }
@@ -194,13 +196,13 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Inside">
         {user ? (
           <Stack.Screen
             name="Inside"
             component={InsideLayout}
             options={{ headerShown: false }}
-            initialParams={{ userId: user.uid }} // Truyền userId từ user.uid
+            initialParams={{ userId: user.uid || "guest" }} // Truyền userId từ user.uid
           />
         ) : (
           <>
@@ -213,6 +215,12 @@ export default function App() {
               name="SignUp"
               component={SignUp}
               options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Inside"
+              component={InsideLayout}
+              options={{ headerShown: false }}
+              initialParams={{ userId: "guest" }} // Giá trị mặc định là "guest"
             />
           </>
         )}
