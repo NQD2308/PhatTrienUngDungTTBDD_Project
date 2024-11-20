@@ -12,7 +12,6 @@ import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import {
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
 } from "firebase/auth";
 
 export default function Login({ navigation }) {

@@ -10,6 +10,7 @@ import {
 import { signOut } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { useEffect, useState } from "react";
+import { CommonActions } from '@react-navigation/native';
 
 export default function User({ navigation, route }) {
   const { userId } = route.params || {}; // Nhận userId từ route.params
@@ -22,6 +23,14 @@ export default function User({ navigation, route }) {
       await signOut(FIREBASE_AUTH);
       Alert.alert("Đăng xuất thành công!");
       navigation.replace("Inside");
+
+      // Reset toàn bộ điều hướng
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Inside" }], // Điều hướng về màn hình Login
+        })
+      );
     } catch (error) {
       console.error("Lỗi khi đăng xuất: ", error);
       Alert.alert("Đã xảy ra lỗi khi đăng xuất, vui lòng thử lại!");
@@ -46,7 +55,7 @@ export default function User({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>User Page</Text>
-      <Text style={styles.info}>User ID: {safeUserId}</Text> 
+      <Text style={styles.info}>User ID: {safeUserId}</Text>
       <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
         <Text style={styles.logoutText}>Đăng Xuất</Text>
       </TouchableOpacity>
