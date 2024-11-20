@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -7,20 +6,23 @@ import {
   FlatList,
   Image,
   SafeAreaView,
+  TextInput,
+  TouchableOpacity,
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons"; // Sử dụng icon từ Ionicons
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
-// Tính chiều rộng của màn hình để điều chỉnh số lượng card hiển thị
 const { width } = Dimensions.get("window");
-const CARD_WIDTH = width / 2 - 20; // Chiều rộng mỗi card (đã trừ khoảng cách margin)
+const CARD_WIDTH = width / 2 - 20;
 
 export default function Home() {
   const navigation = useNavigation();
   const [products, setProducts] = useState([]);
-  // const [numColumns, setNumColumns] = useState(2);
+  const [searchKeyword, setSearchKeyword] = useState(""); // Từ khóa tìm kiếm
+  const [filteredProducts, setFilteredProducts] = useState([]); // Danh sách sản phẩm được lọc
 
   // Lấy dữ liệu từ Firestore
   useEffect(() => {
@@ -32,6 +34,7 @@ export default function Home() {
           ...doc.data(),
         }));
         setProducts(productList);
+        setFilteredProducts(productList); // Khởi tạo danh sách được lọc
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
       }
@@ -39,6 +42,25 @@ export default function Home() {
 
     fetchProducts();
   }, []);
+
+  // Xử lý tìm kiếm
+  const handleSearch = () => {
+    const keyword = searchKeyword.trim().toLowerCase();
+    if (keyword === "") {
+      setFilteredProducts(products); // Hiển thị tất cả sản phẩm nếu không có từ khóa
+    } else {
+      const filtered = products.filter((product) =>
+        product.productName.toLowerCase().includes(keyword)
+      );
+      setFilteredProducts(filtered);
+    }
+  };
+
+  // Xóa nội dung tìm kiếm
+  const handleClearSearch = () => {
+    setSearchKeyword(""); // Xóa từ khóa
+    setFilteredProducts(products); // Hiển thị lại tất cả sản phẩm
+  };
 
   // Hiển thị danh sách sản phẩm
   const renderItem = ({ item }) => (
@@ -58,13 +80,26 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Danh sách sản phẩm</Text>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Tìm kiếm sản phẩm..."
+          value={searchKeyword}
+          onChangeText={setSearchKeyword}
+        />
+        {searchKeyword.length > 0 && (
+          <TouchableOpacity onPress={handleClearSearch} style={styles.clearIcon}>
+            <Icon name="close-circle" size={24} color="#888" />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
+          <Icon name="search" size={20} color="#fff" />
+        </TouchableOpacity>
+      </View>
       <FlatList
-        data={products}
+        data={filteredProducts}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        // numColumns={numColumns}
-        // columnWrapperStyle={styles.row}
-        // key={numColumns} // Thay đổi key khi numColumns thay đổi
         contentContainerStyle={styles.list}
       />
     </SafeAreaView>
@@ -83,12 +118,31 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 10,
   },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+  },
+  clearIcon: {
+    marginLeft: 5,
+  },
+  searchButton: {
+    backgroundColor: "#007bff",
+    borderRadius: 8,
+    padding: 10,
+    marginLeft: 5,
+  },
   list: {
     paddingBottom: 20,
-  },
-  row: {
-    justifyContent: "space-between", // Căn đều các card trong một hàng
-    marginBottom: 15,
   },
   productCard: {
     width: CARD_WIDTH,
@@ -99,7 +153,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-    alignItems: "center", // Căn giữa nội dung trong card
+    alignItems: "center",
   },
   productImage: {
     width: "100%",
