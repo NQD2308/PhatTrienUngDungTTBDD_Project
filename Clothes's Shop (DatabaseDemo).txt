@@ -1,8 +1,7 @@
 Clothes's Shop (ReactNative)
 
 
-Product(id, idCategory, name, quantity, image, priceUnit, description)
-ProductAttribute(id, idProduct, color, size, material)
+Product(id, idCategory, name, quantity, image, color, size, material, priceUnit, description)
 Category(id, name, description)
 
 User(id, username, password, fullName, address, phone)
