@@ -6,17 +6,63 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { signOut } from "firebase/auth";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { useEffect, useState } from "react";
 import { CommonActions } from '@react-navigation/native';
+import { collection, query, where, getDocs } from "firebase/firestore"; // Import các hàm Firestore
 
 export default function User({ navigation, route }) {
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null); // Lưu thông tin người dùng
   const { userId } = route.params || {}; // Nhận userId từ route.params
   const safeUserId = userId || "guest"; // Giá trị mặc định nếu không có userId
 
   console.log("User ID tại User.js: ", safeUserId);
+
+  useEffect(() => {
+    if (safeUserId !== "guest") {
+      fetchUserData(); // Gọi hàm lấy dữ liệu
+    } else {
+      setLoading(false); // Không cần tải dữ liệu nếu là guest
+    }
+  }, [safeUserId]);
+
+  const fetchUserData = async () => {
+    try {
+      // Truy vấn người dùng theo UID
+      const userQuery = query(
+        collection(FIREBASE_DB, "User"), // Collection 'users'
+        where("uid", "==", safeUserId) // Tìm document có trường 'uid' trùng với userId
+      );
+      
+      const querySnapshot = await getDocs(userQuery); // Thực thi truy vấn
+
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc) => {
+          setUserData(doc.data()); // Lưu dữ liệu vào state
+        });
+      } else {
+        Alert.alert("Không tìm thấy người dùng!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin người dùng: ", error);
+      Alert.alert("Lỗi", "Không thể tải thông tin người dùng!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#3b82f6" />
+      </SafeAreaView>
+    );
+  }
+
 
   const handleSignOut = async () => {
     try {
@@ -54,8 +100,16 @@ export default function User({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>User Page</Text>
-      <Text style={styles.info}>User ID: {safeUserId}</Text>
+      <Text style={styles.title}>Thông Tin Người Dùng</Text>
+      {userData ? (
+        <>
+          <Text style={styles.info}>Email: {userData.email}</Text>
+          <Text style={styles.info}>Số điện thoại: {userData.phone}</Text>
+          <Text style={styles.info}>Username: {userData.username}</Text>
+        </>
+      ) : (
+        <Text style={styles.info}>Không có thông tin</Text>
+      )}
       <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
         <Text style={styles.logoutText}>Đăng Xuất</Text>
       </TouchableOpacity>
