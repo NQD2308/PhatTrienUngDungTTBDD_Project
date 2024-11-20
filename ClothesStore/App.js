@@ -126,6 +126,7 @@ function TabNavigator({ route }) {
       <Tab.Screen
         name="User"
         component={User}
+        initialParams={{ userId }}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -198,12 +199,24 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Inside">
         {user ? (
+          <>
           <Stack.Screen
             name="Inside"
             component={InsideLayout}
             options={{ headerShown: false }}
             initialParams={{ userId: user.uid || "guest" }} // Truyền userId từ user.uid
           />
+          <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUp}
+              options={{ headerShown: false }}
+            />
+          </>  
         ) : (
           <>
             <Stack.Screen

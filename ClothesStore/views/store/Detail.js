@@ -105,6 +105,7 @@ export default function Detail({ route }) {
       await setDoc(orderRef, { nextOrderId: nextOrderId + 1 });
   
       console.log("Order added successfully:", orderData);
+      Alert.alert("Thông báo", "Thêm vào giỏ hàng thành công.");
     } catch (error) {
       console.error("Error adding to cart:", error);
     }

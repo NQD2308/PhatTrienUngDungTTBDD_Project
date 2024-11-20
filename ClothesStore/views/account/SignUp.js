@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
 
 export default function SignUp() {
   const [username, setUsername] = useState("");
@@ -22,6 +23,7 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
+  const navigation = useNavigation();
 
   const signUp = async () => {
     // Kiểm tra nếu mật khẩu và xác nhận mật khẩu không khớp
@@ -29,26 +31,23 @@ export default function SignUp() {
       alert("Passwords do not match!");
       return;
     }
-
+  
     setLoading(true);
     try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log(response);
-
-      // Lấy giá trị counter hiện tại
+      // Đăng ký tài khoản qua Firebase Authentication
+      const response = await createUserWithEmailAndPassword(auth, email, password);
+      const user = response.user; // Lấy user object từ Firebase Auth
+  
+      // Lấy giá trị counter hiện tại từ Firestore
       const counterDocRef = doc(FIREBASE_DB, "Counters", "UserCounter");
       const counterDoc = await getDoc(counterDocRef);
-
+  
       let newId;
       if (counterDoc.exists()) {
         // Lấy giá trị hiện tại và tăng lên 1
         const currentId = counterDoc.data().currentId;
         newId = currentId + 1;
-
+  
         // Cập nhật giá trị mới cho counter
         await updateDoc(counterDocRef, { currentId: newId });
       } else {
@@ -56,16 +55,19 @@ export default function SignUp() {
         newId = 1;
         await setDoc(counterDocRef, { currentId: newId });
       }
-
-      // Lưu thông tin vào Firestore
+  
+      // Lưu thông tin người dùng vào Firestore
       const userDoc = doc(FIREBASE_DB, "User", String(newId));
       await setDoc(userDoc, {
+        uid: user.uid, // Thêm UID từ Firebase Authentication
         username: username,
         email: email,
         phone: phone,
+        createdAt: new Date().toISOString(), // Thêm thời gian tạo tài khoản (tùy chọn)
       });
-
+      
       alert("Registration successful!");
+      navigation.replace("Login");
     } catch (error) {
       console.log(error);
       alert("Registration failed: " + error.message);
@@ -73,6 +75,7 @@ export default function SignUp() {
       setLoading(false);
     }
   };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

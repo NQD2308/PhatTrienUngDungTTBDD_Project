@@ -30,6 +30,8 @@ const Cart = ({ route }) => {
 
   // Lấy dữ liệu từ Firestore
   useEffect(() => {
+    console.log(userId);
+    
     if (userId === "guest") {
       return (
         <View style={styles.guestContainer}>
@@ -44,6 +46,8 @@ const Cart = ({ route }) => {
           </TouchableOpacity>
         </View>
       );
+
+
     }
 
     // console.log("userId tại Cart.js: " + userId);
@@ -120,7 +124,7 @@ const Cart = ({ route }) => {
       />
       <View style={styles.details}>
         <Text style={styles.productName}>{item.productName}</Text>
-        <Text>Mô tả: {item.description}</Text>
+        {/* <Text>Mô tả: {item.description}</Text> */}
         <Text>Size: {item.selectedSize}</Text>
         <Text>Số lượng: {item.quantity}</Text>
         <Text>Giá: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}</Text>
