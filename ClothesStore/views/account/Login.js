@@ -7,30 +7,55 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Button,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
-import {
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import Toast from "react-native-toast-message";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State để điều khiển hiển thị mật khẩu
   const auth = FIREBASE_AUTH;
 
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const signIn = async () => {
+    if (!isValidEmail(email)) {
+      Toast.show({
+        type: "error",
+        text1: "Đăng nhập thất bại",
+        text2: "Email không đúng định dạng!",
+        visibilityTime: 3000,
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
+      Toast.show({
+        type: "success",
+        text1: "Đăng nhập thành công",
+        text2: "Chào mừng bạn quay trở lại!",
+        visibilityTime: 3000,
+      });
       console.log(response);
-
-      // Điều hướng đến InsideLayout khi đăng nhập thành công
       navigation.replace("Inside", { userId: response.user.uid });
     } catch (error) {
-      console.log(error);
-      alert("Sign in failed: " + error.message);
+      Toast.show({
+        type: "error",
+        text1: "Đăng nhập thất bại",
+        text2: error.message,
+        visibilityTime: 3500,
+      });
     } finally {
       setLoading(false);
     }
@@ -47,13 +72,25 @@ export default function Login({ navigation }) {
         value={email}
         onChangeText={(text) => setEmail(text)}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.inputPassword}
+          placeholder="Password"
+          secureTextEntry={!showPassword} // Dựa vào trạng thái `showPassword`
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
+        <TouchableOpacity
+          style={styles.showPasswordButton}
+          onPress={() => setShowPassword((prev) => !prev)} // Đổi trạng thái `showPassword`
+        >
+          <Icon
+            name={showPassword ? "eye-off" : "eye"} // Icon mắt mở hoặc đóng
+            size={24}
+            color="#007BFF"
+          />
+        </TouchableOpacity>
+      </View>
       {loading ? (
         <ActivityIndicator size={"large"} color={"#0000ff"} />
       ) : (
@@ -63,12 +100,12 @@ export default function Login({ navigation }) {
           </TouchableOpacity>
         </>
       )}
-
       <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
         <Text style={styles.linkText}>
           Don't have an account? Register here
         </Text>
       </TouchableOpacity>
+      <Toast />
     </View>
   );
 }
@@ -97,6 +134,27 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 16,
     backgroundColor: "#fff",
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    height: 50,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    marginBottom: 20,
+  },
+  inputPassword: {
+    flex: 1,
+    paddingHorizontal: 10,
+    fontSize: 16,
+  },
+  showPasswordButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 10,
   },
   button: {
     width: "100%",
