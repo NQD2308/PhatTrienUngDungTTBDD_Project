@@ -21,6 +21,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 const Cart = ({ route }) => {
   const { userId } = route.params; // Nhận userId từ route.params
@@ -82,9 +83,19 @@ const Cart = ({ route }) => {
   const handleDeleteOrder = async (orderId) => {
     try {
       await deleteDoc(doc(FIREBASE_DB, "Order", orderId));
-      Alert.alert("Thành công", "Đơn hàng đã được xóa!");
+      Toast.show({
+        type: "success",
+        text1: "Thành công",
+        text2: "Đơn hàng đã được xóa!",
+        visibilityTime: 3000,
+      });
     } catch (error) {
-      Alert.alert("Lỗi", "Không thể xóa đơn hàng.");
+      Toast.show({
+        type: "error",
+        text1: "Lỗi",
+        text2: "Không thể xóa đơn hàng.",
+        visibilityTime: 3000,
+      });
       console.error(error);
     }
   };
@@ -98,9 +109,21 @@ const Cart = ({ route }) => {
         selectedSize: newSize || "",
         quantity: parseInt(newQuantity, 10) || 1,
       });
-      Alert.alert("Thành công", "Đơn hàng đã được cập nhật!");
+      Toast.show({
+        type: "success",
+        position: "bottom",
+        text1: "Thành công",
+        text2: "Đơn hàng đã được cập nhật!",
+        visibilityTime: 3000,
+      });
     } catch (error) {
-      Alert.alert("Lỗi", "Không thể cập nhật đơn hàng.");
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: "Lỗi",
+        text2: "Không thể cập nhật đơn hàng.",
+        visibilityTime: 3000,
+      });
       console.error(error);
     }
   };
@@ -168,6 +191,8 @@ const Cart = ({ route }) => {
           <Text style={styles.paymentText}>Thanh toán</Text>
         </TouchableOpacity>
       )}
+
+      <Toast/>
     </View>
   );
 };
