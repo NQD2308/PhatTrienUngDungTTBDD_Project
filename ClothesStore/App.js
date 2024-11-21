@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Toast from "react-native-toast-message";
 
 // import { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
@@ -35,8 +36,7 @@ function TabNavigator({ route }) {
   const { userId } = route.params || {}; // Nhận userId từ initialParams của InsideLayout
   const safeUserId = userId || "guest"; // Giá trị mặc định là "guest"
 
-    console.log("userId tại App.js: " + safeUserId);
-  
+  console.log("userId tại App.js: " + safeUserId);
 
   return (
     <Tab.Navigator
@@ -196,49 +196,52 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Inside">
-        {user ? (
-          <>
-          <Stack.Screen
-            name="Inside"
-            component={InsideLayout}
-            options={{ headerShown: false }}
-            initialParams={{ userId: user.uid || "guest" }} // Truyền userId từ user.uid
-          />
-          <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SignUp"
-              component={SignUp}
-              options={{ headerShown: false }}
-            />
-          </>  
-        ) : (
-          <>
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="SignUp"
-              component={SignUp}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Inside"
-              component={InsideLayout}
-              options={{ headerShown: false }}
-              initialParams={{ userId: "guest" }} // Giá trị mặc định là "guest"
-            />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <Toast />
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Inside">
+          {user ? (
+            <>
+              <Stack.Screen
+                name="Inside"
+                component={InsideLayout}
+                options={{ headerShown: false }}
+                initialParams={{ userId: user.uid || "guest" }} // Truyền userId từ user.uid
+              />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SignUp"
+                component={SignUp}
+                options={{ headerShown: false }}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SignUp"
+                component={SignUp}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Inside"
+                component={InsideLayout}
+                options={{ headerShown: false }}
+                initialParams={{ userId: "guest" }} // Giá trị mặc định là "guest"
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
 
