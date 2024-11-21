@@ -11,13 +11,25 @@ import {
   Alert,
 } from "react-native";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
-import { doc, getDoc, setDoc, collection, query, orderBy, getDocs } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  query,
+  orderBy,
+  getDocs,
+} from "firebase/firestore";
+import Toast from "react-native-toast-message";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Detail({ route }) {
+  const navigation = useNavigation();
   const { productId } = route.params; // Nhận productId từ màn hình trước
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null); // Lưu size được chọn
   const [quantity, setQuantity] = useState(1); // Số lượng mặc định là 1
+  const [cart, setCart] = useState([]); // Quản lý giỏ hàng
 
   useEffect(() => {
     // Hàm để lấy dữ liệu sản phẩm từ Firestore
@@ -57,32 +69,39 @@ export default function Detail({ route }) {
 
   // ========== Xử lý thêm vào giỏ hàng ========== //
   const handleAddToCart = async () => {
-    if (!selectedSize) {
-      Alert.alert("Thông báo", "Vui lòng chọn size sản phẩm!");
-      return;
-    }
-
     try {
       // Lấy userId từ Firebase Auth
       const user = FIREBASE_AUTH.currentUser;
       if (!user) {
-        console.error("User not logged in!");
+        // console.error("User not logged in!");
+        navigation.navigate("Login");
         return;
       }
       const userId = user.uid;
-  
+
+      if (!selectedSize) {
+        Toast.show({
+          type: "error",
+          text1: "Message",
+          text2: "Vui lòng chọn size sản phẩm!",
+          visibilityTime: 3000, // Duration of toast
+          autoHide: true, // Automatically hide after a duration
+        });
+        return;
+      }
+
       // Tính toán tổng giá
       const totalPrice = quantity * parseInt(product.price);
-  
+
       // Lấy ID tài liệu tiếp theo
       const orderRef = doc(FIREBASE_DB, "Order", "metadata"); // Document chứa metadata
       let nextOrderId = 1;
-  
+
       const orderSnap = await getDoc(orderRef);
       if (orderSnap.exists()) {
         nextOrderId = orderSnap.data().nextOrderId || 1;
       }
-  
+
       // Tạo đơn hàng mới
       const orderData = {
         userId,
@@ -98,20 +117,107 @@ export default function Detail({ route }) {
         status: "pending", // Tùy chỉnh trạng thái đơn hàng
         createdAt: new Date().toISOString(), // Ngày tạo đơn hàng
       };
-  
-      await setDoc(doc(FIREBASE_DB, "Order", nextOrderId.toString()), orderData);
-  
+
+      await setDoc(
+        doc(FIREBASE_DB, "Order", nextOrderId.toString()),
+        orderData
+      );
+
       // Cập nhật metadata với ID tiếp theo
       await setDoc(orderRef, { nextOrderId: nextOrderId + 1 });
-  
+
       console.log("Order added successfully:", orderData);
-      Alert.alert("Thông báo", "Thêm vào giỏ hàng thành công.");
+      Toast.show({
+        type: "success",
+        text1: "Message",
+        text2: "Thêm vào giỏ hàng thành công.",
+        visibilityTime: 3000,
+        autoHide: true,
+      });
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
   };
   // ========== Kết thúc xử lý thêm vào giỏ hàng ========== //
 
+  // ========== Xử lý mua hàng ngay lập tức ========= //
+
+  const handleBuyNow = async () => {
+    try {
+      // Lấy userId từ Firebase Auth
+      const user = FIREBASE_AUTH.currentUser;
+      if (!user) {
+        // console.error("User not logged in!");
+        navigation.navigate("Login");
+        return;
+      }
+      const userId = user.uid;
+
+      if (!selectedSize) {
+        Toast.show({
+          type: "error",
+          text1: "Message",
+          text2: "Vui lòng chọn size sản phẩm!",
+          visibilityTime: 3000, // Duration of toast
+          autoHide: true, // Automatically hide after a duration
+        });
+        return;
+      }
+
+      // Tính toán tổng giá
+      const totalPrice = quantity * parseInt(product.price);
+
+      // Lấy ID tài liệu tiếp theo
+      const orderRef = doc(FIREBASE_DB, "Order", "metadata"); // Document chứa metadata
+      let nextOrderId = 1;
+
+      const orderSnap = await getDoc(orderRef);
+      if (orderSnap.exists()) {
+        nextOrderId = orderSnap.data().nextOrderId || 1;
+      }
+
+      // Tạo đơn hàng mới
+      const orderData = {
+        userId,
+        productId,
+        image: product.images,
+        productName: product.productName,
+        description: product.description,
+        selectedSize,
+        quantity,
+        price: product.price,
+        totalPrice,
+        priceUnit: product.priceUnit,
+        status: "pending", // Tùy chỉnh trạng thái đơn hàng
+        createdAt: new Date().toISOString(), // Ngày tạo đơn hàng
+      };
+
+      await setDoc(
+        doc(FIREBASE_DB, "Order", nextOrderId.toString()),
+        orderData
+      );
+
+      // Cập nhật metadata với ID tiếp theo
+      await setDoc(orderRef, { nextOrderId: nextOrderId + 1 });
+
+      // Truyền mảng orders vào màn hình thanh toán
+      const orders = [orderData]; // Tạo mảng chứa đơn hàng hiện tại
+
+      // Nếu có giỏ hàng, bạn có thể thêm các đơn hàng trong giỏ vào mảng orders
+      if (cart && cart.length > 0) {
+        orders.push(...cart); // Thêm các đơn hàng trong giỏ hàng vào mảng orders
+      }
+
+      // Chuyển sang màn hình thanh toán (Checkout)
+      navigation.navigate("Payment", {
+        orders, // Truyền mảng đơn hàng
+      });
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+
+  // ========== Kết thúc xử lý mua hàng ngay lập tức ========= //
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
@@ -175,11 +281,14 @@ export default function Detail({ route }) {
           <Text>Add To Cart</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={handleBuyNow}
           style={[styles.btnAddToCart, { backgroundColor: "#3b82f6" }]}
         >
           <Text style={{ color: "white" }}>Buy Now</Text>
         </TouchableOpacity>
       </View>
+
+      <Toast />
     </SafeAreaView>
   );
 }
@@ -237,29 +346,29 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     width: 120, // Độ rộng cố định
     marginVertical: 10, // Khoảng cách trên dưới
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     paddingHorizontal: 5,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   quantityButton: {
     padding: 10,
   },
   quantityButtonText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#007bff', // Màu chữ của nút
+    fontWeight: "bold",
+    color: "#007bff", // Màu chữ của nút
   },
   quantityText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   bottomArea: {
     width: "100%",
