@@ -19,6 +19,8 @@ import {
   query,
   orderBy,
   getDocs,
+  QuerySnapshot,
+  addDoc,
 } from "firebase/firestore";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
@@ -73,12 +75,11 @@ export default function Detail({ route }) {
       // Lấy userId từ Firebase Auth
       const user = FIREBASE_AUTH.currentUser;
       if (!user) {
-        // console.error("User not logged in!");
         navigation.navigate("Login");
         return;
       }
       const userId = user.uid;
-
+  
       if (!selectedSize) {
         Toast.show({
           type: "error",
@@ -89,19 +90,10 @@ export default function Detail({ route }) {
         });
         return;
       }
-
+  
       // Tính toán tổng giá
       const totalPrice = quantity * parseInt(product.price);
-
-      // Lấy ID tài liệu tiếp theo
-      const orderRef = doc(FIREBASE_DB, "Order", "metadata"); // Document chứa metadata
-      let nextOrderId = 1;
-
-      const orderSnap = await getDoc(orderRef);
-      if (orderSnap.exists()) {
-        nextOrderId = orderSnap.data().nextOrderId || 1;
-      }
-
+  
       // Tạo đơn hàng mới
       const orderData = {
         userId,
@@ -117,15 +109,14 @@ export default function Detail({ route }) {
         status: "pending", // Tùy chỉnh trạng thái đơn hàng
         createdAt: new Date().toISOString(), // Ngày tạo đơn hàng
       };
-
-      await setDoc(
-        doc(FIREBASE_DB, "Order", nextOrderId.toString()),
-        orderData
-      );
-
-      // Cập nhật metadata với ID tiếp theo
-      await setDoc(orderRef, { nextOrderId: nextOrderId + 1 });
-
+  
+      // Sử dụng addDoc để tự động sinh ID cho đơn hàng mới và lưu vào collection "Order"
+      const orderRef = collection(FIREBASE_DB, "Order"); // Lấy tham chiếu đến collection "Order"
+      const docRef = await addDoc(orderRef, orderData); // Tạo document mới và Firebase sẽ tự động sinh ID
+  
+      // Lưu ID của document vào orderData
+      orderData.id = docRef.id; // Lưu ID document vừa tạo vào object orderData
+  
       console.log("Order added successfully:", orderData);
       Toast.show({
         type: "success",
@@ -134,6 +125,10 @@ export default function Detail({ route }) {
         visibilityTime: 3000,
         autoHide: true,
       });
+  
+      // Nếu bạn muốn lấy ID của document vừa tạo
+      console.log("New Order ID:", docRef.id);
+  
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
@@ -167,15 +162,6 @@ export default function Detail({ route }) {
       // Tính toán tổng giá
       const totalPrice = quantity * parseInt(product.price);
 
-      // Lấy ID tài liệu tiếp theo
-      const orderRef = doc(FIREBASE_DB, "Order", "metadata"); // Document chứa metadata
-      let nextOrderId = 1;
-
-      const orderSnap = await getDoc(orderRef);
-      if (orderSnap.exists()) {
-        nextOrderId = orderSnap.data().nextOrderId || 1;
-      }
-
       // Tạo đơn hàng mới
       const orderData = {
         userId,
@@ -192,13 +178,11 @@ export default function Detail({ route }) {
         createdAt: new Date().toISOString(), // Ngày tạo đơn hàng
       };
 
-      await setDoc(
-        doc(FIREBASE_DB, "Order", nextOrderId.toString()),
-        orderData
-      );
+      const orderRef = collection(FIREBASE_DB, "Order");
+      const docRef = await addDoc(orderRef, orderData);
 
-      // Cập nhật metadata với ID tiếp theo
-      await setDoc(orderRef, { nextOrderId: nextOrderId + 1 });
+      // Lưu ID của document vào orderData
+      orderData.id = docRef.id; // Lưu ID document vừa tạo vào object orderData
 
       // Truyền mảng orders vào màn hình thanh toán
       const orders = [orderData]; // Tạo mảng chứa đơn hàng hiện tại
@@ -208,10 +192,10 @@ export default function Detail({ route }) {
         orders.push(...cart); // Thêm các đơn hàng trong giỏ hàng vào mảng orders
       }
 
+      const totalAmount = totalPrice;
+
       // Chuyển sang màn hình thanh toán (Checkout)
-      navigation.navigate("Payment", {
-        orders, // Truyền mảng đơn hàng
-      });
+      navigation.navigate("Payment", {orders, totalAmount});
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
