@@ -179,8 +179,17 @@ function InsideLayout({ route }) {
         component={TabNavigator}
         initialParams={{ userId: safeUserId }} // Truyền userId thông qua initialParams
       />
+      <InsideStack.Screen
+        name="Payment"
+        component={Payment}
+        initialParams={{ userId: safeUserId }}
+      />
+      <InsideStack.Screen
+        name="Cart"
+        component={Cart}
+        initialParams={{ userId: safeUserId }}
+      />
       <InsideStack.Screen name="Detail" component={Detail} />
-      <InsideStack.Screen name="Payment" component={Payment} />
     </InsideStack.Navigator>
   );
 }
