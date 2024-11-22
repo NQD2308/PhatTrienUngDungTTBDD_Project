@@ -159,6 +159,10 @@ const Cart = ({ route }) => {
         {/* <Text>Mô tả: {item.description}</Text> */}
         <Text>Size: {item.selectedSize}</Text>
         <Text>Số lượng: {item.quantity}</Text>
+        <View style={{flexDirection: "row", gap: 6, alignItems: "center"}}>
+          <Text>Màu sắc:</Text>
+          <Text style={[styles.colorText, { backgroundColor: item.selectedColor }]}></Text>
+        </View>
         <Text>
           Giá: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
         </Text>
@@ -245,6 +249,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 8,
+  },
+  colorText: {
+    width: 24,
+    height: 24,
+    marginTop: 8,
+    padding: 8,
+    color: "#fff", // Đảm bảo chữ hiển thị rõ trên nền màu
+    borderRadius: 50,
+    textAlign: "center",
   },
   totalText: {
     fontSize: 18,

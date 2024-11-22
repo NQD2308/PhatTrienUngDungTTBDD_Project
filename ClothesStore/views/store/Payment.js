@@ -116,6 +116,18 @@ const Payment = () => {
               />
               <View style={styles.productDetails}>
                 <Text style={styles.productName}>{item.productName}</Text>
+                <Text>Size: {item.selectedSize}</Text>
+                <View
+                  style={{ flexDirection: "row", gap: 6, alignItems: "center" }}
+                >
+                  <Text>Màu sắc:</Text>
+                  <Text
+                    style={[
+                      styles.colorText,
+                      { backgroundColor: item.selectedColor },
+                    ]}
+                  ></Text>
+                </View>
                 <Text>Số lượng: {item.quantity}</Text>
                 <Text>
                   Tổng: {parseInt(item.totalPrice).toLocaleString("vi-VI")}{" "}
@@ -169,6 +181,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 6,
     color: "#333",
+  },
+  colorText: {
+    width: 24,
+    height: 24,
+    marginTop: 8,
+    padding: 8,
+    color: "#fff", // Đảm bảo chữ hiển thị rõ trên nền màu
+    borderRadius: 50,
+    textAlign: "center",
   },
 });
 

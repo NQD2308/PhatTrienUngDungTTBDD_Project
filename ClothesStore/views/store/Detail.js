@@ -32,6 +32,7 @@ export default function Detail({ route }) {
   const { productId } = route.params; // Nhận productId từ màn hình trước
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null); // Lưu size được chọn
+  const [selectedColor, setSelectedColor] = useState(null); // Lưu màu được chọn
   const [quantity, setQuantity] = useState(1); // Số lượng mặc định là 1
   const [cart, setCart] = useState([]); // Quản lý giỏ hàng
 
@@ -82,11 +83,24 @@ export default function Detail({ route }) {
       }
       const userId = user.uid;
   
-      if (!selectedSize) {
+      // Kiểm tra chọn size
+      if (!selectedColor) {
         Toast.show({
           type: "error",
           text1: "Message",
           text2: "Vui lòng chọn size sản phẩm!",
+          visibilityTime: 3000,
+          autoHide: true,
+        });
+        return;
+      }
+
+      //Kiểm tra chọn màu
+      if (!selectedSize) {
+        Toast.show({
+          type: "error",
+          text1: "Message",
+          text2: "Vui lòng chọn màu sản phẩm!",
           visibilityTime: 3000,
           autoHide: true,
         });
@@ -104,6 +118,7 @@ export default function Detail({ route }) {
         productName: product.productName,
         description: product.description,
         selectedSize,
+        selectedColor,
         quantity,
         price: product.price,
         totalPrice,
@@ -118,7 +133,8 @@ export default function Detail({ route }) {
       const q = query(orderRef, 
         where("userId", "==", userId), 
         where("productId", "==", productId),
-        where("selectedSize", "==", selectedSize)
+        where("selectedSize", "==", selectedSize),
+        where("selectedColor", "==", selectedColor)
       );
       const querySnapshot = await getDocs(q);
   
@@ -181,6 +197,7 @@ export default function Detail({ route }) {
       }
       const userId = user.uid;
 
+      //Kiểm tra chọn size
       if (!selectedSize) {
         Toast.show({
           type: "error",
@@ -188,6 +205,18 @@ export default function Detail({ route }) {
           text2: "Vui lòng chọn size sản phẩm!",
           visibilityTime: 3000, // Duration of toast
           autoHide: true, // Automatically hide after a duration
+        });
+        return;
+      }
+
+      //Kiểm tra chọn màu
+      if (!selectedSize) {
+        Toast.show({
+          type: "error",
+          text1: "Message",
+          text2: "Vui lòng chọn màu sản phẩm!",
+          visibilityTime: 3000,
+          autoHide: true,
         });
         return;
       }
@@ -203,6 +232,7 @@ export default function Detail({ route }) {
         productName: product.productName,
         description: product.description,
         selectedSize,
+        selectedColor,
         quantity,
         price: product.price,
         totalPrice,
@@ -235,6 +265,7 @@ export default function Detail({ route }) {
   };
 
   // ========== Kết thúc xử lý mua hàng ngay lập tức ========= //
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
@@ -292,6 +323,26 @@ export default function Detail({ route }) {
           contentContainerStyle={styles.sizeList}
         />
         {/* Kết thúc xử lý chọn size */}
+        {/* Chọn màu */}
+        <Text style={styles.colorTitle}>Choose a Color:</Text>
+        <FlatList
+          data={product.colors}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() => setSelectedColor(item)}
+              style={[
+                styles.colorBox,
+                selectedColor === item && styles.selectedColorBox,
+              ]}
+            >
+              <View
+                style={[styles.colorCircle, { backgroundColor: item }]}
+              ></View>
+            </Pressable>
+          )}
+          contentContainerStyle={styles.colorList}
+        />
       </View>
       <View style={styles.bottomArea}>
         <TouchableOpacity style={styles.btnAddToCart} onPress={handleAddToCart}>
@@ -397,5 +448,32 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  colorTitle: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
+  colorList: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginVertical: 10,
+    gap: 8,
+  },
+  colorBox: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "#ccc",
+    margin: 4,
+  },
+  colorCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  selectedColorBox: {
+    borderColor: "#007bff",
+    borderWidth: 3,
   },
 });
