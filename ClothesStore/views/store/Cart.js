@@ -138,7 +138,11 @@ const Cart = ({ route }) => {
     const selectedData = orders.filter((order) =>
       selectedOrders.includes(order.id)
     );
-    navigation.navigate("Payment", { orders: selectedData });
+    const totalAmount = selectedData.reduce(
+      (sum, order) => sum + (parseInt(order.totalPrice) || 0),
+      0
+    );
+    navigation.navigate("Payment", { orders: selectedData, totalAmount });
   };
 
   // Giao diện từng đơn hàng
@@ -194,7 +198,7 @@ const Cart = ({ route }) => {
       )}
       {selectedOrders.length > 0 && (
         <Text style={styles.totalText}>
-          Tổng giá trị: {calculateTotalPrice().toLocaleString("vi-VN")} VNĐ
+          Tổng giá trị: {calculateTotalPrice().toLocaleString("vi-VN")} đ
         </Text>
       )}
       {orders.length > 0 && (

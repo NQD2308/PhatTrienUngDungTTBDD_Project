@@ -4,7 +4,13 @@ import { useRoute } from "@react-navigation/native";
 
 const Payment = () => {
   const route = useRoute();
-  const { orders } = route.params || { orders: [] };
+  const { orders, totalAmount } = route.params || { orders: [], totalAmount: 0 };
+
+// Chuyển totalAmount sang kiểu số (nếu chưa phải số)
+const formattedTotal = new Intl.NumberFormat("vi-VN", {
+  style: "currency",
+  currency: "VND",
+}).format(Number(totalAmount));
 
   return (
     <View style={styles.container}>
@@ -36,6 +42,9 @@ const Payment = () => {
           contentContainerStyle={styles.listContainer}
         />
       )}
+      <Text style={styles.totalAmount}>
+        Tổng giá trị đơn hàng: {formattedTotal}
+      </Text>
       <Button
         title="Xác nhận thanh toán"
         onPress={() => alert("Thanh toán thành công!")}
