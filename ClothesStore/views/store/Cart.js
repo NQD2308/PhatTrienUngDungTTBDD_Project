@@ -32,7 +32,7 @@ const Cart = ({ route }) => {
   // Lấy dữ liệu từ Firestore
   useEffect(() => {
     console.log(userId);
-    
+
     if (userId === "guest") {
       return (
         <View style={styles.guestContainer}>
@@ -47,12 +47,10 @@ const Cart = ({ route }) => {
           </TouchableOpacity>
         </View>
       );
-
-
     }
 
     // console.log("userId tại Cart.js: " + userId);
-    
+
     const q = query(
       collection(FIREBASE_DB, "Order"),
       where("userId", "==", userId)
@@ -86,14 +84,14 @@ const Cart = ({ route }) => {
       Toast.show({
         type: "success",
         text1: "Thành công",
-        text2: "Đơn hàng đã được xóa!",
+        text2: "Sản phẩm đã được xóa khỏi giỏ hàng!",
         visibilityTime: 3000,
       });
     } catch (error) {
       Toast.show({
         type: "error",
         text1: "Lỗi",
-        text2: "Không thể xóa đơn hàng.",
+        text2: "Không thể xóa sản phẩm khỏi giỏ hàng.",
         visibilityTime: 3000,
       });
       console.error(error);
@@ -128,6 +126,13 @@ const Cart = ({ route }) => {
     }
   };
 
+  // Tổng giá trị đơn hàng
+  const calculateTotalPrice = () => {
+    return orders
+      .filter((order) => selectedOrders.includes(order.id))
+      .reduce((total, order) => total + parseInt(order.totalPrice), 0); // Tính tổng
+  };
+
   // Thanh toán
   const handlePayment = () => {
     const selectedData = orders.filter((order) =>
@@ -150,8 +155,13 @@ const Cart = ({ route }) => {
         {/* <Text>Mô tả: {item.description}</Text> */}
         <Text>Size: {item.selectedSize}</Text>
         <Text>Số lượng: {item.quantity}</Text>
-        <Text>Giá: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}</Text>
-        <Text>Tổng: {parseInt(item.totalPrice).toLocaleString("vi-VN")} {item.priceUnit}</Text>
+        <Text>
+          Giá: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
+        </Text>
+        <Text>
+          Tổng: {parseInt(item.totalPrice).toLocaleString("vi-VN")}{" "}
+          {item.priceUnit}
+        </Text>
         <View style={styles.buttons}>
           <Button
             title={selectedOrders.includes(item.id) ? "Bỏ chọn" : "Chọn"}
@@ -182,9 +192,17 @@ const Cart = ({ route }) => {
           contentContainerStyle={styles.list}
         />
       )}
+      {selectedOrders.length > 0 && (
+        <Text style={styles.totalText}>
+          Tổng giá trị: {calculateTotalPrice().toLocaleString("vi-VN")} VNĐ
+        </Text>
+      )}
       {orders.length > 0 && (
         <TouchableOpacity
-          style={[styles.paymentButton, selectedOrders.length === 0 && styles.disabledButton]}
+          style={[
+            styles.paymentButton,
+            selectedOrders.length === 0 && styles.disabledButton,
+          ]}
           onPress={handlePayment}
           disabled={selectedOrders.length === 0}
         >
@@ -192,7 +210,7 @@ const Cart = ({ route }) => {
         </TouchableOpacity>
       )}
 
-      <Toast/>
+      <Toast />
     </View>
   );
 };
@@ -210,9 +228,27 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
   },
-  image: { width: 80, height: 80, borderRadius: 8, marginRight: 8 },
-  details: { flex: 1 },
-  productName: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  details: {
+    flex: 1,
+  },
+  productName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  totalText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginTop: 16,
+    textAlign: "center",
+  },
   buttons: {
     flexDirection: "row",
     justifyContent: "space-between",
