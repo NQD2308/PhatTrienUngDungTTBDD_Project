@@ -13,6 +13,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { useEffect, useState } from "react";
 import { CommonActions } from '@react-navigation/native';
 import { collection, query, where, getDocs } from "firebase/firestore"; // Import các hàm Firestore
+import Toast from "react-native-toast-message";
 
 export default function User({ navigation, route }) {
   const [loading, setLoading] = useState(true);
@@ -45,11 +46,19 @@ export default function User({ navigation, route }) {
           setUserData(doc.data()); // Lưu dữ liệu vào state
         });
       } else {
-        Alert.alert("Không tìm thấy người dùng!");
+        Toast.show({
+          type: "error",
+          text1: "Lỗi",
+          text2: "Không tìm thấy người dùng!",
+        });
       }
     } catch (error) {
       console.error("Lỗi khi lấy thông tin người dùng: ", error);
-      Alert.alert("Lỗi", "Không thể tải thông tin người dùng!");
+      Toast.show({
+        type: "error",
+        text1: "Lỗi",
+        text2: "Không thể tải thông tin người dùng!",
+      });
     } finally {
       setLoading(false);
     }
@@ -67,7 +76,11 @@ export default function User({ navigation, route }) {
   const handleSignOut = async () => {
     try {
       await signOut(FIREBASE_AUTH);
-      Alert.alert("Đăng xuất thành công!");
+      Toast.show({
+        type: "success",
+        text1: "Thành công",
+        text2: "Đăng xuất thành công!",
+      });
       navigation.replace("Inside");
 
       // Reset toàn bộ điều hướng
@@ -79,7 +92,11 @@ export default function User({ navigation, route }) {
       );
     } catch (error) {
       console.error("Lỗi khi đăng xuất: ", error);
-      Alert.alert("Đã xảy ra lỗi khi đăng xuất, vui lòng thử lại!");
+      Toast.show({
+        type: "error",
+        text1: "Lỗi",
+        text2: "Đã xảy ra lỗi khi đăng xuất, vui lòng thử lại!",
+      });
     }
   };
 
@@ -113,6 +130,8 @@ export default function User({ navigation, route }) {
       <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
         <Text style={styles.logoutText}>Đăng Xuất</Text>
       </TouchableOpacity>
+
+      <Toast/>
     </SafeAreaView>
   );
 }

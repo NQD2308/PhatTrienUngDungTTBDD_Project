@@ -19,6 +19,11 @@ import Home from "./views/store/Home";
 import Cart from "./views/store/Cart";
 import Detail from "./views/store/Detail";
 import Payment from "./views/store/Payment";
+import Purchase from "./views/store/Purchase";
+
+// Setting page
+import Profile from "./views/setting/Profile";
+import Language from "./views/setting/Language";
 
 // ========= Inital ========= //
 
@@ -64,7 +69,7 @@ function TabNavigator({ route }) {
               }}
             >
               <Image
-                source={require("./assets/icons/home.png")}
+                source={require("./assets/icons/house.png")}
                 resizeMode="contain"
                 style={{
                   width: 24,
@@ -118,6 +123,43 @@ function TabNavigator({ route }) {
                 }}
               >
                 Cart
+              </Text>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Purchase"
+        component={Purchase}
+        initialParams={{ userId }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+                marginTop: 14,
+              }}
+            >
+              <Image
+                source={require("./assets/icons/Purchase2.png")}
+                resizeMode="contain"
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: focused ? "#3b82f6" : "#94a3b8",
+                }}
+              />
+              <Text
+                style={{
+                  color: focused ? "#3b82f6" : "#94a3b8",
+                  fontSize: 12,
+                  width: 70,
+                  textAlign: "center",
+                }}
+              >
+                Purchase
               </Text>
             </View>
           ),
@@ -189,7 +231,13 @@ function InsideLayout({ route }) {
         component={Cart}
         initialParams={{ userId: safeUserId }}
       />
+      <InsideStack.Screen
+        name="Profile"
+        component={Profile}
+        initialParams={{ userId: safeUserId }}
+      />
       <InsideStack.Screen name="Detail" component={Detail} />
+      <InsideStack.Screen name="Language" component={Language} />
     </InsideStack.Navigator>
   );
 }
