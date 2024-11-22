@@ -21,6 +21,8 @@ import {
   getDocs,
   QuerySnapshot,
   addDoc,
+  where,
+  updateDoc
 } from "firebase/firestore";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
@@ -85,8 +87,8 @@ export default function Detail({ route }) {
           type: "error",
           text1: "Message",
           text2: "Vui lòng chọn size sản phẩm!",
-          visibilityTime: 3000, // Duration of toast
-          autoHide: true, // Automatically hide after a duration
+          visibilityTime: 3000,
+          autoHide: true,
         });
         return;
       }
@@ -94,7 +96,7 @@ export default function Detail({ route }) {
       // Tính toán tổng giá
       const totalPrice = quantity * parseInt(product.price);
   
-      // Tạo đơn hàng mới
+      // Tạo đối tượng orderData
       const orderData = {
         userId,
         productId,
@@ -106,33 +108,64 @@ export default function Detail({ route }) {
         price: product.price,
         totalPrice,
         priceUnit: product.priceUnit,
-        status: "pending", // Tùy chỉnh trạng thái đơn hàng
-        createdAt: new Date().toISOString(), // Ngày tạo đơn hàng
+        status: "pending",
+        createdAt: new Date().toISOString(),
       };
   
-      // Sử dụng addDoc để tự động sinh ID cho đơn hàng mới và lưu vào collection "Order"
-      const orderRef = collection(FIREBASE_DB, "Order"); // Lấy tham chiếu đến collection "Order"
-      const docRef = await addDoc(orderRef, orderData); // Tạo document mới và Firebase sẽ tự động sinh ID
+      const orderRef = collection(FIREBASE_DB, "Order");
   
-      // Lưu ID của document vào orderData
-      orderData.id = docRef.id; // Lưu ID document vừa tạo vào object orderData
+      // Tìm kiếm sản phẩm trong giỏ hàng (Order collection) đã có trong Firestore
+      const q = query(orderRef, 
+        where("userId", "==", userId), 
+        where("productId", "==", productId),
+        where("selectedSize", "==", selectedSize)
+      );
+      const querySnapshot = await getDocs(q);
   
-      console.log("Order added successfully:", orderData);
-      Toast.show({
-        type: "success",
-        text1: "Message",
-        text2: "Thêm vào giỏ hàng thành công.",
-        visibilityTime: 3000,
-        autoHide: true,
-      });
+      if (!querySnapshot.empty) {
+        // Nếu đã có sản phẩm trong giỏ hàng, cập nhật số lượng
+        const docId = querySnapshot.docs[0].id;
+        const docRef = doc(FIREBASE_DB, "Order", docId);
   
-      // Nếu bạn muốn lấy ID của document vừa tạo
-      console.log("New Order ID:", docRef.id);
+        // Cập nhật số lượng sản phẩm trong giỏ hàng
+        const updatedQuantity = querySnapshot.docs[0].data().quantity + quantity;
+        const updatedTotalPrice = updatedQuantity * parseInt(product.price);
   
+        // Cập nhật lại document trong Firestore
+        await updateDoc(docRef, {
+          quantity: updatedQuantity,
+          totalPrice: updatedTotalPrice,
+        });
+  
+        console.log("Cart updated successfully:", { quantity: updatedQuantity, totalPrice: updatedTotalPrice });
+        Toast.show({
+          type: "success",
+          text1: "Message",
+          text2: "Cập nhật giỏ hàng thành công.",
+          visibilityTime: 3000,
+          autoHide: true,
+        });
+      } else {
+        // Nếu chưa có sản phẩm trong giỏ hàng, tạo mới đơn hàng
+        const docRef = await addDoc(orderRef, orderData);
+  
+        // Lưu ID của document vào orderData
+        orderData.id = docRef.id;
+  
+        console.log("Order added successfully:", orderData);
+        Toast.show({
+          type: "success",
+          text1: "Message",
+          text2: "Thêm vào giỏ hàng thành công.",
+          visibilityTime: 3000,
+          autoHide: true,
+        });
+      }
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
   };
+  
   // ========== Kết thúc xử lý thêm vào giỏ hàng ========== //
 
   // ========== Xử lý mua hàng ngay lập tức ========= //
