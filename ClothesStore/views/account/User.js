@@ -5,13 +5,13 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
-  Alert,
+  Image,
   ActivityIndicator,
 } from "react-native";
 import { signOut } from "firebase/auth";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { useEffect, useState } from "react";
-import { CommonActions } from '@react-navigation/native';
+import { CommonActions } from "@react-navigation/native";
 import { collection, query, where, getDocs } from "firebase/firestore"; // Import các hàm Firestore
 import Toast from "react-native-toast-message";
 
@@ -38,7 +38,7 @@ export default function User({ navigation, route }) {
         collection(FIREBASE_DB, "User"), // Collection 'users'
         where("uid", "==", safeUserId) // Tìm document có trường 'uid' trùng với userId
       );
-      
+
       const querySnapshot = await getDocs(userQuery); // Thực thi truy vấn
 
       if (!querySnapshot.empty) {
@@ -71,7 +71,6 @@ export default function User({ navigation, route }) {
       </SafeAreaView>
     );
   }
-
 
   const handleSignOut = async () => {
     try {
@@ -120,18 +119,35 @@ export default function User({ navigation, route }) {
       <Text style={styles.title}>Thông Tin Người Dùng</Text>
       {userData ? (
         <>
-          <Text style={styles.info}>Email: {userData.email}</Text>
-          <Text style={styles.info}>Số điện thoại: {userData.phone}</Text>
-          <Text style={styles.info}>Username: {userData.username}</Text>
+          <View style={styles.userInfo}>
+            <Image
+              style={styles.avatar}
+              source={require('../../assets/images/defaultAvatar.png')}
+              onError={(error) =>
+                console.error("Lỗi tải ảnh avatar: ", error.nativeEvent.error)
+              }
+            />
+            <View>
+              <Text style={styles.info}>Email: {userData.email}</Text>
+              <Text style={styles.info}>Số điện thoại: {userData.phone}</Text>
+              <Text style={styles.info}>Username: {userData.username}</Text>
+            </View>
+          </View>
         </>
       ) : (
         <Text style={styles.info}>Không có thông tin</Text>
       )}
+      <TouchableOpacity style={styles.Button} onPress={() => navigation.navigate('Profile', {userId: safeUserId})}>
+        <Text style={styles.btnText}>Profile</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.Button} onPress={() => navigation.navigate('Language')}>
+        <Text style={styles.btnText}>Language</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
         <Text style={styles.logoutText}>Đăng Xuất</Text>
       </TouchableOpacity>
 
-      <Toast/>
+      <Toast />
     </SafeAreaView>
   );
 }
@@ -148,6 +164,29 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+  },
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 30
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#3b82f6",
+    marginBottom: 10,
+    backgroundColor: "#f3f3f3",
+  },
+  Button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  btnText:{
+    
   },
   loginButton: {
     backgroundColor: "#3b82f6",
