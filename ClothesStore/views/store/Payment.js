@@ -42,6 +42,8 @@ const Payment = () => {
           productId: item.id,
           productName: item.productName,
           quantity: item.quantity,
+          color: item.selectedColor,
+          size: item.selectedSize,
           totalPrice: item.totalPrice,
           totalAmount: Number(totalAmount),
           priceUnit: item.priceUnit,
