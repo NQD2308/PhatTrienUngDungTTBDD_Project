@@ -262,10 +262,14 @@ export default function App() {
               <Stack.Screen
                 name="Inside"
                 component={InsideLayout}
-                options={{ headerShown: false }}
-                initialParams={{ userId: user.uid || "guest" }} // Truyền userId từ user.uid
+                options={{ 
+                  headerShown: false, 
+                  gestureEnabled: false, // Tắt thao tác vuốt quay lại
+                 }}
+                initialParams={{ userId: user.uid }} // Truyền userId từ user.uid
+                
               />
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="Login"
                 component={Login}
                 options={{ headerShown: false }}
@@ -274,10 +278,11 @@ export default function App() {
                 name="SignUp"
                 component={SignUp}
                 options={{ headerShown: false }}
-              />
+              /> */}
             </>
           ) : (
             <>
+            
               <Stack.Screen
                 name="Login"
                 component={Login}
