@@ -89,6 +89,7 @@ export default function User({ navigation, route }) {
           routes: [{ name: "Inside" }], // Điều hướng về màn hình Login
         })
       );
+      // navigation.navigate('Inside')
     } catch (error) {
       console.error("Lỗi khi đăng xuất: ", error);
       Toast.show({
