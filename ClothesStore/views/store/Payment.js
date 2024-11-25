@@ -31,8 +31,8 @@ const Payment = () => {
     orders: [],
     totalAmount: 0,
   };
-
   const { updatedUserInfo } = route.params || {}; // Lấy thông tin người dùng đã cập nhật từ EditRecipient
+  
   const [customerInfo, setCustomerInfo] = useState({
     username: "",
     phone: "",
@@ -43,6 +43,14 @@ const Payment = () => {
 
   const userId =
     route.params?.userId || FIREBASE_AUTH.currentUser?.uid || "guest";
+
+  useEffect(() => {
+    if (orders && Array.isArray(orders)) {
+      console.log("Số lượng phần tử trong orders:", orders.length);
+    } else {
+      console.log("Orders không tồn tại hoặc không phải mảng.");
+    }
+  }, [orders]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -63,16 +71,49 @@ const Payment = () => {
 
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
+          // console.log("Dữ liệu userData nhận được:", userData);
+          // console.log(
+          //   "Số lượng thuộc tính trong userData:",
+          //   Object.keys(userData).length
+          // );
+
+          // Lấy và chuẩn hóa thông tin từ userData
+          const extractedUserData = {
+            username: userData.username || "",
+            phone: userData.phone || "",
+            address: userData.address || "",
+          };
+
+          // console.log(
+          //   "Thông tin khách hàng từ userData (3 thuộc tính):",
+          //   extractedUserData
+          // );
+
+          // console.log(
+          //   "Số lượng thuộc tính trong extractedUserData:",
+          //   Object.keys(extractedUserData).length
+          // );
 
           // Nếu có thông tin mới được truyền từ EditRecipient, sử dụng thông tin đó
           if (updatedUserInfo) {
-            setCustomerInfo(updatedUserInfo);
+            const updatedUserData = {
+              username: updatedUserInfo.username || extractedUserData.username,
+              phone: updatedUserInfo.phone || extractedUserData.phone,
+              address: updatedUserInfo.address || extractedUserData.address,
+            };
+
+            // console.log(
+            //   "updatedUserInfo nhận được từ EditRecipient (3 thuộc tính):",
+            //   updatedUserData
+            // );
+            // console.log(
+            //   "Số lượng thuộc tính trong updatedUserInfo:",
+            //   Object.keys(updatedUserData).length
+            // );
+
+            setCustomerInfo(updatedUserData); // Cập nhật với thông tin mới
           } else {
-            setCustomerInfo({
-              username: userData.username || "",
-              phone: userData.phone || "",
-              address: userData.address || "",
-            });
+            setCustomerInfo(extractedUserData);
           }
         } else {
           Toast.show({
@@ -98,7 +139,12 @@ const Payment = () => {
   }, [userId, updatedUserInfo]); // Thêm updatedUserInfo vào mảng dependencies
 
   const handleEditInfo = () => {
-    navigation.navigate("EditRecipient", { userId, customerInfo });
+    navigation.navigate("EditRecipient", {
+      userId,
+      customerInfo,
+      orders,
+      totalAmount
+    });
   };
 
   const formattedTotal = new Intl.NumberFormat("vi-VN", {
@@ -118,6 +164,9 @@ const Payment = () => {
       for (const item of orders) {
         await addDoc(collection(FIREBASE_DB, "Bill"), {
           userId,
+          username: updatedUserInfo.username, 
+          phone: updatedUserInfo.phone,       
+          address: updatedUserInfo.address,   
           productId: item.id,
           productName: item.productName,
           quantity: item.quantity,

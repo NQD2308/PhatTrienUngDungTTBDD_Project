@@ -4,7 +4,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Toast from "react-native-toast-message";
-import 'react-native-get-random-values';
 
 // import { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
