@@ -9,9 +9,11 @@ import {
   Button,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import Checkbox from "expo-checkbox"; 
+import React, { useState, useEffect } from "react";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -20,7 +22,20 @@ export default function Login({ navigation }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // State để điều khiển hiển thị mật khẩu
+  const [rememberMe, setRememberMe] = useState(false);
   const auth = FIREBASE_AUTH;
+
+  // Kiểm tra và tải email đã lưu từ AsyncStorage
+  useEffect(() => {
+    const loadRememberedEmail = async () => {
+      const savedEmail = await AsyncStorage.getItem("rememberedEmail");
+      if (savedEmail) {
+        setEmail(savedEmail);
+        setRememberMe(true);
+      }
+    };
+    loadRememberedEmail();
+  }, []);
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -41,6 +56,14 @@ export default function Login({ navigation }) {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Nếu "Remember Me" được chọn, lưu email vào AsyncStorage
+      if (rememberMe) {
+        await AsyncStorage.setItem("rememberedEmail", email);
+      } else {
+        await AsyncStorage.removeItem("rememberedEmail");
+      }
+      
       Toast.show({
         type: "success",
         text1: "Đăng nhập thành công",
@@ -90,6 +113,14 @@ export default function Login({ navigation }) {
             color="#007BFF"
           />
         </TouchableOpacity>
+      </View>
+      <View style={styles.rememberMeContainer}>
+        <Checkbox
+          value={rememberMe}
+          onValueChange={setRememberMe}
+          color={rememberMe ? "#007BFF" : undefined}
+        />
+        <Text style={styles.rememberMeText}>Remember Me</Text>
       </View>
       {loading ? (
         <ActivityIndicator size={"large"} color={"#0000ff"} />
@@ -160,6 +191,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 10,
+  },
+  rememberMeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  rememberMeText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: "#333",
   },
   button: {
     width: "100%",
