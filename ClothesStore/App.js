@@ -21,6 +21,7 @@ import Cart from "./views/store/Cart";
 import Detail from "./views/store/Detail";
 import Payment from "./views/store/Payment";
 import Purchase from "./views/store/Purchase";
+import EditRecipient from "./views/store/EditRecipient";
 
 // Setting page
 import Profile from "./views/setting/Profile";
@@ -225,6 +226,11 @@ function InsideLayout({ route }) {
       <InsideStack.Screen
         name="Payment"
         component={Payment}
+        initialParams={{ userId: safeUserId }}
+      />
+      <InsideStack.Screen
+        name="EditRecipient"
+        component={EditRecipient}
         initialParams={{ userId: safeUserId }}
       />
       <InsideStack.Screen

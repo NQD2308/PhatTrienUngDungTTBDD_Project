@@ -19,7 +19,7 @@ import {
   doc,
   deleteDoc,
   getDocs,
-  query
+  query,
 } from "firebase/firestore";
 import Toast from "react-native-toast-message";
 
@@ -31,11 +31,14 @@ const Payment = () => {
     orders: [],
     totalAmount: 0,
   };
+
+  const { updatedUserInfo } = route.params || {}; // Lấy thông tin người dùng đã cập nhật từ EditRecipient
   const [customerInfo, setCustomerInfo] = useState({
     username: "",
     phone: "",
     address: "",
   });
+
   const [isLoading, setIsLoading] = useState(true);
 
   const userId =
@@ -49,24 +52,28 @@ const Payment = () => {
       }
 
       console.log("User trong Payment.js: " + userId);
-      
 
       try {
         const userQuery = query(
-          collection(FIREBASE_DB, "User"), // Collection 'users'
-          where("uid", "==", userId) // Tìm document có trường 'uid' trùng với userId
+          collection(FIREBASE_DB, "User"),
+          where("uid", "==", userId)
         );
 
         const querySnapshot = await getDocs(userQuery);
 
         if (!querySnapshot.empty) {
-          // Nếu có kết quả, lấy dữ liệu người dùng đầu tiên
           const userData = querySnapshot.docs[0].data();
-          setCustomerInfo({
-            username: userData.username || "",
-            phone: userData.phone || "",
-            address: userData.address || "",
-          });
+
+          // Nếu có thông tin mới được truyền từ EditRecipient, sử dụng thông tin đó
+          if (updatedUserInfo) {
+            setCustomerInfo(updatedUserInfo);
+          } else {
+            setCustomerInfo({
+              username: userData.username || "",
+              phone: userData.phone || "",
+              address: userData.address || "",
+            });
+          }
         } else {
           Toast.show({
             type: "error",
@@ -74,7 +81,6 @@ const Payment = () => {
             text2: "Không tìm thấy thông tin người dùng.",
           });
           console.log("Không tìm thấy thông tin người dùng.");
-          
         }
       } catch (error) {
         console.error("Lỗi khi lấy thông tin người dùng:", error);
@@ -83,18 +89,16 @@ const Payment = () => {
           text1: "Lỗi",
           text2: "Không thể lấy thông tin người dùng.",
         });
-        console.log("Không thể lấy thông tin người dùng.");
-        
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchUserInfo();
-  }, [userId]);
+  }, [userId, updatedUserInfo]); // Thêm updatedUserInfo vào mảng dependencies
 
   const handleEditInfo = () => {
-    navigation.navigate("EditCustomerInfo", { userId });
+    navigation.navigate("EditRecipient", { userId, customerInfo });
   };
 
   const formattedTotal = new Intl.NumberFormat("vi-VN", {
@@ -225,21 +229,21 @@ const Payment = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    padding: 16, 
-    backgroundColor: "#f5f5f5" 
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#f5f5f5",
   },
-  loadingContainer: { 
-    flex: 1, 
-    justifyContent: "center", 
-    alignItems: "center" 
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     textAlign: "center",
     fontSize: 23,
     fontWeight: "bold",
-    marginVertical: 10
+    marginVertical: 10,
   },
   customerInfoContainer: {
     backgroundColor: "#fff",
@@ -247,9 +251,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
   },
-  customerTitle: { 
-    fontSize: 16, fontWeight: "bold", 
-    marginBottom: 8 
+  customerTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
   },
   editButton: {
     marginTop: 8,
@@ -257,10 +262,10 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 4,
   },
-  editButtonText: { 
-    color: "#fff", 
-    fontWeight: "bold", 
-    textAlign: "center" 
+  editButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   paymentItem: {
     flexDirection: "row",
@@ -269,30 +274,29 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 10,
   },
-  productImage: { 
-    width: 80, 
-    height: 80, 
-    borderRadius: 8, 
-    marginRight: 12 
+  productImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    marginRight: 12,
   },
-  productDetails: { 
-    flex: 1 
+  productDetails: {
+    flex: 1,
   },
-  productName: { 
-    fontSize: 16, 
-    fontWeight: "bold", 
-    marginBottom: 6 
+  productName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 6,
   },
-  colorText: { 
-    width: 24, 
-    height: 24, 
-    borderRadius: 50 
+  colorText: {
+    width: 24,
+    height: 24,
+    borderRadius: 50,
   },
-  totalAmount: { 
-    fontSize: 18, 
-    fontWeight: "bold", 
-    marginVertical: 16 
-
+  totalAmount: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginVertical: 16,
   },
 });
 
