@@ -101,7 +101,7 @@ export default function SignUp() {
         text1: "Success",
         text2: "Registration successful!",
       });
-      navigation.replace("Login");
+      navigation.replace("Inside");
     } catch (error) {
       console.log(error);
       Toast.show({
