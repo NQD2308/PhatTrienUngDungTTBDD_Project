@@ -1,44 +1,119 @@
-import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, FlatList, Image } from "react-native";
-import { useRoute } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  FlatList,
+  Image,
+  SafeAreaView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../firebaseConfig";
-import { collection, addDoc, doc, deleteDoc } from "firebase/firestore";
+import {
+  collection,
+  where,
+  addDoc,
+  doc,
+  deleteDoc,
+  getDocs,
+  query
+} from "firebase/firestore";
 import Toast from "react-native-toast-message";
 
 const Payment = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  // const [cartListForId, setCartListForId] = useState([]);
+
   const { orders, totalAmount } = route.params || {
     orders: [],
     totalAmount: 0,
   };
+  const [customerInfo, setCustomerInfo] = useState({
+    username: "",
+    phone: "",
+    address: "",
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Chuyển totalAmount sang kiểu số (nếu chưa phải số)
+  const userId =
+    route.params?.userId || FIREBASE_AUTH.currentUser?.uid || "guest";
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (!userId || userId === "guest") {
+        setIsLoading(false);
+        return;
+      }
+
+      console.log("User trong Payment.js: " + userId);
+      
+
+      try {
+        const userQuery = query(
+          collection(FIREBASE_DB, "User"), // Collection 'users'
+          where("uid", "==", userId) // Tìm document có trường 'uid' trùng với userId
+        );
+
+        const querySnapshot = await getDocs(userQuery);
+
+        if (!querySnapshot.empty) {
+          // Nếu có kết quả, lấy dữ liệu người dùng đầu tiên
+          const userData = querySnapshot.docs[0].data();
+          setCustomerInfo({
+            username: userData.username || "",
+            phone: userData.phone || "",
+            address: userData.address || "",
+          });
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Lỗi",
+            text2: "Không tìm thấy thông tin người dùng.",
+          });
+          console.log("Không tìm thấy thông tin người dùng.");
+          
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin người dùng:", error);
+        Toast.show({
+          type: "error",
+          text1: "Lỗi",
+          text2: "Không thể lấy thông tin người dùng.",
+        });
+        console.log("Không thể lấy thông tin người dùng.");
+        
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, [userId]);
+
+  const handleEditInfo = () => {
+    navigation.navigate("EditCustomerInfo", { userId });
+  };
+
   const formattedTotal = new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
   }).format(Number(totalAmount));
 
   const handlePayment = async () => {
-    const userId =
-      route.params?.userId || FIREBASE_AUTH.currentUser?.uid || "guest";
+    if (!userId || userId === "guest") {
+      navigation.navigate("Login");
+      return;
+    }
 
     try {
-      if (!userId || userId === "guest") {
-        navigation.navigate("Login");
-        return;
-      }
-
-      // Mảng lưu các ID sản phẩm đã thanh toán
       const cartListForId = [];
 
-      // Lặp qua từng sản phẩm trong đơn hàng và lưu vào Bill
       for (const item of orders) {
-        // Thêm thông tin vào collection "Bill"
         await addDoc(collection(FIREBASE_DB, "Bill"), {
-          userId, // ID người dùng
+          userId,
           productId: item.id,
           productName: item.productName,
           quantity: item.quantity,
@@ -48,57 +123,55 @@ const Payment = () => {
           totalAmount: Number(totalAmount),
           priceUnit: item.priceUnit,
           image: item.image,
-          timestamp: new Date().toISOString(), // Thời gian thanh toán
+          timestamp: new Date().toISOString(),
         });
 
-        // Lưu item.id vào mảng cartListForId để xóa sau khi đã thêm vào Bill
         cartListForId.push(item.id);
       }
 
-      // Log cartListForId để kiểm tra các ID sẽ được xóa
-      console.log("Danh sách ID trong cartListForId:", cartListForId);
-
-      // Sau khi lưu tất cả sản phẩm vào Bill, xóa các ID trong bảng Order
       for (const orderId of cartListForId) {
-        try {
-          console.log("Đang xóa đơn hàng có ID:", orderId); // Log từng orderId trước khi xóa
-
-          const cartRef = doc(FIREBASE_DB, "Order", orderId); // Sử dụng orderId để tham chiếu đến tài liệu Order
-          await deleteDoc(cartRef); // Xóa tài liệu đó khỏi bảng Order
-
-          // Log sau khi xóa thành công
-          console.log("Đã xóa đơn hàng có ID:", orderId);
-        } catch (error) {
-          console.log(error);
-        }
+        const cartRef = doc(FIREBASE_DB, "Order", orderId);
+        await deleteDoc(cartRef);
       }
 
-      // Thông báo thanh toán thành công
       Toast.show({
         type: "success",
         text1: "Thành công",
-        text2: "Cảm ơn bạn đã tin tưởng và mua hàng",
-        visibilityTime: 3000,
+        text2: "Cảm ơn bạn đã tin tưởng và mua hàng!",
       });
 
-      // Điều hướng đến TabNavigator sau khi thanh toán thành công
       navigation.navigate("TabNavigator");
     } catch (error) {
       console.error("Lỗi khi lưu dữ liệu thanh toán:", error);
-
-      // Thông báo lỗi nếu có sự cố xảy ra
       Toast.show({
         type: "error",
         text1: "Lỗi",
-        text2: "Xảy ra lỗi hệ thống trong quá trình thanh toán",
-        visibilityTime: 3000,
+        text2: "Xảy ra lỗi hệ thống trong quá trình thanh toán.",
       });
     }
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007BFF" />
+        <Text>Đang tải...</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Thanh toán</Text>
+      <View style={styles.customerInfoContainer}>
+        <Text style={styles.customerTitle}>Thông tin khách hàng</Text>
+        <Text>Người nhận: {customerInfo.username}</Text>
+        <Text>Điện thoại: {customerInfo.phone}</Text>
+        <Text>Địa chỉ: {customerInfo.address}</Text>
+        <TouchableOpacity style={styles.editButton} onPress={handleEditInfo}>
+          <Text style={styles.editButtonText}>Chỉnh sửa</Text>
+        </TouchableOpacity>
+      </View>
       {orders.length === 0 ? (
         <Text>Không có đơn hàng nào được chọn.</Text>
       ) : (
@@ -147,51 +220,79 @@ const Payment = () => {
       <Button title="Xác nhận thanh toán" onPress={handlePayment} />
 
       <Toast />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  listContainer: {
-    padding: 16,
-    backgroundColor: "#f5f5f5", // Màu nền
+  container: { 
+    flex: 1, 
+    padding: 16, 
+    backgroundColor: "#f5f5f5" 
+  },
+  loadingContainer: { 
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center" 
+  },
+  title: {
+    textAlign: "center",
+    fontSize: 23,
+    fontWeight: "bold",
+    marginVertical: 10
+  },
+  customerInfoContainer: {
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  customerTitle: { 
+    fontSize: 16, fontWeight: "bold", 
+    marginBottom: 8 
+  },
+  editButton: {
+    marginTop: 8,
+    backgroundColor: "#007BFF",
+    padding: 8,
+    borderRadius: 4,
+  },
+  editButtonText: { 
+    color: "#fff", 
+    fontWeight: "bold", 
+    textAlign: "center" 
   },
   paymentItem: {
     flexDirection: "row",
-    alignItems: "center",
     backgroundColor: "#fff",
     padding: 12,
-    marginBottom: 10,
     borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3, // Hiệu ứng nổi trên Android
+    marginBottom: 10,
   },
-  productImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8, // Bo góc cho ảnh
-    marginRight: 12,
+  productImage: { 
+    width: 80, 
+    height: 80, 
+    borderRadius: 8, 
+    marginRight: 12 
   },
-  productDetails: {
-    flex: 1,
+  productDetails: { 
+    flex: 1 
   },
-  productName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 6,
-    color: "#333",
+  productName: { 
+    fontSize: 16, 
+    fontWeight: "bold", 
+    marginBottom: 6 
   },
-  colorText: {
-    width: 24,
-    height: 24,
-    marginTop: 8,
-    padding: 8,
-    color: "#fff", // Đảm bảo chữ hiển thị rõ trên nền màu
-    borderRadius: 50,
-    textAlign: "center",
+  colorText: { 
+    width: 24, 
+    height: 24, 
+    borderRadius: 50 
+  },
+  totalAmount: { 
+    fontSize: 18, 
+    fontWeight: "bold", 
+    marginVertical: 16 
+
   },
 });
 
