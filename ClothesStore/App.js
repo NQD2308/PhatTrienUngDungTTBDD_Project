@@ -12,6 +12,7 @@ import { FIREBASE_AUTH } from "./firebaseConfig";
 // Account page
 import Login from "./views/account/Login";
 import SignUp from "./views/account/SignUp";
+import ForgotPassword from "./views/account/ForgotPassword";
 import User from "./views/account/User";
 
 // Store page
@@ -297,6 +298,11 @@ export default function App() {
               <Stack.Screen
                 name="SignUp"
                 component={SignUp}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ForgotPassword"
+                component={ForgotPassword}
                 options={{ headerShown: false }}
               />
               <Stack.Screen

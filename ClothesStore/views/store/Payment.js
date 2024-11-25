@@ -164,7 +164,7 @@ const Payment = () => {
       for (const item of orders) {
         await addDoc(collection(FIREBASE_DB, "Bill"), {
           userId,
-          username: updatedUserInfo.username, 
+          receiver: updatedUserInfo.username, 
           phone: updatedUserInfo.phone,       
           address: updatedUserInfo.address,   
           productId: item.id,
