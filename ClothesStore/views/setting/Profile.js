@@ -5,9 +5,18 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  FlatList
 } from "react-native";
 import { FIREBASE_DB } from "../../firebaseConfig";
-import { doc, getDoc, updateDoc, query, collection, where, getDocs } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  query,
+  collection,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import Toast from "react-native-toast-message";
 
 export default function Profile({ route, navigation }) {
@@ -18,6 +27,7 @@ export default function Profile({ route, navigation }) {
     phone: "",
     username: "",
   });
+  const [addressSuggestions, setAddressSuggestions] = useState([]); // Gợi ý địa chỉ
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,9 +78,9 @@ export default function Profile({ route, navigation }) {
         collection(FIREBASE_DB, "User"),
         where("uid", "==", safeUserId)
       );
-  
+
       const querySnapshot = await getDocs(userQuery);
-  
+
       if (!querySnapshot.empty) {
         const userRef = doc(FIREBASE_DB, "User", querySnapshot.docs[0].id); // Lấy id của document đầu tiên từ kết quả query
         await updateDoc(userRef, {
@@ -79,7 +89,7 @@ export default function Profile({ route, navigation }) {
           username: userData.username,
           address: userData.address, // Thêm địa chỉ vào
         });
-  
+
         Toast.show({
           type: "success",
           text1: "Thành công",
@@ -99,6 +109,42 @@ export default function Profile({ route, navigation }) {
         text1: "Lỗi",
         text2: "Không thể cập nhật thông tin!",
       });
+    }
+  };
+
+  const handleAddressAutocomplete = async (text) => {
+    setUserData((prev) => ({ ...prev, address: text })); // Cập nhật input
+    if (text.trim() === "") {
+      setAddressSuggestions([]); // Xóa gợi ý nếu input rỗng
+      return;
+    }
+  
+    try {
+      const response = await fetch("https://google.serper.dev/places", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": "87cf8c1e8bbcf4156fca3acaf724426580eac54f",
+        },
+        body: JSON.stringify({
+          q: text,
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+  
+        // Map dữ liệu để chỉ lấy `title`
+        const suggestions = (data.places || []).map((place) => ({
+          title: place.title, // Lấy `title` từ mỗi phần tử
+        }));
+  
+        setAddressSuggestions(suggestions); // Cập nhật danh sách gợi ý
+      } else {
+        console.error("Autocomplete API Error:", response.status);
+      }
+    } catch (error) {
+      console.error("Error during autocomplete fetch:", error);
     }
   };
   
@@ -133,13 +179,39 @@ export default function Profile({ route, navigation }) {
         onChangeText={(text) => setUserData({ ...userData, phone: text })}
         placeholder="Phone number"
       />
-      <TextInput
+      {/* <TextInput
         style={styles.input}
         value={userData.address}
         onChangeText={(text) => setUserData({ ...userData, address: text })}
         placeholder="Address"
+      /> */}
+
+      <TextInput
+        style={styles.input}
+        value={userData.address}
+        onChangeText={handleAddressAutocomplete} // Gọi hàm autocomplete khi người dùng nhập
+        placeholder="Address"
+      />
+
+      {/* Hiển thị danh sách gợi ý địa chỉ */}
+      {addressSuggestions.length > 0 && (
+        <FlatList
+        data={addressSuggestions}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.suggestionItem}
+            onPress={() => {
+              setUserData((prev) => ({ ...prev, address: item.title })); // Cập nhật địa chỉ được chọn
+              setAddressSuggestions([]); // Xóa gợi ý
+            }}
+          >
+            <Text style={{ color: "#000" }}>{item.title}</Text> {/* Hiển thị title */}
+          </TouchableOpacity>
+        )}
       />
       
+      )}
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Lưu Thay Đổi</Text>
@@ -200,5 +272,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  suggestionItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    backgroundColor: "#fff",
+    color: "#333"
   },
 });
