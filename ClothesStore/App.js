@@ -26,6 +26,7 @@ import EditRecipient from "./views/store/EditRecipient";
 // Setting page
 import Profile from "./views/setting/Profile";
 import Language from "./views/setting/Language";
+import BiometricAuthentication from "./views/setting/BiometricAuthentication";
 
 // ========= Inital ========= //
 
@@ -241,6 +242,11 @@ function InsideLayout({ route }) {
       <InsideStack.Screen
         name="Profile"
         component={Profile}
+        initialParams={{ userId: safeUserId }}
+      />
+      <InsideStack.Screen
+        name="BiometricAuthentication"
+        component={BiometricAuthentication}
         initialParams={{ userId: safeUserId }}
       />
       <InsideStack.Screen name="Detail" component={Detail} />
