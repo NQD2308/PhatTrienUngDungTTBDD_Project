@@ -90,9 +90,11 @@ export default function SignUp() {
       const userDoc = doc(FIREBASE_DB, "User", String(newId));
       await setDoc(userDoc, {
         uid: user.uid,
+        avatar: "defaultAvatar.png",
         username: username,
         email: email,
         phone: phone,
+        biometricEnabled: false,
         createdAt: new Date().toISOString(),
       });
 
