@@ -141,6 +141,9 @@ export default function User({ navigation, route }) {
       <TouchableOpacity style={styles.Button} onPress={() => navigation.navigate('Profile', {userId: safeUserId})}>
         <Text style={styles.btnText}>Profile</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.Button} onPress={() => navigation.navigate('BiometricAuthentication', {userId: safeUserId})}>
+        <Text style={styles.btnText}>Autometric authentication</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.Button} onPress={() => navigation.navigate('Language')}>
         <Text style={styles.btnText}>Language</Text>
       </TouchableOpacity>

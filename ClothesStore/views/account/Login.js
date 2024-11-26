@@ -6,82 +6,166 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Button,
   Alert,
 } from "react-native";
-import Checkbox from "expo-checkbox"; 
+import Checkbox from "expo-checkbox";
 import React, { useState, useEffect } from "react";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import { collection, where, query, getDocs } from "firebase/firestore";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import * as LocalAuthentication from "expo-local-authentication";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // State để điều khiển hiển thị mật khẩu
+  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const auth = FIREBASE_AUTH;
 
-  // Kiểm tra và tải email đã lưu từ AsyncStorage
   useEffect(() => {
-    const loadRememberedEmail = async () => {
-      const savedEmail = await AsyncStorage.getItem("rememberedEmail");
-      if (savedEmail) {
-        setEmail(savedEmail);
-        setRememberMe(true);
-      }
-    };
     loadRememberedEmail();
+    checkBiometricLogin();
   }, []);
 
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  // Load email được lưu nếu "Remember Me" được bật
+  const loadRememberedEmail = async () => {
+    const savedEmail = await AsyncStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
   };
 
-  const signIn = async () => {
-    if (!isValidEmail(email)) {
+  // Kiểm tra xác thực vân tay
+  const checkBiometricLogin = async () => {
+    try {
+        // Lấy email từ AsyncStorage hoặc một nơi khác
+        const email = await AsyncStorage.getItem('rememberedEmail');
+        if (!email) {
+            console.error("Không có email người dùng");
+            return;
+        }
+
+        // Truy vấn tài liệu người dùng từ Firestore bằng email
+        const usersRef = collection(FIREBASE_DB, "User");
+        const q = query(usersRef, where("email", "==", email)); // Truy vấn theo email
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            querySnapshot.forEach((doc) => {
+                const userData = doc.data();
+                const useBiometrics = userData.biometricEnabled;
+
+                // Kiểm tra nếu tính năng vân tay được bật
+                if (useBiometrics) {
+                    handleBiometricAuth();
+                } else {
+                    Toast.show({
+                        type: 'info',
+                        text1: 'Xác thực vân tay bị vô hiệu hóa',
+                        text2: 'Bạn không thể sử dụng xác thực vân tay.',
+                    });
+                }
+            });
+        } else {
+            console.error("Không tìm thấy người dùng với email: ", email);
+        }
+    } catch (error) {
+        console.error("Lỗi khi kiểm tra xác thực vân tay: ", error);
+    }
+};
+
+  // Hàm xác thực vân tay
+  const handleBiometricAuth = async () => {
+    try {
+        setLoading(true); // Bật chế độ loading
+
+        const result = await LocalAuthentication.authenticateAsync({
+            promptMessage: "Xác thực để đăng nhập",
+            cancelLabel: "Hủy",
+        });
+
+        if (result.success) {
+            Toast.show({
+                type: 'success',
+                text1: 'Xác thực thành công!',
+                text2: 'Bạn đã đăng nhập thành công.',
+            });
+            navigation.replace('Inside'); // Chuyển hướng đến trang chính
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: 'Xác thực thất bại!',
+                text2: 'Vui lòng thử lại.',
+            });
+        }
+    } catch (error) {
+        console.error("Lỗi khi xác thực sinh trắc học: ", error);
+        Toast.show({
+            type: 'error',
+            text1: 'Lỗi',
+            text2: 'Đã xảy ra lỗi khi xác thực vân tay.',
+        });
+    } finally {
+        setLoading(false); // Tắt chế độ loading sau khi hoàn tất
+    }
+};
+
+  // Hàm đăng nhập
+  const signIn = async (emailInput = email, passwordInput = password) => {
+    if (!isValidEmail(emailInput)) {
       Toast.show({
         type: "error",
         text1: "Đăng nhập thất bại",
         text2: "Email không đúng định dạng!",
-        visibilityTime: 3000,
       });
       return;
     }
 
     setLoading(true);
     try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
-      
-      // Nếu "Remember Me" được chọn, lưu email vào AsyncStorage
+      const response = await signInWithEmailAndPassword(
+        auth,
+        emailInput,
+        passwordInput
+      );
+
       if (rememberMe) {
-        await AsyncStorage.setItem("rememberedEmail", email);
+        await AsyncStorage.setItem("rememberedEmail", emailInput);
+        await AsyncStorage.setItem("rememberedPassword", passwordInput);
       } else {
         await AsyncStorage.removeItem("rememberedEmail");
+        await AsyncStorage.removeItem("rememberedPassword");
       }
-      
+
       Toast.show({
         type: "success",
         text1: "Đăng nhập thành công",
         text2: "Chào mừng bạn quay trở lại!",
-        visibilityTime: 3000,
       });
-      console.log(response);
+
       navigation.replace("Inside", { userId: response.user.uid });
     } catch (error) {
+      console.error("Login Error:", error.message);
       Toast.show({
         type: "error",
         text1: "Đăng nhập thất bại",
         text2: error.message,
-        visibilityTime: 3500,
       });
     } finally {
       setLoading(false);
     }
+  };
+
+  // Xác minh email
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   return (
@@ -93,22 +177,22 @@ export default function Login({ navigation }) {
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
-        onChangeText={(text) => setEmail(text)}
+        onChangeText={setEmail}
       />
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.inputPassword}
           placeholder="Password"
-          secureTextEntry={!showPassword} // Dựa vào trạng thái `showPassword`
+          secureTextEntry={!showPassword}
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={setPassword}
         />
         <TouchableOpacity
           style={styles.showPasswordButton}
-          onPress={() => setShowPassword((prev) => !prev)} // Đổi trạng thái `showPassword`
+          onPress={() => setShowPassword(!showPassword)}
         >
           <Icon
-            name={showPassword ? "eye-off" : "eye"} // Icon mắt mở hoặc đóng
+            name={showPassword ? "eye-off" : "eye"}
             size={24}
             color="#007BFF"
           />
@@ -123,18 +207,20 @@ export default function Login({ navigation }) {
         <Text style={styles.rememberMeText}>Remember Me</Text>
       </View>
       {loading ? (
-        <ActivityIndicator size={"large"} color={"#0000ff"} />
+        <ActivityIndicator size="large" color="#007BFF" />
       ) : (
-        <>
-          <TouchableOpacity style={styles.button} onPress={() => signIn()}>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-        </>
+        <TouchableOpacity style={styles.button} onPress={() => signIn()}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
       )}
+      <TouchableOpacity
+        style={styles.biometricButton}
+        onPress={handleBiometricAuth}
+      >
+        <Text style={styles.buttonText}>Login with Fingerprint</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.linkText}>
-          Forgot password!
-        </Text>
+        <Text style={styles.linkText}>Forgot password!</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
         <Text style={styles.linkText}>
@@ -211,6 +297,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 10,
   },
+  biometricButton: {
+  width: "100%",
+  height: 50,
+  backgroundColor: "#28a745", // Màu xanh lá
+  justifyContent: "center",
+  alignItems: "center",
+  borderRadius: 8,
+  marginTop: 10, // Khoảng cách với các phần khác
+},
   buttonText: {
     color: "#fff",
     fontSize: 18,
