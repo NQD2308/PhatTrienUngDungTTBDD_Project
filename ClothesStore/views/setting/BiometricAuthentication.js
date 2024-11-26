@@ -1,164 +1,145 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import * as LocalAuthentication from 'expo-local-authentication';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, Switch } from "react-native";
+import * as LocalAuthentication from "expo-local-authentication";
+import { doc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
+import { FIREBASE_DB } from "../../firebaseConfig";
 
-export default function BiometricAuthentication({ route, navigation }) {
-    const { userId } = route.params || {}; // Lấy userId từ route params
-    const [loading, setLoading] = useState(false);
-    const [currentUser, setCurrentUser] = useState(null); // State để lưu thông tin người dùng hiện tại
+export default function BiometricAuthentication({ route }) {
+  const { userId } = route.params || {};
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
 
-    useEffect(() => {
-        // Đọc thông tin người dùng từ AsyncStorage khi trang được render
-        const getUserInfo = async () => {
-            try {
-                const storedUserId = await AsyncStorage.getItem('userId');
-                if (storedUserId) {
-                    setCurrentUser(storedUserId); // Lưu vào state
-                }
-            } catch (error) {
-                console.error('Không thể đọc thông tin người dùng từ AsyncStorage', error);
-            }
-        };
+  // Lấy trạng thái ban đầu từ Firebase khi màn hình được tải
+  useEffect(() => {
+    const fetchBiometricStatus = async () => {
+      try {
+        const userQuery = query(
+          collection(FIREBASE_DB, "User"),
+          where("uid", "==", userId)
+        );
 
-        getUserInfo();
-    }, []);
+        const querySnapshot = await getDocs(userQuery);
 
-    // Hàm xử lý xác thực vân tay và lưu thông tin
-    const handleBiometricLogin = async () => {
-        try {
-            setLoading(true); // Bật chế độ loading
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          const biometricEnabled = userData.biometricEnabled || false;
 
-            // Tiến hành xác thực vân tay
-            const result = await LocalAuthentication.authenticateAsync({
-                promptMessage: "Xác thực để đăng nhập",
-                cancelLabel: "Hủy",
-            });
-
-            if (result.success) {
-                // Nếu xác thực thành công, lưu thông tin người dùng vào AsyncStorage
-                await AsyncStorage.setItem('userId', userId);
-
-                // Hiển thị thông báo thành công
-                Toast.show({
-                    type: 'success',
-                    text1: 'Xác thực thành công!',
-                    text2: 'Thông tin tài khoản đã được lưu. Bạn có thể đăng nhập bằng vân tay lần sau.',
-                });
-
-                // Chuyển hướng người dùng đến trang chính hoặc màn hình cần thiết
-                // navigation.replace('Home'); // Hoặc trang khác mà bạn muốn
-            } else {
-                // Nếu xác thực thất bại
-                Toast.show({
-                    type: 'error',
-                    text1: 'Xác thực thất bại!',
-                    text2: 'Vui lòng thử lại.',
-                });
-            }
-        } catch (error) {
-            console.error("Lỗi khi xác thực sinh trắc học: ", error);
-            // Hiển thị thông báo lỗi khi có vấn đề xảy ra trong quá trình xác thực
-            Toast.show({
-                type: 'error',
-                text1: 'Lỗi',
-                text2: 'Đã xảy ra lỗi khi xác thực vân tay.',
-            });
-        } finally {
-            setLoading(false); // Tắt chế độ loading sau khi hoàn tất
+          setBiometricEnabled(biometricEnabled);
+          console.log("Trạng thái biometric:", biometricEnabled);
+        } else {
+          console.warn("Không tìm thấy tài liệu người dùng với UID:", userId);
         }
+      } catch (error) {
+        console.error("Lỗi khi lấy trạng thái biometric:", error);
+      }
     };
 
-    // Hàm xử lý tắt chức năng xác thực vân tay
-    const handleDisableBiometricAuthentication = async () => {
+    fetchBiometricStatus();
+  }, [userId]);
+
+  // Hàm yêu cầu xác thực vân tay
+  const authenticateBiometric = async () => {
+    const hasBiometric = await LocalAuthentication.hasHardwareAsync();
+    if (!hasBiometric) {
+      console.log("Thiết bị không hỗ trợ xác thực vân tay");
+      return false;
+    }
+
+    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+    if (!isEnrolled) {
+      console.log("Không có dấu vân tay nào đã được đăng ký trên thiết bị");
+      return false;
+    }
+
+    try {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: "Xác thực vân tay để tiếp tục",
+        fallbackLabel: "Sử dụng mật khẩu",
+      });
+
+      return result.success;
+    } catch (error) {
+      console.log("Lỗi xác thực vân tay:", error);
+      return false;
+    }
+  };
+
+  // Hàm cập nhật trạng thái biometricEnabled trong Firestore
+  const toggleBiometric = async (value) => {
+    if (value) {
+      // Nếu bật, yêu cầu xác thực vân tay
+      const isAuthenticated = await authenticateBiometric();
+
+      if (isAuthenticated) {
+        setBiometricEnabled(true);
         try {
-            await AsyncStorage.removeItem('userId'); // Xóa thông tin vân tay khỏi AsyncStorage
+          const userQuery = query(
+            collection(FIREBASE_DB, "User"),
+            where("uid", "==", userId)
+          );
 
-            Toast.show({
-                type: 'success',
-                text1: 'Tắt xác thực vân tay thành công!',
-                text2: 'Tài khoản sẽ không còn sử dụng xác thực vân tay nữa.',
+          const querySnapshot = await getDocs(userQuery);
+
+          if (!querySnapshot.empty) {
+            const userRef = doc(FIREBASE_DB, "User", querySnapshot.docs[0].id);
+            await updateDoc(userRef, {
+              biometricEnabled: true,
             });
-
-            // Chuyển hướng người dùng về trang đăng nhập hoặc một trang khác
-            // navigation.replace('Login'); // Thay đổi trang tùy theo ứng dụng của bạn
+            console.log("Trạng thái biometric đã được cập nhật: true");
+          }
         } catch (error) {
-            console.error('Lỗi khi tắt xác thực vân tay:', error);
-            Toast.show({
-                type: 'error',
-                text1: 'Lỗi',
-                text2: 'Không thể tắt xác thực vân tay.',
-            });
+          console.error("Lỗi khi cập nhật trạng thái biometric:", error);
         }
-    };
+      } else {
+        // Nếu không xác thực thành công, tắt toggle lại
+        setBiometricEnabled(false);
+      }
+    } else {
+      // Nếu tắt, cập nhật lại trạng thái trong Firestore
+      setBiometricEnabled(false);
+      try {
+        const userQuery = query(
+          collection(FIREBASE_DB, "User"),
+          where("uid", "==", userId)
+        );
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Biometric Authentication</Text>
+        const querySnapshot = await getDocs(userQuery);
 
-            {/* Hiển thị thông tin người dùng hiện tại */}
-            {currentUser ? (
-                <Text style={styles.info}>Người dùng hiện tại: {currentUser}</Text>
-            ) : (
-                <Text style={styles.info}>Chưa có người dùng đăng nhập</Text>
-            )}
+        if (!querySnapshot.empty) {
+          const userRef = doc(FIREBASE_DB, "User", querySnapshot.docs[0].id);
+          await updateDoc(userRef, {
+            biometricEnabled: false,
+          });
+          console.log("Trạng thái biometric đã được cập nhật: false");
+        }
+      } catch (error) {
+        console.error("Lỗi khi cập nhật trạng thái biometric:", error);
+      }
+    }
+  };
 
-            {/* Nút xác thực vân tay */}
-            <TouchableOpacity
-                style={styles.authButton}
-                onPress={handleBiometricLogin}
-                disabled={loading}
-            >
-                <Text style={styles.buttonText}>
-                    {loading ? "Đang xác thực..." : "Xác thực bằng vân tay"}
-                </Text>
-            </TouchableOpacity>
-
-            {/* Nút tắt chức năng xác thực vân tay */}
-            <TouchableOpacity
-                style={styles.disableButton}
-                onPress={handleDisableBiometricAuthentication}
-            >
-                <Text style={styles.buttonText}>Tắt xác thực vân tay</Text>
-            </TouchableOpacity>
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <View style={styles.row}>
+        <Text style={styles.label}>Xác nhận vân tay</Text>
+        <Switch value={biometricEnabled} onValueChange={toggleBiometric} />
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    info: {
-        fontSize: 18,
-        marginBottom: 20,
-    },
-    authButton: {
-        backgroundColor: '#3b82f6',
-        paddingVertical: 12,
-        paddingHorizontal: 30,
-        borderRadius: 8,
-        marginBottom: 10,
-    },
-    disableButton: {
-        backgroundColor: '#f44336',
-        paddingVertical: 12,
-        paddingHorizontal: 30,
-        borderRadius: 8,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 16,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 18,
+  },
 });
