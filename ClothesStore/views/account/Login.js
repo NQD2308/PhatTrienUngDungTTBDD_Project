@@ -200,7 +200,7 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Clothes Store</Text>
+      <Text style={styles.title}>Ngo Gia thai</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
