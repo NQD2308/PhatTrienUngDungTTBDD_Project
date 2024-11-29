@@ -124,7 +124,7 @@ export default function Profile({ route, navigation }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-API-KEY": "87cf8c1e8bbcf4156fca3acaf724426580eac54f",
+          "X-API-KEY": "c78259ca9bbe24c57ea57b224a5df58a0a4748b3",
         },
         body: JSON.stringify({
           q: text,
