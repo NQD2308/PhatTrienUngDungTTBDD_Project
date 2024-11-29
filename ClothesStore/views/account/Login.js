@@ -43,15 +43,11 @@ export default function Login({ navigation }) {
   const checkBiometricLogin = async () => {
     try {
       // Lấy email từ AsyncStorage
-      const email = await AsyncStorage.getItem("rememberedEmail");
-      if (!email) {
-        Alert.alert("Thông báo", "Không có email người dùng.");
-        return false; // Dừng kiểm tra và trả về false
-      }
+      const emailRemember = await AsyncStorage.getItem("rememberedEmail");
 
       // Truy vấn tài liệu từ Firestore theo email
       const usersRef = collection(FIREBASE_DB, "User");
-      const q = query(usersRef, where("email", "==", email));
+      const q = query(usersRef, where("email", "==", emailRemember));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
@@ -81,57 +77,71 @@ export default function Login({ navigation }) {
     try {
       setLoading(true); // Bật chế độ loading
 
-      const compatible = await LocalAuthentication.hasHardwareAsync(); // kiểm tra hệ thống có hỗ trợ sinh trác học hay không
-      if (!compatible) {
-        Alert.alert("Thông báo", "Thiết bị không hỗ trợ sinh trắc học!");
+      if (!email) {
+        Alert.alert("Thông báo", "Vui lòng nhập email!");
       } else {
-        // Kiểm tra xác thực vân tay trước
-        const canAuthenticate = await checkBiometricLogin();
-
-        console.log("trạng thí xác thực: " + canAuthenticate);
-
-        if (canAuthenticate) {
-          // Thực hiện xác thực nếu `biometricEnabled` là true
-          const result = await LocalAuthentication.authenticateAsync({
-            promptMessage: "Xác thực để đăng nhập",
-            cancelLabel: "Hủy",
-          });
-
-          if (result.success) {
-            Toast.show({
-              type: "success",
-              text1: "Xác thực thành công!",
-              text2: "Bạn đã đăng nhập thành công.",
-            });
-            // Tự động lấy email và mật khẩu đã lưu từ AsyncStorage
-            const savedEmail = await AsyncStorage.getItem("rememberedEmail");
-            const savedPassword = await AsyncStorage.getItem(
-              "rememberedPassword"
-            );
-
-            if (savedEmail && savedPassword) {
-              // Đăng nhập tự động với email và mật khẩu đã lưu
-              await signIn(savedEmail, savedPassword);
-            } else {
-              Alert.alert(
-                "Thông báo",
-                "Không tìm thấy thông tin đăng nhập. Vui lòng đăng nhập thủ công."
-              );
-            }
-            // navigation.replace("Inside"); // Chuyển hướng đến trang chính
-          } else {
-            Toast.show({
-              type: "error",
-              text1: "Xác thực thất bại!",
-              text2: "Vui lòng đăng nhập thủ công.",
-            });
-          }
-        } else {
-          // Hiển thị thông báo nếu không thể xác thực
+        const emailRemember = await AsyncStorage.getItem("rememberedEmail");
+        if (!emailRemember) {
           Alert.alert(
             "Thông báo",
-            "Xác thực vân tay hiện chưa được kích hoạt. Vui lòng kích hoạt để sử dụng sau khi đăng nhập."
+            "Vui lòng đăng nhập và chọn chức năng ghi nhớ lần đầu để sử dụng chức năng!"
           );
+        } else {
+          const compatible = await LocalAuthentication.hasHardwareAsync(); // kiểm tra hệ thống có hỗ trợ sinh trác học hay không
+          if (!compatible) {
+            Alert.alert("Thông báo", "Thiết bị không hỗ trợ sinh trắc học!");
+          } else {
+            // Kiểm tra xác thực vân tay trước
+            const canAuthenticate = await checkBiometricLogin();
+
+            console.log("trạng thí xác thực: " + canAuthenticate);
+
+            if (canAuthenticate) {
+              // Thực hiện xác thực nếu `biometricEnabled` là true
+              const result = await LocalAuthentication.authenticateAsync({
+                promptMessage: "Xác thực để đăng nhập",
+                cancelLabel: "Hủy",
+              });
+
+              if (result.success) {
+                Toast.show({
+                  type: "success",
+                  text1: "Xác thực thành công!",
+                  text2: "Bạn đã đăng nhập thành công.",
+                });
+                // Tự động lấy email và mật khẩu đã lưu từ AsyncStorage
+                const savedEmail = await AsyncStorage.getItem(
+                  "rememberedEmail"
+                );
+                const savedPassword = await AsyncStorage.getItem(
+                  "rememberedPassword"
+                );
+
+                if (savedEmail && savedPassword) {
+                  // Đăng nhập tự động với email và mật khẩu đã lưu
+                  await signIn(savedEmail, savedPassword);
+                } else {
+                  Alert.alert(
+                    "Thông báo",
+                    "Không tìm thấy thông tin đăng nhập. Vui lòng đăng nhập thủ công."
+                  );
+                }
+                // navigation.replace("Inside"); // Chuyển hướng đến trang chính
+              } else {
+                Toast.show({
+                  type: "error",
+                  text1: "Xác thực thất bại!",
+                  text2: "Vui lòng đăng nhập thủ công.",
+                });
+              }
+            } else {
+              // Hiển thị thông báo nếu không thể xác thực
+              Alert.alert(
+                "Thông báo",
+                "Xác thực vân tay hiện chưa được kích hoạt. Vui lòng kích hoạt để sử dụng sau khi đăng nhập."
+              );
+            }
+          }
         }
       }
     } catch (error) {
