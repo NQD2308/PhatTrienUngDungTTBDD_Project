@@ -7,6 +7,9 @@ import {
   ScrollView,
   ActivityIndicator,
   View,
+  ImageBackground,
+  SafeAreaView,
+  KeyboardAvoidingView,
 } from "react-native";
 
 import React, { useState } from "react";
@@ -16,6 +19,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function SignUp() {
   const [username, setUsername] = useState("");
@@ -36,14 +40,14 @@ export default function SignUp() {
 
   const signUp = async () => {
     // Kiểm tra nếu có trường nào trống
-  if (!username || !email || !phone || !password || !confirmPassword) {
-    Toast.show({
-      type: "error",
-      text1: "Missing Information",
-      text2: "Please fill out all the fields.",
-    });
-    return;
-  }
+    if (!username || !email || !phone || !password || !confirmPassword) {
+      Toast.show({
+        type: "error",
+        text1: "Missing Information",
+        text2: "Please fill out all the fields.",
+      });
+      return;
+    }
 
     // Kiểm tra nếu email không đúng định dạng
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -117,10 +121,124 @@ export default function SignUp() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+    <ImageBackground
+      source={{
+        uri: 'https://images.pexels.com/photos/4721153/pexels-photo-4721153.jpeg?auto=compress&cs=tinysrgb&w=600',
+      }}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <KeyboardAvoidingView style={styles.formContainer}>
+        <Text style={styles.header}>Register</Text>
+        <Text style={styles.orText}> with your details</Text>
 
-      <TextInput
+        {/* Form Inputs */}
+        <TextInput
+          style={styles.input}
+          placeholder="Username..."
+          autoCapitalize="words"
+          value={username}
+          onChangeText={(text) => setUsername(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Your Email..."
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone Number..."
+          keyboardType="phone-pad"
+          value={phone}
+          onChangeText={(text) => setPhone(text)}
+        />
+        {/* Password Field */}
+        <View style={styles.input}>
+          <TextInput
+            style={styles.inputPassword}
+            placeholder="Password"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            onFocus={() => setShowPasswordRequirements(true)}
+            onBlur={() => setShowPasswordRequirements(false)}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Icon
+              name={showPassword ? "eye-off" : "eye"}
+              size={20}
+              color="#00000"
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Confirm Password Field */}
+        <View style={styles.input}>
+          <TextInput
+            style={styles.inputPassword}
+            placeholder="Confirm Password"
+            secureTextEntry={!showConfirmPassword}
+            value={confirmPassword}
+            onChangeText={(text) => setConfirmPassword(text)}
+            onFocus={() => setShowPasswordRequirements(true)}
+            onBlur={() => setShowPasswordRequirements(false)}
+          />
+          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+            <Icon
+              name={showPassword ? "eye-off" : "eye"}
+              size={20}
+              color="#00000"
+            />
+          </TouchableOpacity>
+        </View>
+        {showPasswordRequirements && (
+          <View style={styles.passwordRequirement}>
+            <Icon
+              name={
+                isPasswordValid
+                  ? "checkbox-marked-circle"
+                  : "checkbox-blank-circle"
+              }
+              size={24}
+              color={isPasswordValid ? "green" : "gray"}
+            />
+            <Text
+              style={[
+                styles.requirement,
+                isPasswordValid && styles.requirementMet,
+              ]}
+            >
+              Password must be at least 6 characters long.
+            </Text>
+          </View>
+        )}
+
+        {/* Submit Button */}
+        {loading ? (
+          <ActivityIndicator size={"large"} color={"#0000ff"} />
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={() => signUp()}>
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Navigate to Login */}
+        <TouchableOpacity
+          style={styles.loginRedirect}
+          onPress={() => navigation.navigate('Login')} // Điều hướng tới trang Login
+        >
+          <Text style={styles.loginText}>
+            Already have an account? <Text style={styles.loginLink}>Login here</Text>
+          </Text>
+        </TouchableOpacity>
+
+        <Toast />
+      </KeyboardAvoidingView>
+
+      {/* <TextInput
         style={styles.input}
         placeholder="Username"
         autoCapitalize="words"
@@ -135,17 +253,17 @@ export default function SignUp() {
         autoCapitalize="none"
         value={email}
         onChangeText={(text) => setEmail(text)}
-      />
+      /> */}
 
-      <TextInput
+      {/* <TextInput
         style={styles.input}
         placeholder="Phone Number"
         keyboardType="phone-pad"
         value={phone}
         onChangeText={(text) => setPhone(text)}
-      />
+      /> */}
 
-      <View style={styles.passwordContainer}>
+      {/* <View style={styles.passwordContainer}>
         <TextInput
           style={styles.inputPassword}
           placeholder="Password"
@@ -162,9 +280,9 @@ export default function SignUp() {
             color="#007BFF"
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
-      <View style={styles.passwordContainer}>
+      {/* <View style={styles.passwordContainer}>
         <TextInput
           style={styles.inputPassword}
           placeholder="Confirm Password"
@@ -183,123 +301,96 @@ export default function SignUp() {
             color="#007BFF"
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
-      {showPasswordRequirements && (
-        <View style={styles.passwordRequirement}>
-          <Icon
-            name={
-              isPasswordValid
-                ? "checkbox-marked-circle"
-                : "checkbox-blank-circle"
-            }
-            size={24}
-            color={isPasswordValid ? "green" : "gray"}
-          />
-          <Text
-            style={[
-              styles.requirement,
-              isPasswordValid && styles.requirementMet,
-            ]}
-          >
-            Password must be at least 6 characters long.
-          </Text>
-        </View>
-      )}
-
-      {loading ? (
+      {/* {loading ? (
         <ActivityIndicator size={"large"} color={"#0000ff"} />
       ) : (
         <TouchableOpacity style={styles.button} onPress={() => signUp()}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
-      )}
+      )} */}
 
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <Text style={styles.linkText}>Already have an account? Login here</Text>
       </TouchableOpacity>
-      
-      <Toast />
-    </ScrollView>
+
+      <Toast /> */}
+
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f9f9f9",
-    padding: 20,
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 40,
+  formContainer: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 5,
+    color: '#00000',
+  },
+  orText: {
+    textAlign: 'center',
+    marginVertical: 5,
+    fontSize: 18,
+    color: '#666',
   },
   input: {
-    width: "100%",
-    height: 50,
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 20,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 15,
     fontSize: 16,
-    backgroundColor: "#fff",
+    backgroundColor: '#f9f9f9',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    backgroundColor: "#fff",
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    paddingVertical: 0, // Đảm bảo icon không bị lệch
   },
   inputPassword: {
     flex: 1,
     fontSize: 16,
   },
   button: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#007BFF",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-    marginBottom: 10,
+    backgroundColor: '#FF5733',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
   },
   buttonText: {
-    color: "#fff",
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 18,
-    fontWeight: "bold",
   },
-  linkText: {
-    fontSize: 16,
-    color: "#007BFF",
-    marginTop: 10,
+  loginRedirect: {
+    marginTop: 20,
+    alignItems: 'center',
   },
-  passwordRequirement: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-    gap: 12,
-  },
-  passwordText: {
+  loginText: {
     fontSize: 14,
-    color: "gray",
-    marginLeft: 8,
+    color: '#666',
   },
-  requirement: {
-    fontSize: 14,
-    color: "#888",
-  },
-  requirementMet: {
-    color: "green",
+  loginLink: {
+    color: '#FF5733',
+    fontWeight: 'bold',
   },
 });
