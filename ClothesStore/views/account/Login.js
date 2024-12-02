@@ -7,6 +7,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  ScrollView,
+  ImageBackground,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import Checkbox from "expo-checkbox";
 import React, { useState, useEffect } from "react";
@@ -15,7 +20,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import { collection, where, query, getDocs } from "firebase/firestore";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import FontAwesome from 'react-native-vector-icons/FontAwesome6';
 import * as LocalAuthentication from "expo-local-authentication";
 
 export default function Login({ navigation }) {
@@ -199,8 +204,104 @@ export default function Login({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Ngo Gia thai</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: '#fff' }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} showsVerticalScrollIndicator={false}>
+        {/* Header with Background Image */}
+        <ImageBackground
+          source={{
+            uri: 'https://images.pexels.com/photos/9594681/pexels-photo-9594681.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load',
+          }}
+          style={{
+            height: Dimensions.get('window').height / 1.7,
+          }}
+        >
+          <View style={styles.brandView}>
+            <FontAwesome name="shopware" style={{ color: '#fff', fontSize: 80 }} />
+            <Text style={styles.brandViewText}>Clothes's Store</Text>
+          </View>
+        </ImageBackground>
+
+        {/* Bottom Section */}
+        <View style={styles.bottomView}>
+          <View style={{ padding: 20 }}>
+            <Text style={styles.welcomeText}>Welcome</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.subText}>
+                Don't have an account?
+              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+                <Text style={styles.registerText}> Register now</Text>
+              </TouchableOpacity>
+            </View>
+
+
+
+            {/* Form Inputs */}
+            <View style={{ marginTop: 30 }}>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Your Email..."
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Your Password..."
+                  secureTextEntry={!showPassword}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                  <FontAwesome
+                    name={showPassword ? 'eye' : 'eye-slash'}
+                    style={styles.eyeIcon}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Remember Me & Forgot Password */}
+            <View style={styles.optionsRow}>
+              <View style={styles.rememberMeContainer}>
+                <Checkbox
+                  value={rememberMe}
+                  onValueChange={setRememberMe}
+                  color={rememberMe ? "#2f4f4f" : undefined}
+                />
+                <Text style={styles.rememberMeText}>Remember Me</Text>
+              </View>
+              <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+                <Text style={styles.forgotPasswordText} >Forgot password</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Login Button & Fingerprint */}
+            <View style={styles.actionButtonsContainer}>
+              {loading ? (
+                <ActivityIndicator size="large" color="#2f4f4f" />
+              ) : (
+                <TouchableOpacity style={styles.loginButton} onPress={() => signIn()}>
+                  <Text style={styles.loginButtonText}>Login</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity style={styles.fingerprintButton} onPress={handleBiometricAuth}>
+                <FontAwesome name="fingerprint" size={28} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+
+
+        {/* <Text style={styles.title}>Clothes Store</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -227,8 +328,8 @@ export default function Login({ navigation }) {
             color="#007BFF"
           />
         </TouchableOpacity>
-      </View>
-      <View style={styles.rememberMeContainer}>
+      </View> */}
+        {/* <View style={styles.rememberMeContainer}>
         <Checkbox
           value={rememberMe}
           onValueChange={setRememberMe}
@@ -242,108 +343,133 @@ export default function Login({ navigation }) {
         <TouchableOpacity style={styles.button} onPress={() => signIn()}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-      )}
-      <TouchableOpacity
+      )} */}
+        {/* <TouchableOpacity
         style={styles.biometricButton}
         onPress={handleBiometricAuth}
       >
         <Text style={styles.buttonText}>Login with Fingerprint</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+      </TouchableOpacity> */}
+        {/* <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
         <Text style={styles.linkText}>Forgot password!</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
         <Text style={styles.linkText}>
           Don't have an account? Register here
         </Text>
-      </TouchableOpacity>
-      <Toast />
-    </View>
+      </TouchableOpacity> */}
+        <Toast />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  brandView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f9f9f9",
-    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 40,
-    color: "#333",
+  brandViewText: {
+    color: '#fff',
+    fontSize: 40,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    marginTop: 10,
+  },
+  bottomView: {
+    flex: 1.5,
+    backgroundColor: '#fff',
+    borderTopStartRadius: 40,
+    borderTopEndRadius: 40,
+    marginTop: -40,
+  },
+  welcomeText: {
+    color: '#2f4f4f',
+    fontSize: 34,
+    fontWeight: 'bold',
+  },
+  subText: {
+    fontSize: 16,
+    marginTop: 5,
+  },
+  registerText: {
+    color: 'red',
+    fontStyle: 'italic',
+    fontSize: 16,
+    marginTop: 5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#2f4f4f',
+    marginTop: 10,
   },
   input: {
-    width: "100%",
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    fontSize: 16,
-    backgroundColor: "#fff",
-  },
-  passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    backgroundColor: "#fff",
-    marginBottom: 20,
-  },
-  inputPassword: {
     flex: 1,
-    paddingHorizontal: 10,
+    height: 40,
     fontSize: 16,
   },
-  showPasswordButton: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 10,
+  eyeIcon: {
+    fontSize: 20,
+    color: '#2f4f4f',
+  },
+  optionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center', // Ensure vertical alignment
+    marginTop: 20,
   },
   rememberMeContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center', // Ensure vertical alignment
   },
   rememberMeText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: "#333",
+    fontSize: 14,
+    color: '#2f4f4f',
+    marginLeft: 8, // Add space between checkbox and text
   },
-  button: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#007BFF",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-    marginBottom: 10,
+  forgotPasswordText: {
+    fontSize: 14,
+    color: 'red',
+    textDecorationLine: 'underline',
   },
-  biometricButton: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#28a745", // Màu xanh lá
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-    marginTop: 10, // Khoảng cách với các phần khác
+  actionButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 30,
   },
-  buttonText: {
-    color: "#fff",
+  loginButton: {
+    backgroundColor: '#2f4f4f',
+    borderRadius: 20,
+    paddingVertical: 12,
+    marginLeft: 20,
+    paddingHorizontal: 120, // Make the button longer
+    alignItems: 'center',
+    shadowColor: '#000', // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 1, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+  },
+  loginButtonText: {
+    color: '#fff',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
-  linkText: {
-    fontSize: 16,
-    color: "#007BFF",
-    marginTop: 10,
+  fingerprintButton: {
+    backgroundColor: '#2f4f4f',
+    borderRadius: 50,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 5, // Space between login and fingerprint
+    marginRight: 40,
+    shadowColor: '#000', // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 1, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
   },
 });
