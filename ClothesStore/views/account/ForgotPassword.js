@@ -5,10 +5,13 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ImageBackground,
+  KeyboardAvoidingView,
 } from "react-native";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { sendPasswordResetEmail } from "firebase/auth";
 import Toast from "react-native-toast-message";
+import FontAwesome from 'react-native-vector-icons/FontAwesome6';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -41,58 +44,100 @@ export default function ForgotPassword() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Quên mật khẩu</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nhập email của bạn"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TouchableOpacity style={styles.button} onPress={forgotPassword}>
-        <Text style={styles.buttonText}>Gửi</Text>
-      </TouchableOpacity>
-      <Toast/>
-    </View>
+    <ImageBackground
+      source={{
+        uri: 'https://images.pexels.com/photos/4641825/pexels-photo-4641825.jpeg?auto=compress&cs=tinysrgb&w=600',
+      }}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.brandView}>
+        <FontAwesome name="shopware" style={{ color: '#fff', fontSize: 60 }} />
+        <Text style={styles.brandViewText}>Clothes's Store</Text>
+      </View>
+      <KeyboardAvoidingView style={styles.formContainer}>
+        <Text style={styles.header}>Forgot Password</Text>
+        {/* Form Inputs */}
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your email..."
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+        />
+        {/* Submit Button */}
+        <TouchableOpacity style={styles.button} onPress={forgotPassword}>
+          <Text style={styles.buttonText}>Send it</Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+      <Toast />
+    </ImageBackground>
+
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-    backgroundColor: "#f5f5f5",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
+  brandView: {
+    // flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  brandViewText: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
     marginBottom: 20,
-    color: "#333",
+  },
+  formContainer: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#808080',
   },
   input: {
-    width: "100%",
-    height: 40,
-    borderColor: "#ccc",
     borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
+    borderColor: '#ddd',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 15,
+    fontSize: 16,
+    backgroundColor: '#f9f9f9',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   button: {
-    width: "100%",
-    height: 40,
-    backgroundColor: "#007BFF",
-    borderRadius: 5,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#db7093',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+    elevation: 5,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });
