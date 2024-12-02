@@ -111,6 +111,9 @@ export default function User({ navigation, route }) {
           uri: "https://plus.unsplash.com/premium_photo-1669703777431-0aaca97d2c53?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Link ảnh nền của bạn
         }}
       >
+        <View style={styles.brandView}>
+          <FontAwesome name="shopware" style={{ color: '#fff', fontSize: 60 }} />
+        </View>
         <Text style={styles.titleGuest}>Clothes's Store</Text>
         <Text style={styles.subtitleGuest}>Begin to experience with us</Text>
         <TouchableOpacity
@@ -249,9 +252,11 @@ const styles = StyleSheet.create({
   //   padding: 20,
   // },
   titleGuest: {
-    fontSize: 24,
-    color: "white",
-    fontWeight: "bold",
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    marginBottom: 20,
     marginBottom: 5,
   },
   subtitleGuest: {
@@ -271,7 +276,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
+  brandView: {
+    // flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   //User
   container: {
     flex: 1,
