@@ -68,6 +68,36 @@ const Cart = ({ route }) => {
     return () => unsubscribe();
   }, [userId]);
 
+  // Thêm vào hàm tăng số lượng
+  const handleIncreaseQuantity = async (orderId) => {
+    const order = orders.find((item) => item.id === orderId);
+    if (order) {
+      try {
+        await updateDoc(doc(FIREBASE_DB, "Order", orderId), {
+          quantity: order.quantity + 1,
+          totalPrice: (order.quantity + 1) * order.price, // Cập nhật tổng giá
+        });
+      } catch (error) {
+        console.error("Lỗi khi tăng số lượng:", error);
+      }
+    }
+  };
+
+  // Thêm vào hàm giảm số lượng
+  const handleDecreaseQuantity = async (orderId) => {
+    const order = orders.find((item) => item.id === orderId);
+    if (order && order.quantity > 1) {
+      try {
+        await updateDoc(doc(FIREBASE_DB, "Order", orderId), {
+          quantity: order.quantity - 1,
+          totalPrice: (order.quantity - 1) * order.price, // Cập nhật tổng giá
+        });
+      } catch (error) {
+        console.error("Lỗi khi giảm số lượng:", error);
+      }
+    }
+  };
+
   // Toggle chọn đơn hàng
   const toggleSelectOrder = (orderId) => {
     setSelectedOrders((prev) =>
@@ -147,7 +177,12 @@ const Cart = ({ route }) => {
 
   // Giao diện từng đơn hàng
   const renderOrderItem = ({ item }) => (
-    <View style={styles.cartItem}>
+    <TouchableOpacity
+      style={styles.cartItem}
+      onPress={() =>
+        navigation.navigate("Detail", { productId: item.productId })
+      }
+    >
       <Image
         source={{
           uri: item.image && item.image.length > 0 ? item.image[0] : null,
@@ -158,10 +193,27 @@ const Cart = ({ route }) => {
         <Text style={styles.productName}>{item.productName}</Text>
         {/* <Text>Mô tả: {item.description}</Text> */}
         <Text>Size: {item.selectedSize}</Text>
-        <Text>Số lượng: {item.quantity}</Text>
-        <View style={{flexDirection: "row", gap: 6, alignItems: "center"}}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <Text>Số lượng:</Text>
+        <TouchableOpacity
+          onPress={() => handleDecreaseQuantity(item.id)}
+          style={styles.quantityButton}
+        >
+          <Text style={styles.buttonText}>-</Text>
+        </TouchableOpacity>
+        <Text>{item.quantity}</Text>
+        <TouchableOpacity
+          onPress={() => handleIncreaseQuantity(item.id)}
+          style={styles.quantityButton}
+        >
+          <Text style={styles.buttonText}>+</Text>
+        </TouchableOpacity>
+      </View>
+        <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
           <Text>Màu sắc:</Text>
-          <Text style={[styles.colorText, { backgroundColor: item.selectedColor }]}></Text>
+          <Text
+            style={[styles.colorText, { backgroundColor: item.selectedColor }]}
+          ></Text>
         </View>
         <Text>
           Giá: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
@@ -183,7 +235,7 @@ const Cart = ({ route }) => {
           <Button title="Cập nhật" onPress={() => handleUpdateOrder(item.id)} />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
