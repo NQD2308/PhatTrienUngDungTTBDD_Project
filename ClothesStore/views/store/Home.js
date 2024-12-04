@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons"; // Sử dụng icon từ Ionicons
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -72,6 +72,13 @@ export default function Home() {
 
     fetchCategories();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Đóng BottomSheet khi quay lại màn hình
+      bottomSheetModalRef.current?.close();
+    }, [])
+  );
 
   // Mở Bottom Sheet
   const openCategorySheet = () => {
