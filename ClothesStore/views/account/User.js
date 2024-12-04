@@ -174,7 +174,7 @@ export default function User({ navigation, route }) {
           <View style={styles.userInfo}>
             <Image
               style={styles.avatar}
-              source={require('../../assets/images/defaultAvatar.png')}
+              source={require("../../assets/images/defaultAvatar.png")}
               onError={(error) =>
                 console.error("Lỗi tải ảnh avatar: ", error.nativeEvent.error)
               }
@@ -217,7 +217,10 @@ export default function User({ navigation, route }) {
       <TouchableOpacity style={styles.Button} onPress={() => navigation.navigate('BiometricAuthentication', { userId: safeUserId })}>
         <Text style={styles.btnText}>Autometric authentication</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.Button} onPress={() => navigation.navigate('Language')}>
+      <TouchableOpacity
+        style={styles.Button}
+        onPress={() => navigation.navigate("Language")}
+      >
         <Text style={styles.btnText}>Language</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>

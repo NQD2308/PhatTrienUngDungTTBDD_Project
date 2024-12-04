@@ -14,8 +14,10 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons"; // Sử dụng icon từ Ionicons
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = width / 2 - 20;
@@ -55,7 +57,9 @@ export default function Home() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const querySnapshot = await getDocs(collection(FIREBASE_DB, "Category"));
+        const querySnapshot = await getDocs(
+          collection(FIREBASE_DB, "Category")
+        );
         const categoryList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -176,9 +180,14 @@ export default function Home() {
           </TouchableOpacity>
         </View>
         {/* Nút lọc loại sản phẩm */}
-        <TouchableOpacity style={styles.filterButton} onPress={openCategorySheet}>
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={openCategorySheet}
+        >
           <Text style={styles.filterButtonText}>
-            {selectedCategory ? `Loại: ${getCategoryName(selectedCategory)}` : "Chọn loại"}
+            {selectedCategory
+              ? `Loại: ${getCategoryName(selectedCategory)}`
+              : "Chọn loại"}
           </Text>
           <Icon name="filter" size={20} color="#fff" />
         </TouchableOpacity>
@@ -190,37 +199,36 @@ export default function Home() {
         />
         {/* Bottom Sheet */}
         <BottomSheetModal
-  ref={bottomSheetModalRef}
-  index={0}
-  snapPoints={snapPoints}
->
-  <View style={styles.bottomSheetContainer}>
-    <Text style={styles.sheetTitle}>Chọn loại sản phẩm</Text>
-    
-    {/* Nút bỏ chọn loại */}
-    <TouchableOpacity
-      style={styles.clearCategoryButton}
-      onPress={() => {
-        setFilteredProducts(products); // Hiển thị lại tất cả sản phẩm
-        setSelectedCategory(null); // Xóa loại sản phẩm đã chọn
-        bottomSheetModalRef.current?.dismiss(); // Đóng Bottom Sheet
-      }}
-    >
-      <Text style={styles.clearCategoryButtonText}>Bỏ chọn loại</Text>
-    </TouchableOpacity>
+          ref={bottomSheetModalRef}
+          index={0}
+          snapPoints={snapPoints}
+        >
+          <View style={styles.bottomSheetContainer}>
+            <Text style={styles.sheetTitle}>Chọn loại sản phẩm</Text>
 
-    {categories.map((category) => (
-      <TouchableOpacity
-        key={category.id}
-        style={styles.categoryItem}
-        onPress={() => filterByCategory(category.id)}
-      >
-        <Text style={styles.categoryText}>{category.Name}</Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-</BottomSheetModal>
+            {/* Nút bỏ chọn loại */}
+            <TouchableOpacity
+              style={styles.clearCategoryButton}
+              onPress={() => {
+                setFilteredProducts(products); // Hiển thị lại tất cả sản phẩm
+                setSelectedCategory(null); // Xóa loại sản phẩm đã chọn
+                bottomSheetModalRef.current?.dismiss(); // Đóng Bottom Sheet
+              }}
+            >
+              <Text style={styles.clearCategoryButtonText}>Bỏ chọn loại</Text>
+            </TouchableOpacity>
 
+            {categories.map((category) => (
+              <TouchableOpacity
+                key={category.id}
+                style={styles.categoryItem}
+                onPress={() => filterByCategory(category.id)}
+              >
+                <Text style={styles.categoryText}>{category.Name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </BottomSheetModal>
       </SafeAreaView>
     </BottomSheetModalProvider>
   );
