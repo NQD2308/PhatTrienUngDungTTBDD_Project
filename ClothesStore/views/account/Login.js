@@ -454,9 +454,17 @@ const styles = StyleSheet.create({
   loginButton: {
     backgroundColor: '#2f4f4f',
     borderRadius: 20,
-    paddingVertical: 12,
-    marginLeft: 20,
-    paddingHorizontal: 120, // Make the button longer
+    ...Platform.select({
+      android: {
+        paddingVertical: 9,
+        paddingHorizontal: 115, // Make the button longer
+      },
+      ios: {
+        paddingVertical: 12,
+        marginLeft: 20,
+        paddingHorizontal: 120, // Make the button longer
+      }
+    }),
     alignItems: 'center',
     shadowColor: '#000', // Tạo hiệu ứng đổ bóng
     shadowOffset: { width: 1, height: 2 },
@@ -470,13 +478,22 @@ const styles = StyleSheet.create({
   },
   fingerprintButton: {
     backgroundColor: '#2f4f4f',
-    borderRadius: 50,
-    width: 50,
-    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 5, // Space between login and fingerprint
-    marginRight: 40,
+    ...Platform.select({
+      android: {
+        width: 45,
+        height: 45,
+        borderRadius: 40,
+      },
+      ios: {
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        marginRight: 10,
+      }
+    }),
     shadowColor: '#000', // Tạo hiệu ứng đổ bóng
     shadowOffset: { width: 1, height: 2 },
     shadowOpacity: 0.6,
