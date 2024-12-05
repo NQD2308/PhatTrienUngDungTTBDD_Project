@@ -184,10 +184,6 @@ export default function User({ navigation, route }) {
                 // Đăng xuất người dùng
                 handleSignOut();
 
-                alert("Tài khoản đã được xóa thành công!");
-
-                // Điều hướng về màn hình đăng nhập (nếu cần)
-                // navigation.navigate("Login"); // Điều hướng nếu cần
               } catch (error) {
                 console.error("Lỗi khi xóa tài khoản: ", error);
                 if (error.code === "auth/requires-recent-login") {

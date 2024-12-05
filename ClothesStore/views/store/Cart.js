@@ -9,7 +9,8 @@ import {
   Pressable,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Alert
 } from "react-native";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import {
@@ -211,13 +212,27 @@ const Cart = ({ route }) => {
   // Xóa đơn hàng
   const handleDeleteOrder = async (orderId) => {
     try {
-      await deleteDoc(doc(FIREBASE_DB, "Order", orderId));
-      Toast.show({
-        type: "success",
-        text1: "Thành công",
-        text2: "Sản phẩm đã được xóa khỏi giỏ hàng!",
-        visibilityTime: 3000,
-      });
+      Alert.alert(
+        "Xác nhận",
+        "Bạn có chắc chắn muốn bỏ sản phẩm này?",
+        [
+          {
+            text: "Hủy", // Nút hủy
+            style: "cancel", // Không làm gì cả
+          },
+          {
+            text: "Đồng ý", // Nút đồng ý
+            onPress: async () => {
+              try {
+                await deleteDoc(doc(FIREBASE_DB, "Order", orderId)); // Xóa tài liệu
+              } catch (error) {
+                console.error("Lỗi khi xóa tài liệu:", error);
+                alert("Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại!"); // Thông báo lỗi
+              }
+            },
+          },
+        ]
+      );
     } catch (error) {
       Toast.show({
         type: "error",
