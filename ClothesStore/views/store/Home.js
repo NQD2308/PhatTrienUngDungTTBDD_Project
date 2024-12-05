@@ -155,9 +155,9 @@ export default function Home({ route }) {
 
   // Hiển thị danh sách sản phẩm
   const renderItem = ({ item }) => (
-    <View
+    <TouchableOpacity
       style={styles.productCard}
-      onTouchStart={() => navigation.navigate("Detail", { productId: item.id, userId: userId })}
+      onPress={() => navigation.navigate("Detail", { productId: item.id, userId: userId })}
     >
       <Image source={{ uri: item.images[0] }} style={styles.productImage} />
       <Text style={styles.productName}>{item.productName}</Text>
@@ -165,7 +165,7 @@ export default function Home({ route }) {
         {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
       </Text>
       <Text style={styles.productDescription}>{item.description}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -194,9 +194,6 @@ export default function Home({ route }) {
             <Text style={styles.sortButtonText}>
               {sortOrder === "asc" ? "Price ↑" : "Price ↓"}
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => alert("Wish list")} style={styles.wishlistButton}>
-            <FontAwesome name="heart" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
         {/* Nút lọc loại sản phẩm */}
