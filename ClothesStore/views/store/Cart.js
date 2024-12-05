@@ -9,6 +9,7 @@ import {
   Pressable,
   StyleSheet,
   TouchableOpacity,
+  TouchableWithoutFeedback
 } from "react-native";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import {
@@ -40,8 +41,15 @@ const Cart = ({ route }) => {
   const [orderId, setOrderId] = useState(null); // Lưu số lượng mua
   const navigation = useNavigation();
 
+  const [isVisible, setIsVisible] = useState(false);
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ["50%", "70%"], []);
+
+  // Đóng bottom sheet
+  const closeBottomSheet = () => {
+    bottomSheetRef.current?.dismiss();
+    setIsVisible(false);
+  };
 
   // Lấy dữ liệu từ Firestore
   useEffect(() => {
@@ -372,6 +380,18 @@ const Cart = ({ route }) => {
           ref={bottomSheetRef}
           index={0}
           snapPoints={snapPoints}
+          backdropComponent={({ style }) => (
+            <TouchableWithoutFeedback onPress={closeBottomSheet}>
+              <View
+                style={[
+                  style,
+                  {
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Màu tối với độ mờ
+                  },
+                ]}
+              />
+            </TouchableWithoutFeedback>
+          )}
         >
           {selectedProduct ? (
             <View style={styles.bottomSheetContent}>

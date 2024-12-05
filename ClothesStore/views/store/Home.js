@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons"; // Sử dụng icon từ Ionicons
@@ -31,8 +32,15 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const [isVisible, setIsVisible] = useState(false);
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
+  const snapPoints = useMemo(() => ["40%", "60%"], []);
+
+  // Đóng bottom sheet
+  const closeBottomSheet = () => {
+    bottomSheetModalRef.current?.dismiss();
+    setIsVisible(false);
+  };
 
   // Lấy dữ liệu từ Firestore
   useEffect(() => {
@@ -209,6 +217,18 @@ export default function Home() {
           ref={bottomSheetModalRef}
           index={0}
           snapPoints={snapPoints}
+          backdropComponent={({ style }) => (
+            <TouchableWithoutFeedback onPress={closeBottomSheet}>
+              <View
+                style={[
+                  style,
+                  {
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Màu tối với độ mờ
+                  },
+                ]}
+              />
+            </TouchableWithoutFeedback>
+          )}
         >
           <View style={styles.bottomSheetContainer}>
             <Text style={styles.sheetTitle}>Chọn loại sản phẩm</Text>
