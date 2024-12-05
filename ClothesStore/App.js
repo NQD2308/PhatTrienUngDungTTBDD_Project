@@ -26,6 +26,7 @@ import EditRecipient from "./views/store/EditRecipient";
 // Setting page
 import Profile from "./views/setting/Profile";
 import Language from "./views/setting/Language";
+import Contact from "./views/setting/Contact";
 import BiometricAuthentication from "./views/setting/BiometricAuthentication";
 
 // ========= Inital ========= //
@@ -251,6 +252,7 @@ function InsideLayout({ route }) {
       />
       <InsideStack.Screen name="Detail" component={Detail} />
       <InsideStack.Screen name="Language" component={Language} />
+      <InsideStack.Screen name="Contact" component={Contact} />
     </InsideStack.Navigator>
   );
 }

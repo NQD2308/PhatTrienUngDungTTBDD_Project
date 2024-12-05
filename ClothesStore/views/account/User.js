@@ -168,27 +168,6 @@ export default function User({ navigation, route }) {
           </View>
         </View>
       </ImageBackground>
-      {/* <Text style={styles.title}>User's Information</Text>
-      {userData ? (
-        <>
-          <View style={styles.userInfo}>
-            <Image
-              style={styles.avatar}
-              source={require("../../assets/images/defaultAvatar.png")}
-              onError={(error) =>
-                console.error("Lỗi tải ảnh avatar: ", error.nativeEvent.error)
-              }
-            />
-            <View>
-              <Text style={styles.info}>Email: {userData.email}</Text>
-              <Text style={styles.info}>Phone: {userData.phone}</Text>
-              <Text style={styles.info}>Username: {userData.username}</Text>
-            </View>
-          </View>
-        </>
-      ) : (
-        <Text style={styles.info}>No Information</Text>
-      )} */}
 
       {/* Change Languge Button */}
       <TouchableOpacity style={styles.languageButton} onPress={() => navigation.navigate('Language')}>
@@ -234,6 +213,17 @@ export default function User({ navigation, route }) {
           {`Name: ${userData.username}\nEmail: ${userData.email}\nPhone: ${userData.phone}`}
         </Text>
       </View>
+      <TouchableOpacity
+        style={styles.Button}
+        onPress={() => navigation.navigate("Contact")}
+      >
+        <Text style={styles.btnText}>Contact</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.Button}
+      >
+        <Text style={styles.btnText}>Delete account</Text>
+      </TouchableOpacity>
       <Toast />
     </View>
   );
