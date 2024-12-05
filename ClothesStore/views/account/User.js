@@ -215,6 +215,12 @@ export default function User({ navigation, route }) {
       </View>
       <TouchableOpacity
         style={styles.Button}
+        onPress={() => navigation.navigate("Wishlist")}
+      >
+        <Text style={styles.btnText}>Wishlist</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.Button}
         onPress={() => navigation.navigate("Contact")}
       >
         <Text style={styles.btnText}>Contact</Text>

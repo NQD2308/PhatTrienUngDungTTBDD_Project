@@ -22,6 +22,7 @@ import Detail from "./views/store/Detail";
 import Payment from "./views/store/Payment";
 import Purchase from "./views/store/Purchase";
 import EditRecipient from "./views/store/EditRecipient";
+import Wishlist from "./views/store/Wishlist";
 
 // Setting page
 import Profile from "./views/setting/Profile";
@@ -254,6 +255,11 @@ function InsideLayout({ route }) {
       <InsideStack.Screen
         name="Detail"
         component={Detail}
+        initialParams={{ userId: safeUserId }}
+      />
+      <InsideStack.Screen
+        name="Wishlist"
+        component={Wishlist}
         initialParams={{ userId: safeUserId }}
       />
       <InsideStack.Screen name="Language" component={Language} />
