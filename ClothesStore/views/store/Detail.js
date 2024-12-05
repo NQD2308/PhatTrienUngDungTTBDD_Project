@@ -26,6 +26,7 @@ import {
 } from "firebase/firestore";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
+import FontAwesome from "react-native-vector-icons/FontAwesome6";
 
 export default function Detail({ route }) {
   const navigation = useNavigation();
@@ -82,7 +83,7 @@ export default function Detail({ route }) {
         return;
       }
       const userId = user.uid;
-  
+
       // Kiểm tra chọn size
       if (!selectedColor) {
         Toast.show({
@@ -106,10 +107,10 @@ export default function Detail({ route }) {
         });
         return;
       }
-  
+
       // Tính toán tổng giá
       const totalPrice = quantity * parseInt(product.price);
-  
+
       // Tạo đối tượng orderData
       const orderData = {
         userId,
@@ -126,33 +127,33 @@ export default function Detail({ route }) {
         status: "pending",
         createdAt: new Date().toISOString(),
       };
-  
+
       const orderRef = collection(FIREBASE_DB, "Order");
-  
+
       // Tìm kiếm sản phẩm trong giỏ hàng (Order collection) đã có trong Firestore
-      const q = query(orderRef, 
-        where("userId", "==", userId), 
+      const q = query(orderRef,
+        where("userId", "==", userId),
         where("productId", "==", productId),
         where("selectedSize", "==", selectedSize),
         where("selectedColor", "==", selectedColor)
       );
       const querySnapshot = await getDocs(q);
-  
+
       if (!querySnapshot.empty) {
         // Nếu đã có sản phẩm trong giỏ hàng, cập nhật số lượng
         const docId = querySnapshot.docs[0].id;
         const docRef = doc(FIREBASE_DB, "Order", docId);
-  
+
         // Cập nhật số lượng sản phẩm trong giỏ hàng
         const updatedQuantity = querySnapshot.docs[0].data().quantity + quantity;
         const updatedTotalPrice = updatedQuantity * parseInt(product.price);
-  
+
         // Cập nhật lại document trong Firestore
         await updateDoc(docRef, {
           quantity: updatedQuantity,
           totalPrice: updatedTotalPrice,
         });
-  
+
         console.log("Cart updated successfully:", { quantity: updatedQuantity, totalPrice: updatedTotalPrice });
         Toast.show({
           type: "success",
@@ -164,10 +165,10 @@ export default function Detail({ route }) {
       } else {
         // Nếu chưa có sản phẩm trong giỏ hàng, tạo mới đơn hàng
         const docRef = await addDoc(orderRef, orderData);
-  
+
         // Lưu ID của document vào orderData
         orderData.id = docRef.id;
-  
+
         console.log("Order added successfully:", orderData);
         Toast.show({
           type: "success",
@@ -181,7 +182,7 @@ export default function Detail({ route }) {
       console.error("Error adding to cart:", error);
     }
   };
-  
+
   // ========== Kết thúc xử lý thêm vào giỏ hàng ========== //
 
   // ========== Xử lý mua hàng ngay lập tức ========= //
@@ -258,7 +259,7 @@ export default function Detail({ route }) {
       const totalAmount = totalPrice;
 
       // Chuyển sang màn hình thanh toán (Checkout)
-      navigation.navigate("Payment", {orders, totalAmount});
+      navigation.navigate("Payment", { orders, totalAmount });
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
@@ -281,7 +282,12 @@ export default function Detail({ route }) {
           )}
           showsVerticalScrollIndicator={false}
         />
-        <Text style={styles.name}>{product.productName}</Text>
+        <Text style={styles.name}>
+          {product.productName}
+          <TouchableOpacity onPress={() => alert("Added product to wish list")} style={styles.wishlistButton}>
+            <FontAwesome name="heart" size={20} color="#000000" />
+          </TouchableOpacity>
+        </Text>
         <Text style={styles.price}>
           {parseInt(product.price).toLocaleString("vi-VN")} {product.priceUnit}
         </Text>
@@ -375,6 +381,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: "bold",
+    marginBottom: 8,
+  },
+  wishlistButton: {
+    borderRadius: 8,
+    padding: 10,
+    marginLeft: 5,
     marginBottom: 8,
   },
   price: {
