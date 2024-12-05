@@ -12,7 +12,8 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/Ionicons"; // Sử dụng icon từ Ionicons
+import Icon from "react-native-vector-icons/Ionicons";// Sử dụng icon từ Ionicons
+import FontAwesome from 'react-native-vector-icons/FontAwesome6';
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import {
@@ -173,7 +174,7 @@ export default function Home() {
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
-            placeholder="Tìm kiếm sản phẩm..."
+            placeholder="Search..."
             value={searchKeyword}
             onChangeText={setSearchKeyword}
           />
@@ -190,8 +191,11 @@ export default function Home() {
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSort} style={styles.sortButton}>
             <Text style={styles.sortButtonText}>
-              {sortOrder === "asc" ? "Giá ↑" : "Giá ↓"}
+              {sortOrder === "asc" ? "Price ↑" : "Price ↓"}
             </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => alert("Wish list")} style={styles.wishlistButton}>
+            <FontAwesome name="heart" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
         {/* Nút lọc loại sản phẩm */}
@@ -292,6 +296,12 @@ const styles = StyleSheet.create({
   },
   searchButton: {
     backgroundColor: "#007bff",
+    borderRadius: 8,
+    padding: 10,
+    marginLeft: 5,
+  },
+  wishlistButton: {
+    backgroundColor: "#ff0000",
     borderRadius: 8,
     padding: 10,
     marginLeft: 5,
