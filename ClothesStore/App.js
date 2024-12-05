@@ -62,6 +62,7 @@ function TabNavigator({ route }) {
       <Tab.Screen
         name="Home"
         component={Home}
+        initialParams={{ userId }}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -250,7 +251,11 @@ function InsideLayout({ route }) {
         component={BiometricAuthentication}
         initialParams={{ userId: safeUserId }}
       />
-      <InsideStack.Screen name="Detail" component={Detail} />
+      <InsideStack.Screen
+        name="Detail"
+        component={Detail}
+        initialParams={{ userId: safeUserId }}
+      />
       <InsideStack.Screen name="Language" component={Language} />
       <InsideStack.Screen name="Contact" component={Contact} />
     </InsideStack.Navigator>
@@ -277,12 +282,11 @@ export default function App() {
               <Stack.Screen
                 name="Inside"
                 component={InsideLayout}
-                options={{ 
-                  headerShown: false, 
+                options={{
+                  headerShown: false,
                   gestureEnabled: false, // Tắt thao tác vuốt quay lại
-                 }}
+                }}
                 initialParams={{ userId: user.uid }} // Truyền userId từ user.uid
-                
               />
               {/* <Stack.Screen
                 name="Login"
@@ -297,7 +301,6 @@ export default function App() {
             </>
           ) : (
             <>
-            
               <Stack.Screen
                 name="Login"
                 component={Login}

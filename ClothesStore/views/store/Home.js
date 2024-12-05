@@ -24,8 +24,9 @@ import {
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = width / 2 - 20;
 
-export default function Home() {
+export default function Home({ route }) {
   const navigation = useNavigation();
+  const { userId } = route.params;
   const [products, setProducts] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState(""); // Từ khóa tìm kiếm
   const [filteredProducts, setFilteredProducts] = useState([]); // Danh sách sản phẩm được lọc
@@ -156,7 +157,7 @@ export default function Home() {
   const renderItem = ({ item }) => (
     <View
       style={styles.productCard}
-      onTouchStart={() => navigation.navigate("Detail", { productId: item.id })}
+      onTouchStart={() => navigation.navigate("Detail", { productId: item.id, userId: userId })}
     >
       <Image source={{ uri: item.images[0] }} style={styles.productImage} />
       <Text style={styles.productName}>{item.productName}</Text>
