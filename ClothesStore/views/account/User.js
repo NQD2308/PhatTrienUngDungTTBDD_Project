@@ -14,8 +14,8 @@ import {
 import { signOut, deleteUser } from "firebase/auth";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 
-import { useEffect, useState } from "react";
-import { CommonActions } from "@react-navigation/native";
+import { useCallback, useEffect, useState } from "react";
+import { CommonActions, useFocusEffect } from "@react-navigation/native";
 import {
   collection,
   query,
@@ -28,16 +28,33 @@ import Toast from "react-native-toast-message";
 import FontAwesome from "react-native-vector-icons/FontAwesome6";
 
 export default function User({ navigation, route }) {
-  const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState(null); // Lưu thông tin người dùng
   const { userId } = route.params || {}; // Nhận userId từ route.params
   const safeUserId = userId || "guest"; // Giá trị mặc định nếu không có userId
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null); // Lưu thông tin người dùng
+  const [countWishList, setCountWishList] = useState(null); // Lưu số lượng sản phẩm yêu thích
+  const [countOrder, setCountOrder] = useState(null); // Lưu số lượng sản phẩm yêu thích
 
   console.log("User ID tại User.js: ", safeUserId);
+
+  // Sử dụng useFocusEffect để refresh lại dữ liệu mỗi khi tab được focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData(); // Gọi hàm lấy dữ liệu
+      fetchWishListData();
+      fetchBillCount();
+
+      return () => {
+        console.log("Tab bị unfocus!");
+      };
+    }, [])
+  );
 
   useEffect(() => {
     if (safeUserId !== "guest") {
       fetchUserData(); // Gọi hàm lấy dữ liệu
+      fetchWishListData();
+      fetchBillCount();
     } else {
       setLoading(false); // Không cần tải dữ liệu nếu là guest
     }
@@ -75,6 +92,76 @@ export default function User({ navigation, route }) {
       setLoading(false);
     }
   };
+
+  const fetchWishListData = async () => {
+    try {
+      // Truy vấn collection Wishlist
+      const wishlistQuery = collection(FIREBASE_DB, "Wishlist");
+      const wishlistSnapshot = await getDocs(wishlistQuery);
+  
+      let count = 0; // Biến đếm số lượng sản phẩm có status == true
+  
+      wishlistSnapshot.docs.forEach((doc) => {
+        // Kiểm tra xem doc.id có trùng với userId không
+        if (doc.id === userId) {          
+          const wishlistData = doc.data();
+          // Kiểm tra mảng products có tồn tại
+          if (wishlistData.products) {
+            // Lọc và đếm các sản phẩm có status === true
+            count += wishlistData.products.filter(
+              (product) => product.status === true
+            ).length;
+          }
+        }
+      });
+      setCountWishList(count);
+      console.log("Số lượng sản phẩm yêu thích: ", count);
+      
+  
+      console.log(`Tổng số sản phẩm có status == true: ${count}`);
+      return count; // Trả về số lượng sản phẩm
+    } catch (e) {
+      console.error("Lỗi khi lấy dữ liệu Wishlist:", e);
+      return 0; // Trả về 0 trong trường hợp xảy ra lỗi
+    }
+  };
+  
+  const fetchBillCount = async () => {
+    try {
+      // Truy vấn các đơn hàng của người dùng theo userId
+      const userQuery = query(
+        collection(FIREBASE_DB, "Bill"), // Collection 'Bill'
+        where("userId", "==", safeUserId) // Lọc các document có trường 'userId' trùng với safeUserId
+      );
+  
+      const querySnapshot = await getDocs(userQuery);
+  
+      // Đếm số lượng đơn hàng
+      const billCount = querySnapshot.size; // `size` trả về số lượng document trong querySnapshot
+      setCountOrder(billCount);
+  
+      if (billCount > 0) {
+        console.log(`Người dùng hiện có ${billCount} đơn hàng.`);
+      } else {
+        console.log("Người dùng không có đơn hàng.");
+        Toast.show({
+          type: "info",
+          text1: "Thông báo",
+          text2: "Bạn chưa có đơn hàng nào.",
+        });
+      }
+  
+      return billCount; // Trả về số lượng đơn hàng nếu cần sử dụng tiếp
+    } catch (error) {
+      console.error("Lỗi khi đếm đơn hàng:", error);
+      Toast.show({
+        type: "error",
+        text1: "Lỗi",
+        text2: "Không thể đếm đơn hàng. Vui lòng thử lại sau.",
+      });
+    }
+  };
+  
 
   if (loading) {
     return (
@@ -236,7 +323,7 @@ export default function User({ navigation, route }) {
         {/* Stats Section */}
         <View style={styles.statsSection}>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>101</Text>
+            <Text style={styles.statValue}>{countOrder}</Text>
             <Text style={styles.statLabel}>Orders</Text>{" "}
             {/* Tổng số đơn hàng */}
           </View>
@@ -246,7 +333,7 @@ export default function User({ navigation, route }) {
             {/* Lượt thích sản phẩm */}
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>33</Text>
+            <Text style={styles.statValue}>{countWishList}</Text>
             <Text style={styles.statLabel}>Wishlist</Text>{" "}
             {/* Sản phẩm trong wishlist */}
           </View>
