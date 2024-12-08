@@ -161,25 +161,57 @@ const Payment = () => {
     try {
       const cartListForId = [];
 
-      for (const item of orders) {
-        await addDoc(collection(FIREBASE_DB, "Bill"), {
-          userId,
-          receiver: updatedUserInfo.username, 
-          phone: updatedUserInfo.phone,       
-          address: updatedUserInfo.address,   
-          productId: item.id,
-          productName: item.productName,
-          quantity: item.quantity,
-          color: item.selectedColor,
-          size: item.selectedSize,
-          totalPrice: item.totalPrice,
-          totalAmount: Number(totalAmount),
-          priceUnit: item.priceUnit,
-          image: item.image,
-          timestamp: new Date().toISOString(),
-        });
+      // Sử dụng `customerInfo` hoặc fallback sang `updatedUserInfo`
+    const finalUserInfo = {
+      username: customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật",
+      phone: customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật",
+      address: customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật",
+    };
 
-        cartListForId.push(item.id);
+      if(!updatedUserInfo) {
+        for (const item of orders) {
+          await addDoc(collection(FIREBASE_DB, "Bill"), {
+            
+            userId,
+            receiver: finalUserInfo.username, 
+            phone: finalUserInfo.phone,       
+            address: finalUserInfo.address,   
+            productId: item.id,
+            productName: item.productName,
+            quantity: item.quantity,
+            color: item.selectedColor,
+            size: item.selectedSize,
+            totalPrice: item.totalPrice,
+            totalAmount: Number(totalAmount),
+            priceUnit: item.priceUnit,
+            image: item.image,
+            timestamp: new Date().toISOString(),
+          });
+  
+          cartListForId.push(item.id);
+        }
+      } else {
+        for (const item of orders) {
+          await addDoc(collection(FIREBASE_DB, "Bill"), {
+            
+            userId,
+            receiver: updatedUserInfo.username, 
+            phone: updatedUserInfo.phone,       
+            address: updatedUserInfo.address,   
+            productId: item.id,
+            productName: item.productName,
+            quantity: item.quantity,
+            color: item.selectedColor,
+            size: item.selectedSize,
+            totalPrice: item.totalPrice,
+            totalAmount: Number(totalAmount),
+            priceUnit: item.priceUnit,
+            image: item.image,
+            timestamp: new Date().toISOString(),
+          });
+  
+          cartListForId.push(item.id);
+        }
       }
 
       for (const orderId of cartListForId) {
@@ -218,9 +250,9 @@ const Payment = () => {
       <Text style={styles.title}>Thanh toán</Text>
       <View style={styles.customerInfoContainer}>
         <Text style={styles.customerTitle}>Thông tin khách hàng</Text>
-        <Text>Người nhận: {customerInfo.username}</Text>
-        <Text>Điện thoại: {customerInfo.phone}</Text>
-        <Text>Địa chỉ: {customerInfo.address}</Text>
+        <Text>Người nhận: {customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật"}</Text>
+        <Text>Điện thoại: {customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật"}</Text>
+        <Text>Địa chỉ: {customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật"}</Text>
         <TouchableOpacity style={styles.editButton} onPress={handleEditInfo}>
           <Text style={styles.editButtonText}>Chỉnh sửa</Text>
         </TouchableOpacity>

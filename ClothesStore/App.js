@@ -22,10 +22,12 @@ import Detail from "./views/store/Detail";
 import Payment from "./views/store/Payment";
 import Purchase from "./views/store/Purchase";
 import EditRecipient from "./views/store/EditRecipient";
+import Wishlist from "./views/store/Wishlist";
 
 // Setting page
 import Profile from "./views/setting/Profile";
 import Language from "./views/setting/Language";
+import Contact from "./views/setting/Contact";
 import BiometricAuthentication from "./views/setting/BiometricAuthentication";
 
 // ========= Inital ========= //
@@ -61,6 +63,7 @@ function TabNavigator({ route }) {
       <Tab.Screen
         name="Home"
         component={Home}
+        initialParams={{ userId }}
         options={{
           tabBarIcon: ({ focused }) => (
             <View
@@ -249,8 +252,18 @@ function InsideLayout({ route }) {
         component={BiometricAuthentication}
         initialParams={{ userId: safeUserId }}
       />
-      <InsideStack.Screen name="Detail" component={Detail} />
+      <InsideStack.Screen
+        name="Detail"
+        component={Detail}
+        initialParams={{ userId: safeUserId }}
+      />
+      <InsideStack.Screen
+        name="Wishlist"
+        component={Wishlist}
+        initialParams={{ userId: safeUserId }}
+      />
       <InsideStack.Screen name="Language" component={Language} />
+      <InsideStack.Screen name="Contact" component={Contact} />
     </InsideStack.Navigator>
   );
 }
@@ -275,12 +288,11 @@ export default function App() {
               <Stack.Screen
                 name="Inside"
                 component={InsideLayout}
-                options={{ 
-                  headerShown: false, 
+                options={{
+                  headerShown: false,
                   gestureEnabled: false, // Tắt thao tác vuốt quay lại
-                 }}
+                }}
                 initialParams={{ userId: user.uid }} // Truyền userId từ user.uid
-                
               />
               {/* <Stack.Screen
                 name="Login"
@@ -295,7 +307,6 @@ export default function App() {
             </>
           ) : (
             <>
-            
               <Stack.Screen
                 name="Login"
                 component={Login}

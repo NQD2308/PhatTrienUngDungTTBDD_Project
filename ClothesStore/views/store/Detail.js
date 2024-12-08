@@ -19,26 +19,64 @@ import {
   query,
   orderBy,
   getDocs,
-  QuerySnapshot,
+  find,
   addDoc,
   where,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function Detail({ route }) {
   const navigation = useNavigation();
-  const { productId } = route.params; // Nhận productId từ màn hình trước
+  const { productId, userId } = route.params; // Nhận productId từ màn hình trước
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null); // Lưu size được chọn
   const [selectedColor, setSelectedColor] = useState(null); // Lưu màu được chọn
   const [quantity, setQuantity] = useState(1); // Số lượng mặc định là 1
   const [cart, setCart] = useState([]); // Quản lý giỏ hàng
+  const [isLiked, setIsLiked] = useState(false); // Trạng thái yêu thích
+
+  // lấy dữ liệu từ bảng wishlist
+  const getWishlistData = async () => {
+    const userId = FIREBASE_AUTH.currentUser?.uid; // Lấy userId từ Firebase Auth
+  
+    if (!userId) return; // Nếu chưa đăng nhập thì không làm gì
+  
+    try {
+      const wishlistRef = doc(FIREBASE_DB, "Wishlist", userId); // Lấy tham chiếu đến tài liệu wishlist của người dùng
+      const wishlistDoc = await getDoc(wishlistRef); // Lấy tài liệu
+  
+      if (wishlistDoc.exists()) {
+        const wishlistData = wishlistDoc.data(); // Lấy dữ liệu wishlist
+  
+        // Tìm sản phẩm trong mảng `products` có `productId` trùng khớp
+        const productInWishlist = wishlistData.products.find(
+          (product) => product.productId === productId
+        );
+  
+        if (productInWishlist) {
+          console.log("UID: ", userId);
+          console.log("Product ID: ", productId);
+          console.log("Status: ", productInWishlist.status);
+  
+          // Cập nhật trạng thái `isLiked` theo giá trị `status` của sản phẩm
+          setIsLiked(productInWishlist.status); 
+        }
+      } else {
+        console.log("Không tìm thấy wishlist cho người dùng này.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải wishlist:", error);
+    }
+  };
 
   useEffect(() => {
     // Hàm để lấy dữ liệu sản phẩm từ Firestore
     const fetchProduct = async () => {
+      console.log("User id detail.js: ", userId);
+
       try {
         const docRef = doc(FIREBASE_DB, "Product", productId);
         const docSnap = await getDoc(docRef);
@@ -54,6 +92,7 @@ export default function Detail({ route }) {
     };
 
     fetchProduct();
+    getWishlistData(); // Gọi hàm để lấy thông tin wishlist
   }, [productId]);
 
   if (!product) {
@@ -70,7 +109,6 @@ export default function Detail({ route }) {
       setQuantity(quantity - 1); // Giảm số lượng, nhưng không dưới 1
     }
   };
-  // ========== Kết thúc xử lý số lượng mua hàng ========== //
 
   // ========== Xử lý thêm vào giỏ hàng ========== //
   const handleAddToCart = async () => {
@@ -82,7 +120,7 @@ export default function Detail({ route }) {
         return;
       }
       const userId = user.uid;
-  
+
       // Kiểm tra chọn size
       if (!selectedColor) {
         Toast.show({
@@ -106,10 +144,10 @@ export default function Detail({ route }) {
         });
         return;
       }
-  
+
       // Tính toán tổng giá
       const totalPrice = quantity * parseInt(product.price);
-  
+
       // Tạo đối tượng orderData
       const orderData = {
         userId,
@@ -126,34 +164,39 @@ export default function Detail({ route }) {
         status: "pending",
         createdAt: new Date().toISOString(),
       };
-  
+
       const orderRef = collection(FIREBASE_DB, "Order");
-  
+
       // Tìm kiếm sản phẩm trong giỏ hàng (Order collection) đã có trong Firestore
-      const q = query(orderRef, 
-        where("userId", "==", userId), 
+      const q = query(
+        orderRef,
+        where("userId", "==", userId),
         where("productId", "==", productId),
         where("selectedSize", "==", selectedSize),
         where("selectedColor", "==", selectedColor)
       );
       const querySnapshot = await getDocs(q);
-  
+
       if (!querySnapshot.empty) {
         // Nếu đã có sản phẩm trong giỏ hàng, cập nhật số lượng
         const docId = querySnapshot.docs[0].id;
         const docRef = doc(FIREBASE_DB, "Order", docId);
-  
+
         // Cập nhật số lượng sản phẩm trong giỏ hàng
-        const updatedQuantity = querySnapshot.docs[0].data().quantity + quantity;
+        const updatedQuantity =
+          querySnapshot.docs[0].data().quantity + quantity;
         const updatedTotalPrice = updatedQuantity * parseInt(product.price);
-  
+
         // Cập nhật lại document trong Firestore
         await updateDoc(docRef, {
           quantity: updatedQuantity,
           totalPrice: updatedTotalPrice,
         });
-  
-        console.log("Cart updated successfully:", { quantity: updatedQuantity, totalPrice: updatedTotalPrice });
+
+        console.log("Cart updated successfully:", {
+          quantity: updatedQuantity,
+          totalPrice: updatedTotalPrice,
+        });
         Toast.show({
           type: "success",
           text1: "Message",
@@ -164,10 +207,10 @@ export default function Detail({ route }) {
       } else {
         // Nếu chưa có sản phẩm trong giỏ hàng, tạo mới đơn hàng
         const docRef = await addDoc(orderRef, orderData);
-  
+
         // Lưu ID của document vào orderData
         orderData.id = docRef.id;
-  
+
         console.log("Order added successfully:", orderData);
         Toast.show({
           type: "success",
@@ -181,11 +224,8 @@ export default function Detail({ route }) {
       console.error("Error adding to cart:", error);
     }
   };
-  
-  // ========== Kết thúc xử lý thêm vào giỏ hàng ========== //
 
   // ========== Xử lý mua hàng ngay lập tức ========= //
-
   const handleBuyNow = async () => {
     try {
       // Lấy userId từ Firebase Auth
@@ -258,13 +298,87 @@ export default function Detail({ route }) {
       const totalAmount = totalPrice;
 
       // Chuyển sang màn hình thanh toán (Checkout)
-      navigation.navigate("Payment", {orders, totalAmount});
+      navigation.navigate("Payment", { orders, totalAmount });
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
   };
 
-  // ========== Kết thúc xử lý mua hàng ngay lập tức ========= //
+  // ========== Hàm xử lý khi nhấn vào nút ========== //
+  const toggleWishlist = async () => {
+    const userId = FIREBASE_AUTH.currentUser?.uid; // Lấy userId từ Firebase Auth (nếu người dùng đã đăng nhập)
+
+    if (!userId) {
+      // Nếu người dùng chưa đăng nhập
+      Alert.alert(
+        "Đăng nhập yêu cầu",
+        "Vui lòng đăng nhập để thêm vào danh sách yêu thích.",
+        [
+          {
+            text: "Đăng nhập",
+            onPress: () => {
+              // Điều hướng tới màn hình đăng nhập
+              navigation.navigate("Login");
+            },
+          },
+          {
+            text: "Hủy",
+            style: "cancel",
+          },
+        ]
+      );
+      return; // Dừng nếu người dùng chưa đăng nhập
+    }
+
+    try {
+      const wishlistRef = doc(FIREBASE_DB, "Wishlist", userId); // Tham chiếu đến wishlist của người dùng
+
+      const wishlistDoc = await getDoc(wishlistRef); // Lấy document wishlist của người dùng
+
+      if (wishlistDoc.exists()) {
+        const wishlistData = wishlistDoc.data();
+        const productInWishlist = wishlistData.products.find(
+          (product) => product.productId === productId
+        );
+
+        if (productInWishlist) {
+          const newStatus = productInWishlist.status === true ? false : true; // Nếu trạng thái true (liked) thì chuyển thành false (unliked), ngược lại
+
+          // Cập nhật lại trạng thái status của sản phẩm
+          await updateDoc(wishlistRef, {
+            products: wishlistData.products.map((product) =>
+              product.productId === productId
+                ? { ...product, status: newStatus }
+                : product
+            ),
+          });
+
+          setIsLiked(newStatus); // Cập nhật trạng thái tim (liked hoặc unliked)
+        } else {
+          // Nếu chưa có sản phẩm trong wishlist, thêm sản phẩm mới với trạng thái liked (true)
+          await updateDoc(wishlistRef, {
+            products: [
+              ...wishlistData.products,
+              { productId, status: true }, // Thêm sản phẩm vào danh sách với trạng thái liked (true)
+            ],
+          });
+
+          setIsLiked(true); // Đặt trạng thái là liked sau khi thêm sản phẩm vào wishlist
+        }
+      } else {
+        // Nếu wishlist chưa tồn tại, tạo mới và thêm sản phẩm vào
+        await setDoc(wishlistRef, {
+          products: [
+            { productId, status: true }, // Mặc định thêm vào với status 'true' (liked)
+          ],
+        });
+
+        setIsLiked(true); // Đặt trạng thái là liked sau khi tạo wishlist và thêm sản phẩm
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật wishlist:", error); // Log lỗi nếu có
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -281,7 +395,19 @@ export default function Detail({ route }) {
           )}
           showsVerticalScrollIndicator={false}
         />
-        <Text style={styles.name}>{product.productName}</Text>
+        <Text style={styles.name}>
+          {product.productName}
+          <TouchableOpacity
+            onPress={toggleWishlist}
+            style={styles.wishlistButton}
+          >
+            <FontAwesome
+              name={isLiked ? "heart" : "heart-o"} // Hiển thị "heart" nếu đã thích, "heart-o" nếu chưa
+              size={20}
+              color={isLiked ? "red" : "#000000"} // Đổi màu đỏ nếu đã thích
+            />
+          </TouchableOpacity>
+        </Text>
         <Text style={styles.price}>
           {parseInt(product.price).toLocaleString("vi-VN")} {product.priceUnit}
         </Text>
@@ -375,6 +501,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: "bold",
+    marginBottom: 8,
+  },
+  wishlistButton: {
+    borderRadius: 8,
+    padding: 10,
+    marginLeft: 5,
     marginBottom: 8,
   },
   price: {

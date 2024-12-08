@@ -14,8 +14,9 @@ import {
   ScrollView,
   onLayoutChange
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import FontAwesome from "react-native-vector-icons/FontAwesome6"; // Sử dụng FontAwesome từ FontAwesome6
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons";// Sử dụng icon từ Ionicons
+import FontAwesome from 'react-native-vector-icons/FontAwesome6';
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import {
@@ -25,8 +26,9 @@ import {
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = width / 2 - 20;
 
-export default function Home() {
+export default function Home({ route }) {
   const navigation = useNavigation();
+  const { userId } = route.params;
   const [products, setProducts] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState(""); // Từ khóa tìm kiếm
   const [filteredProducts, setFilteredProducts] = useState([]); // Danh sách sản phẩm được lọc
@@ -36,8 +38,15 @@ export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const [layoutMode, setLayoutMode] = useState(1); // Mặc định 1 sản phẩm trên 1 hàng
 
+  const [isVisible, setIsVisible] = useState(false);
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
+  const snapPoints = useMemo(() => ["40%", "60%"], []);
+
+  // Đóng bottom sheet
+  const closeBottomSheet = () => {
+    bottomSheetModalRef.current?.dismiss();
+    setIsVisible(false);
+  };
 
   // Lấy dữ liệu từ Firestore
   useEffect(() => {
@@ -78,6 +87,13 @@ export default function Home() {
 
     fetchCategories();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Đóng BottomSheet khi quay lại màn hình
+      bottomSheetModalRef.current?.close();
+    }, [])
+  );
 
   // Mở Bottom Sheet
   const openCategorySheet = () => {
@@ -148,9 +164,9 @@ export default function Home() {
 
   // Hiển thị danh sách sản phẩm
   const renderItem = ({ item }) => (
-    <View
+    <TouchableOpacity
       style={styles.productCard}
-      onTouchStart={() => navigation.navigate("Detail", { productId: item.id })}
+      onPress={() => navigation.navigate("Detail", { productId: item.id, userId: userId })}
     >
       <Image source={{ uri: item.images[0] }} style={styles.productImage} />
       <Text style={styles.productName}>{item.productName}</Text>
@@ -158,7 +174,7 @@ export default function Home() {
         {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
       </Text>
       <Text style={styles.productDescription}>{item.description}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -288,7 +304,7 @@ export default function Home() {
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
-            placeholder="Tìm kiếm sản phẩm..."
+            placeholder="Search..."
             value={searchKeyword}
             onChangeText={setSearchKeyword}
           />
@@ -305,7 +321,7 @@ export default function Home() {
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSort} style={styles.sortButton}>
             <Text style={styles.sortButtonText}>
-              {sortOrder === "asc" ? "Giá ↑" : "Giá ↓"}
+              {sortOrder === "asc" ? "Price ↑" : "Price ↓"}
             </Text>
           </TouchableOpacity>
         </View> */}
@@ -365,6 +381,18 @@ export default function Home() {
           ref={bottomSheetModalRef}
           index={0}
           snapPoints={snapPoints}
+          backdropComponent={({ style }) => (
+            <TouchableWithoutFeedback onPress={closeBottomSheet}>
+              <View
+                style={[
+                  style,
+                  {
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Màu tối với độ mờ
+                  },
+                ]}
+              />
+            </TouchableWithoutFeedback>
+          )}
         >
           <View style={styles.bottomSheetContainer}>
             <Text style={styles.sheetTitle}>Choose Category</Text>
