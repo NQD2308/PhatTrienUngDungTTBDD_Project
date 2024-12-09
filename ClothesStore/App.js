@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Text, Dimensions } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useFocusEffect } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import i18next from "./services/i18next";
 
@@ -24,6 +25,9 @@ import Payment from "./views/store/Payment";
 import Purchase from "./views/store/Purchase";
 import EditRecipient from "./views/store/EditRecipient";
 import Wishlist from "./views/store/Wishlist";
+
+// Scanner
+import Scanner from "./views/scanner/Scanner";
 
 // Setting page
 import Profile from "./views/setting/Profile";
@@ -48,6 +52,33 @@ function TabNavigator({ route }) {
   const safeUserId = userId || "guest"; // Giá trị mặc định là "guest"
 
   console.log("userId tại App.js: " + safeUserId);
+
+  const [cameraActive, setCameraActive] = useState(false); // Trạng thái camera
+
+  // Hàm tắt camera
+  const deactivateCamera = () => {
+    console.log("Camera is turned off");
+    setCameraActive(false);
+  };
+
+  // Hàm bật camera
+  const activateCamera = () => {
+    console.log("Camera is turned on");
+    setCameraActive(true);
+  };
+
+  // Sử dụng useFocusEffect để tắt camera khi tab không còn focus
+  useFocusEffect(
+    React.useCallback(() => {
+      // Khi tab được focus, bật camera
+      activateCamera();
+
+      // Khi tab không còn focus (unfocus), tắt camera
+      return () => {
+        deactivateCamera();
+      };
+    }, [])
+  );
 
   return (
     <Tab.Navigator
@@ -130,6 +161,43 @@ function TabNavigator({ route }) {
                 }}
               >
                 {i18next.t("Cart")}
+              </Text>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Scanner"
+        component={Scanner}
+        initialParams={{ userId }}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+                marginTop: 14,
+              }}
+            >
+              <Image
+                source={require("./assets/icons/shopping-cart.png")}
+                resizeMode="contain"
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: focused ? "#3b82f6" : "#94a3b8",
+                }}
+              />
+              <Text
+                style={{
+                  color: focused ? "#3b82f6" : "#94a3b8",
+                  fontSize: 12,
+                  width: 70,
+                  textAlign: "center",
+                }}
+              >
+                {i18next.t("Scanner")}
               </Text>
             </View>
           ),
