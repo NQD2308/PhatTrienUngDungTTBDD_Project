@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Toast from "react-native-toast-message";
+import i18next from "./services/i18next";
 
 // import { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
@@ -91,7 +92,7 @@ function TabNavigator({ route }) {
                   textAlign: "center",
                 }}
               >
-                Home
+                {i18next.t("Home")}
               </Text>
             </View>
           ),
@@ -128,7 +129,7 @@ function TabNavigator({ route }) {
                   textAlign: "center",
                 }}
               >
-                Cart
+                {i18next.t("Cart")}
               </Text>
             </View>
           ),
@@ -165,7 +166,7 @@ function TabNavigator({ route }) {
                   textAlign: "center",
                 }}
               >
-                Purchase
+                {i18next.t("Purchase")}
               </Text>
             </View>
           ),
@@ -202,7 +203,7 @@ function TabNavigator({ route }) {
                   textAlign: "center",
                 }}
               >
-                User
+                {i18next.t("User")}
               </Text>
             </View>
           ),
