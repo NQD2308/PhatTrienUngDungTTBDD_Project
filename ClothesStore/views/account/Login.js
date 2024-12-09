@@ -309,66 +309,6 @@ export default function Login({ navigation }) {
             </View>
           </View>
         </View>
-
-
-
-        {/* <Text style={styles.title}>Clothes Store</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.inputPassword}
-          placeholder="Password"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TouchableOpacity
-          style={styles.showPasswordButton}
-          onPress={() => setShowPassword(!showPassword)}
-        >
-          <Icon
-            name={showPassword ? "eye-off" : "eye"}
-            size={24}
-            color="#007BFF"
-          />
-        </TouchableOpacity>
-      </View> */}
-        {/* <View style={styles.rememberMeContainer}>
-        <Checkbox
-          value={rememberMe}
-          onValueChange={setRememberMe}
-          color={rememberMe ? "#007BFF" : undefined}
-        />
-        <Text style={styles.rememberMeText}>Remember Me</Text>
-      </View>
-      {loading ? (
-        <ActivityIndicator size="large" color="#007BFF" />
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={() => signIn()}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-      )} */}
-        {/* <TouchableOpacity
-        style={styles.biometricButton}
-        onPress={handleBiometricAuth}
-      >
-        <Text style={styles.buttonText}>Login with Fingerprint</Text>
-      </TouchableOpacity> */}
-        {/* <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.linkText}>Forgot password!</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-        <Text style={styles.linkText}>
-          Don't have an account? Register here
-        </Text>
-      </TouchableOpacity> */}
         <Toast />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -409,6 +349,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     fontSize: 16,
     marginTop: 5,
+    marginLeft: 4
   },
   inputContainer: {
     flexDirection: 'row',

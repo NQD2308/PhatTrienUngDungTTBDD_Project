@@ -19,7 +19,8 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from "@expo/vector-icons";
+import i18next, { languageResources } from "../../services/i18next";
 
 export default function SignUp() {
   const [username, setUsername] = useState("");
@@ -123,26 +124,26 @@ export default function SignUp() {
   return (
     <ImageBackground
       source={{
-        uri: 'https://images.pexels.com/photos/4721153/pexels-photo-4721153.jpeg?auto=compress&cs=tinysrgb&w=600',
+        uri: "https://images.pexels.com/photos/4721153/pexels-photo-4721153.jpeg?auto=compress&cs=tinysrgb&w=600",
       }}
       style={styles.background}
       resizeMode="cover"
     >
       <KeyboardAvoidingView style={styles.formContainer}>
-        <Text style={styles.header}>Register</Text>
-        <Text style={styles.orText}> with your details</Text>
+        <Text style={styles.header}>{i18next.t("Register")}</Text>
+        <Text style={styles.orText}> {i18next.t("with your details")}</Text>
 
         {/* Form Inputs */}
         <TextInput
           style={styles.input}
-          placeholder="Username..."
+          placeholder={i18next.t("Username...")}
           autoCapitalize="words"
           value={username}
           onChangeText={(text) => setUsername(text)}
         />
         <TextInput
           style={styles.input}
-          placeholder="Your Email..."
+          placeholder={i18next.t("Your Email...")}
           keyboardType="email-address"
           autoCapitalize="none"
           value={email}
@@ -150,7 +151,7 @@ export default function SignUp() {
         />
         <TextInput
           style={styles.input}
-          placeholder="Phone Number..."
+          placeholder={i18next.t("Phone Number...")}
           keyboardType="phone-pad"
           value={phone}
           onChangeText={(text) => setPhone(text)}
@@ -159,7 +160,7 @@ export default function SignUp() {
         <View style={styles.input}>
           <TextInput
             style={styles.inputPassword}
-            placeholder="Password"
+            placeholder={i18next.t("Password")}
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={(text) => setPassword(text)}
@@ -179,14 +180,16 @@ export default function SignUp() {
         <View style={styles.input}>
           <TextInput
             style={styles.inputPassword}
-            placeholder="Confirm Password"
+            placeholder={i18next.t("Confirm Password")}
             secureTextEntry={!showConfirmPassword}
             value={confirmPassword}
             onChangeText={(text) => setConfirmPassword(text)}
             onFocus={() => setShowPasswordRequirements(true)}
             onBlur={() => setShowPasswordRequirements(false)}
           />
-          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+          <TouchableOpacity
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
             <Icon
               name={showPassword ? "eye-off" : "eye"}
               size={20}
@@ -211,7 +214,7 @@ export default function SignUp() {
                 isPasswordValid && styles.requirementMet,
               ]}
             >
-              Password must be at least 6 characters long.
+              {i18next.t("Password must be at least 6 characters long.")}
             </Text>
           </View>
         )}
@@ -221,102 +224,23 @@ export default function SignUp() {
           <ActivityIndicator size={"large"} color={"#0000ff"} />
         ) : (
           <TouchableOpacity style={styles.button} onPress={() => signUp()}>
-            <Text style={styles.buttonText}>Register</Text>
+            <Text style={styles.buttonText}>{i18next.t("Register")}</Text>
           </TouchableOpacity>
         )}
 
         {/* Navigate to Login */}
         <TouchableOpacity
           style={styles.loginRedirect}
-          onPress={() => navigation.navigate('Login')} // Điều hướng tới trang Login
+          onPress={() => navigation.navigate("Login")} // Điều hướng tới trang Login
         >
           <Text style={styles.loginText}>
-            Already have an account? <Text style={styles.loginLink}>Login here</Text>
+            {i18next.t("Already have an account?")}{" "}
+            <Text style={styles.loginLink}>{i18next.t("Login here")}</Text>
           </Text>
         </TouchableOpacity>
 
         <Toast />
       </KeyboardAvoidingView>
-
-      {/* <TextInput
-        style={styles.input}
-        placeholder="Username"
-        autoCapitalize="words"
-        value={username}
-        onChangeText={(text) => setUsername(text)}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-      /> */}
-
-      {/* <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        keyboardType="phone-pad"
-        value={phone}
-        onChangeText={(text) => setPhone(text)}
-      /> */}
-
-      {/* <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.inputPassword}
-          placeholder="Password"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          onFocus={() => setShowPasswordRequirements(true)}
-          onBlur={() => setShowPasswordRequirements(false)}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Icon
-            name={showPassword ? "eye-off" : "eye"}
-            size={24}
-            color="#007BFF"
-          />
-        </TouchableOpacity>
-      </View> */}
-
-      {/* <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.inputPassword}
-          placeholder="Confirm Password"
-          secureTextEntry={!showConfirmPassword}
-          value={confirmPassword}
-          onChangeText={(text) => setConfirmPassword(text)}
-          onFocus={() => setShowPasswordRequirements(true)}
-          onBlur={() => setShowPasswordRequirements(false)}
-        />
-        <TouchableOpacity
-          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-        >
-          <Icon
-            name={showConfirmPassword ? "eye-off" : "eye"}
-            size={24}
-            color="#007BFF"
-          />
-        </TouchableOpacity>
-      </View> */}
-
-      {/* {loading ? (
-        <ActivityIndicator size={"large"} color={"#0000ff"} />
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={() => signUp()}>
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
-      )} */}
-
-      {/* <TouchableOpacity>
-        <Text style={styles.linkText}>Already have an account? Login here</Text>
-      </TouchableOpacity>
-
-      <Toast /> */}
-
     </ImageBackground>
   );
 }
@@ -324,15 +248,15 @@ export default function SignUp() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   formContainer: {
-    width: '85%',
-    backgroundColor: '#fff',
+    width: "85%",
+    backgroundColor: "#fff",
     borderRadius: 15,
     padding: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -340,28 +264,28 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 5,
-    color: '#00000',
+    color: "#00000",
   },
   orText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginVertical: 5,
     fontSize: 18,
-    color: '#666',
+    color: "#666",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 12,
     marginBottom: 15,
     fontSize: 16,
-    backgroundColor: '#f9f9f9',
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: "#f9f9f9",
+    flexDirection: "row",
+    alignItems: "center",
   },
   passwordContainer: {
     paddingVertical: 0, // Đảm bảo icon không bị lệch
@@ -371,26 +295,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#FF5733',
+    backgroundColor: "#FF5733",
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 18,
   },
   loginRedirect: {
     marginTop: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   loginText: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   loginLink: {
-    color: '#FF5733',
-    fontWeight: 'bold',
+    color: "#FF5733",
+    fontWeight: "bold",
   },
 });
