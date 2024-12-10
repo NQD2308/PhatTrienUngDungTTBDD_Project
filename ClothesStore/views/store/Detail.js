@@ -9,6 +9,7 @@ import {
   FlatList,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import {
@@ -32,6 +33,7 @@ import { ScrollView } from "react-native-gesture-handler";
 export default function Detail({ route }) {
   const navigation = useNavigation();
   const { productId, userId } = route.params; // Nhận productId từ màn hình trước
+  const [loading, setLoading] = useState(false); // Thêm state loading
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null); // Lưu size được chọn
   const [selectedColor, setSelectedColor] = useState(null); // Lưu màu được chọn
@@ -78,6 +80,8 @@ export default function Detail({ route }) {
     const fetchProduct = async () => {
       console.log("User id detail.js: ", userId);
 
+      setLoading(true);
+
       try {
         const docRef = doc(FIREBASE_DB, "Product", productId);
         const docSnap = await getDoc(docRef);
@@ -89,6 +93,8 @@ export default function Detail({ route }) {
         }
       } catch (error) {
         console.error("Error fetching product: ", error);
+      } finally {
+        setLoading(false); // Kết thúc tải dữ liệu
       }
     };
 
@@ -96,9 +102,17 @@ export default function Detail({ route }) {
     getWishlistData(); // Gọi hàm để lấy thông tin wishlist
   }, [productId]);
 
-  if (!product) {
-    return <Text>Loading...</Text>;
+  if (loading || !product) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#dc143c" />
+      </View>
+    );
   }
+
+  // if (!product) {
+  //   return <Text>Loading...</Text>;
+  // }
 
   // ========== Xử lý số lượng mua hàng ========== //
   const handleIncrease = () => {

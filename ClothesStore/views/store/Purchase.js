@@ -1,7 +1,16 @@
-import { View, Text, FlatList, StyleSheet, Image, RefreshControl, SafeAreaView } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { FIREBASE_DB } from '../../firebaseConfig';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  RefreshControl,
+  SafeAreaView,
+  ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { FIREBASE_DB } from "../../firebaseConfig";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 export default function Purchase({ route }) {
   const { userId } = route.params;
@@ -11,10 +20,12 @@ export default function Purchase({ route }) {
 
   // Lấy dữ liệu từ Firestore
   const fetchPurchases = async () => {
+    setLoading(true);
+
     try {
       if (userId) {
-        const billCollection = collection(FIREBASE_DB, 'Bill');
-        const q = query(billCollection, where('userId', '==', userId));
+        const billCollection = collection(FIREBASE_DB, "Bill");
+        const q = query(billCollection, where("userId", "==", userId));
         const querySnapshot = await getDocs(q);
 
         const purchasesByDate = {};
@@ -36,7 +47,7 @@ export default function Purchase({ route }) {
           // Chuyển timestamp thành dạng ngày (YYYY-MM-DD)
           if (timestamp) {
             const date = new Date(timestamp);
-            const dateString = date.toISOString().split('T')[0];
+            const dateString = date.toISOString().split("T")[0];
 
             if (!purchasesByDate[dateString]) {
               purchasesByDate[dateString] = [];
@@ -64,7 +75,7 @@ export default function Purchase({ route }) {
         setPurchases(groupedPurchases);
       }
     } catch (error) {
-      console.error('Error fetching purchases:', error);
+      console.error("Error fetching purchases:", error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -87,7 +98,10 @@ export default function Purchase({ route }) {
         <View key={index} style={styles.productContainer}>
           {/* Hình ảnh sản phẩm */}
           {product.image && product.image.length > 0 && (
-            <Image source={{ uri: product.image[0] }} style={styles.productImage} />
+            <Image
+              source={{ uri: product.image[0] }}
+              style={styles.productImage}
+            />
           )}
           {/* Thông tin sản phẩm */}
           <View style={styles.productDetails}>
@@ -97,7 +111,9 @@ export default function Purchase({ route }) {
             <Text>Total: {product.totalPrice}</Text>
             <View style={styles.colorRow}>
               <Text>Color:</Text>
-              <View style={[styles.colorBox, { backgroundColor: product.color }]} />
+              <View
+                style={[styles.colorBox, { backgroundColor: product.color }]}
+              />
             </View>
             <Text>Size: {product.size}</Text>
           </View>
@@ -109,7 +125,11 @@ export default function Purchase({ route }) {
   return (
     <SafeAreaView style={styles.container}>
       {loading && !refreshing ? (
-        <Text>Loading...</Text>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" color="#dc143c" />
+        </View>
       ) : purchases.length === 0 ? (
         <Text>No purchases found</Text>
       ) : (
@@ -130,22 +150,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   purchaseContainer: {
     marginBottom: 20,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
   },
   dateText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   productContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     marginBottom: 10,
   },
   productImage: {
@@ -159,12 +179,12 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
   colorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 5,
   },
   colorBox: {
