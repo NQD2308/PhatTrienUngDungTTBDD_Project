@@ -97,12 +97,12 @@ export default function User({ navigation, route }) {
       // Truy vấn collection Wishlist
       const wishlistQuery = collection(FIREBASE_DB, "Wishlist");
       const wishlistSnapshot = await getDocs(wishlistQuery);
-  
+
       let count = 0; // Biến đếm số lượng sản phẩm có status == true
-  
+
       wishlistSnapshot.docs.forEach((doc) => {
         // Kiểm tra xem doc.id có trùng với userId không
-        if (doc.id === userId) {          
+        if (doc.id === userId) {
           const wishlistData = doc.data();
           // Kiểm tra mảng products có tồn tại
           if (wishlistData.products) {
@@ -115,8 +115,8 @@ export default function User({ navigation, route }) {
       });
       setCountWishList(count);
       console.log("Số lượng sản phẩm yêu thích: ", count);
-      
-  
+
+
       console.log(`Tổng số sản phẩm có status == true: ${count}`);
       return count; // Trả về số lượng sản phẩm
     } catch (e) {
@@ -124,7 +124,7 @@ export default function User({ navigation, route }) {
       return 0; // Trả về 0 trong trường hợp xảy ra lỗi
     }
   };
-  
+
   const fetchBillCount = async () => {
     try {
       // Truy vấn các đơn hàng của người dùng theo userId
@@ -132,13 +132,13 @@ export default function User({ navigation, route }) {
         collection(FIREBASE_DB, "Bill"), // Collection 'Bill'
         where("userId", "==", safeUserId) // Lọc các document có trường 'userId' trùng với safeUserId
       );
-  
+
       const querySnapshot = await getDocs(userQuery);
-  
+
       // Đếm số lượng đơn hàng
       const billCount = querySnapshot.size; // `size` trả về số lượng document trong querySnapshot
       setCountOrder(billCount);
-  
+
       if (billCount > 0) {
         console.log(`Người dùng hiện có ${billCount} đơn hàng.`);
       } else {
@@ -149,7 +149,7 @@ export default function User({ navigation, route }) {
           text2: "Bạn chưa có đơn hàng nào.",
         });
       }
-  
+
       return billCount; // Trả về số lượng đơn hàng nếu cần sử dụng tiếp
     } catch (error) {
       console.error("Lỗi khi đếm đơn hàng:", error);
@@ -160,7 +160,7 @@ export default function User({ navigation, route }) {
       });
     }
   };
-  
+
 
   if (loading) {
     return (
@@ -252,7 +252,7 @@ export default function User({ navigation, route }) {
                   querySnapshot.forEach(async (docSnap) => {
                     const docRef = doc(FIREBASE_DB, "User", docSnap.id);
                     console.log(docSnap.id);
-                    
+
 
                     // Xóa tài liệu
                     await deleteDoc(docRef);
@@ -321,21 +321,22 @@ export default function User({ navigation, route }) {
 
         {/* Stats Section */}
         <View style={styles.statsSection}>
-          <View style={styles.statItem}>
+          {/* Tổng số đơn hàng */}
+          <TouchableOpacity style={styles.statItem}>
             <Text style={styles.statValue}>{countOrder}</Text>
             <Text style={styles.statLabel}>Orders</Text>{" "}
-            {/* Tổng số đơn hàng */}
-          </View>
-          <View style={styles.statItem}>
+          </TouchableOpacity>
+          {/* Lượt thích sản phẩm */}
+          <TouchableOpacity style={styles.statItem}>
             <Text style={styles.statValue}>400</Text>
             <Text style={styles.statLabel}>Likes</Text>{" "}
-            {/* Lượt thích sản phẩm */}
-          </View>
-          <View style={styles.statItem}>
+          </TouchableOpacity>
+          {/* Sản phẩm trong wishlist */}
+          <TouchableOpacity style={styles.statItem} onPress={() => navigation.navigate("Wishlist")}>
             <Text style={styles.statValue}>{countWishList}</Text>
             <Text style={styles.statLabel}>Wishlist</Text>{" "}
-            {/* Sản phẩm trong wishlist */}
-          </View>
+          </TouchableOpacity>
+
         </View>
       </ImageBackground>
 
@@ -345,6 +346,14 @@ export default function User({ navigation, route }) {
         onPress={() => navigation.navigate("Language")}
       >
         <FontAwesome name="earth-americas" size={25} color="#ffff" />
+      </TouchableOpacity>
+
+      {/* Contact Info*/}
+      <TouchableOpacity
+        style={styles.infoButton}
+        onPress={() => navigation.navigate("Contact")}
+      >
+        <FontAwesome name="circle-info" size={25} color="#ffff" />
       </TouchableOpacity>
 
       {/* Divider: LogOut Button and Method Icons */}
@@ -378,10 +387,11 @@ export default function User({ navigation, route }) {
       <View style={styles.aboutSection}>
         <Text style={styles.aboutTitle}>About me</Text>
         <Text style={styles.aboutText}>
-          {`Name: ${userData.username}\nEmail: ${userData.email}\nPhone: ${userData.phone}`}
+          An aritist of considerable range, Ryan- the name taken by Melbourner-raised, Brooklyn-based Nick murphy - writest, performs and records all of his own music
+          {/* {`Name: ${userData.username}\nEmail: ${userData.email}\nPhone: ${userData.phone}`} */}
         </Text>
       </View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.Button}
         onPress={() => navigation.navigate("Wishlist")}
       >
@@ -392,10 +402,12 @@ export default function User({ navigation, route }) {
         onPress={() => navigation.navigate("Contact")}
       >
         <Text style={styles.btnText}>Contact</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.Button} onPress={handleDeleteAccount}>
-        <Text style={styles.btnText}>Delete account</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <View style={styles.deleteContainer}>
+        <TouchableOpacity style={styles.deleteBtn} onPress={handleDeleteAccount}>
+          <Text style={styles.deleteText}>Delete account!</Text>
+        </TouchableOpacity>
+      </View>
       <Toast />
     </View>
   );
@@ -539,20 +551,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
-  aboutSection: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 40,
-  },
-  aboutTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  aboutText: {
-    fontSize: 14,
-    color: "#555",
-  },
+  // Language & Info Button
   languageButton: {
     position: "absolute", // Đặt nút ở góc phải
     top: 30, // Khoảng cách từ trên xuống (điều chỉnh tùy thiết kế)
@@ -568,4 +567,63 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5, // Hiệu ứng bóng trên Android
   },
+  infoButton: {
+    position: "absolute", // Đặt nút ở góc phải
+    top: 30, // Khoảng cách từ trên xuống (điều chỉnh tùy thiết kế)
+    left: 5, // Khoảng cách từ phải sang
+    width: 50, // Chiều rộng nút
+    height: 50, // Chiều cao nút
+    borderRadius: 25, // Bo tròn thành hình tròn (bằng 50% width/height)
+    justifyContent: "center", // Căn giữa icon theo chiều dọc
+    alignItems: "center", // Căn giữa icon theo chiều ngang
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Hiệu ứng bóng trên Android
+  },
+  // Section About & Delete Btn
+  aboutSection: {
+    flex: 0.8,
+    paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  aboutTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  aboutText: {
+    fontSize: 16,
+    color: "#555",
+    textAlign: "center",
+    marginTop: 5,
+  },
+
+  //DeleteAccount Section
+  deleteContainer: {
+    flex: 0.2,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#a9a9a9"
+  },
+  deleteBtn: {
+    backgroundColor: "#000",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    alignItems: "flex-start",
+    marginBottom: 10,
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  deleteText: {
+    fontSize: 15,
+    color: "#fff"
+  },
+
 });

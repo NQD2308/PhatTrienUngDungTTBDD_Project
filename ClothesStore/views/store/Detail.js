@@ -548,6 +548,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#E0E0E0',
     borderRadius: 5,
+
   },
   quantityButtonText: {
     fontSize: 20,
@@ -572,6 +573,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E0E0E0',
     borderRadius: 5,
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Hiệu ứng bóng trên Android
   },
   selectedSizeBox: {
     borderColor: '#3b82f6',
@@ -606,6 +612,11 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Hiệu ứng bóng trên Android
   },
   bottomArea: {
     flexDirection: 'row',
@@ -623,6 +634,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     borderRadius: 10,
+
   },
   btnBuyNow: {
     flex: 1,
@@ -631,5 +643,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#dc143c',
     alignItems: 'center',
     borderRadius: 10,
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Hiệu ứng bóng trên Android
   },
 });
