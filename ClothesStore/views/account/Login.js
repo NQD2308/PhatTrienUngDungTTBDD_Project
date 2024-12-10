@@ -22,6 +22,7 @@ import Toast from "react-native-toast-message";
 import { collection, where, query, getDocs } from "firebase/firestore";
 import FontAwesome from 'react-native-vector-icons/FontAwesome6';
 import * as LocalAuthentication from "expo-local-authentication";
+import i18next, { languageResources } from "../../services/i18next";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -230,20 +231,20 @@ export default function Login({ navigation }) {
         >
           <View style={styles.brandView}>
             <FontAwesome name="shopware" style={{ color: '#fff', fontSize: 80 }} />
-            <Text style={styles.brandViewText}>Clothes's Store</Text>
+            <Text style={styles.brandViewText}>{i18next.t("Clothes's Store")}</Text>
           </View>
         </ImageBackground>
 
         {/* Bottom Section */}
         <View style={styles.bottomView}>
           <View style={{ padding: 20 }}>
-            <Text style={styles.welcomeText}>Welcome</Text>
+            <Text style={styles.welcomeText}>{i18next.t("Welcome")}</Text>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={styles.subText}>
-                Don't have an account?
+                {i18next.t("Don't have an account?")}
               </Text>
               <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                <Text style={styles.registerText}> Register now</Text>
+                <Text style={styles.registerText}>{i18next.t("Register now")}</Text>
               </TouchableOpacity>
             </View>
 
@@ -254,7 +255,7 @@ export default function Login({ navigation }) {
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Your Email..."
+                  placeholder={i18next.t("Your Email...")}
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
@@ -264,7 +265,7 @@ export default function Login({ navigation }) {
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Your Password..."
+                  placeholder={i18next.t("Your Password...")}
                   secureTextEntry={!showPassword}
                   value={password}
                   onChangeText={setPassword}
@@ -286,10 +287,10 @@ export default function Login({ navigation }) {
                   onValueChange={setRememberMe}
                   color={rememberMe ? "#2f4f4f" : undefined}
                 />
-                <Text style={styles.rememberMeText}>Remember Me</Text>
+                <Text style={styles.rememberMeText}>{i18next.t("Remember Me")}</Text>
               </View>
               <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-                <Text style={styles.forgotPasswordText} >Forgot password</Text>
+                <Text style={styles.forgotPasswordText}>{i18next.t("Forgot password")}</Text>
               </TouchableOpacity>
             </View>
 
@@ -299,7 +300,7 @@ export default function Login({ navigation }) {
                 <ActivityIndicator size="large" color="#2f4f4f" />
               ) : (
                 <TouchableOpacity style={styles.loginButton} onPress={() => signIn()}>
-                  <Text style={styles.loginButtonText}>Login</Text>
+                  <Text style={styles.loginButtonText}>{i18next.t("Login")}</Text>
                 </TouchableOpacity>
               )}
               <TouchableOpacity style={styles.fingerprintButton} onPress={handleBiometricAuth}>
@@ -308,66 +309,6 @@ export default function Login({ navigation }) {
             </View>
           </View>
         </View>
-
-
-
-        {/* <Text style={styles.title}>Clothes Store</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.inputPassword}
-          placeholder="Password"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TouchableOpacity
-          style={styles.showPasswordButton}
-          onPress={() => setShowPassword(!showPassword)}
-        >
-          <Icon
-            name={showPassword ? "eye-off" : "eye"}
-            size={24}
-            color="#007BFF"
-          />
-        </TouchableOpacity>
-      </View> */}
-        {/* <View style={styles.rememberMeContainer}>
-        <Checkbox
-          value={rememberMe}
-          onValueChange={setRememberMe}
-          color={rememberMe ? "#007BFF" : undefined}
-        />
-        <Text style={styles.rememberMeText}>Remember Me</Text>
-      </View>
-      {loading ? (
-        <ActivityIndicator size="large" color="#007BFF" />
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={() => signIn()}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-      )} */}
-        {/* <TouchableOpacity
-        style={styles.biometricButton}
-        onPress={handleBiometricAuth}
-      >
-        <Text style={styles.buttonText}>Login with Fingerprint</Text>
-      </TouchableOpacity> */}
-        {/* <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.linkText}>Forgot password!</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-        <Text style={styles.linkText}>
-          Don't have an account? Register here
-        </Text>
-      </TouchableOpacity> */}
         <Toast />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -408,6 +349,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     fontSize: 16,
     marginTop: 5,
+    marginLeft: 4
   },
   inputContainer: {
     flexDirection: 'row',

@@ -9,11 +9,10 @@ import {
   Image,
   ActivityIndicator,
   ImageBackground,
-  s,
 } from "react-native";
 import { signOut, deleteUser } from "firebase/auth";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
-
+import i18next from "../../services/i18next";
 import { useCallback, useEffect, useState } from "react";
 import { CommonActions, useFocusEffect } from "@react-navigation/native";
 import {
@@ -352,7 +351,7 @@ export default function User({ navigation, route }) {
       <View style={styles.centerContainer}>
         <View style={styles.socialIcons}>
           <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
-            <Text style={styles.followText}>Log Out</Text>
+            <Text style={styles.followText}>{i18next.t("Log Out")}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.iconButton}
