@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useFocusEffect } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import i18next from "./services/i18next";
+import FontAwesome from "react-native-vector-icons/FontAwesome6";
 
 // import { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
@@ -106,9 +107,9 @@ function TabNavigator({ route }) {
                 marginTop: 14,
               }}
             >
-              <Image
-                source={require("./assets/icons/house.png")}
-                resizeMode="contain"
+              <FontAwesome
+                name="house"
+                size={22}
                 style={{
                   width: 24,
                   height: 24,
@@ -143,9 +144,9 @@ function TabNavigator({ route }) {
                 marginTop: 14,
               }}
             >
-              <Image
-                source={require("./assets/icons/shopping-cart.png")}
-                resizeMode="contain"
+              <FontAwesome
+                name="cart-shopping"
+                size={22}
                 style={{
                   width: 24,
                   height: 24,
@@ -180,9 +181,9 @@ function TabNavigator({ route }) {
                 marginTop: 14,
               }}
             >
-              <Image
-                source={require("./assets/icons/shopping-cart.png")}
-                resizeMode="contain"
+              <FontAwesome
+                name="qrcode"
+                size={22}
                 style={{
                   width: 24,
                   height: 24,
@@ -217,9 +218,9 @@ function TabNavigator({ route }) {
                 marginTop: 14,
               }}
             >
-              <Image
-                source={require("./assets/icons/Purchase2.png")}
-                resizeMode="contain"
+              <FontAwesome
+                name="bag-shopping"
+                size={22}
                 style={{
                   width: 24,
                   height: 24,
@@ -254,9 +255,10 @@ function TabNavigator({ route }) {
                 marginTop: 14,
               }}
             >
-              <Image
-                source={require("./assets/icons/user.png")}
-                resizeMode="contain"
+              <FontAwesome
+                name="user"
+                solid
+                size={22}
                 style={{
                   width: 24,
                   height: 24,
