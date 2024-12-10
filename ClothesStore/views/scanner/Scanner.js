@@ -1,121 +1,131 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Button,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   AppState,
   Platform,
   StatusBar,
   SafeAreaView,
+  Animated,
+  Dimensions, // Thêm Dimensions API
 } from "react-native";
-import { Overlay } from "./Overlay";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 export default function Scanner({ route }) {
-  const { userId } = route.params; // Lấy userId từ route.params
+  const { userId } = route.params;
   const navigation = useNavigation();
   const qrLock = useRef(false);
-  const appState = useRef(AppState.currentState);
+  const timeoutRef = useRef(null);
 
-  const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
-
-  // State to store the QR code data
   const [qrData, setQrData] = useState(null);
 
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        qrLock.current = false;
-      }
-      appState.current = nextAppState;
-    });
+  const borderSize = 200; // Kích thước viền
+  const animatedBorderPosition = useRef(
+    new Animated.ValueXY({ x: 0, y: 0 }) // Vị trí khởi tạo của viền
+  ).current;
 
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+  // Lấy kích thước màn hình
+  const { width, height } = Dimensions.get("window");
 
-  useEffect(() => {
-    if (permission?.granted) {
-      console.log("Camera is granted and active");
-    } else {
-      console.log("Camera permission not granted or denied");
+  useFocusEffect(
+    React.useCallback(() => {
+      qrLock.current = false;
+      setQrData(null);
+      clearTimeout(timeoutRef.current);
+      
+      
+      // Khi quay lại màn hình, viền sẽ về vị trí trung tâm
+      const centerX = (width - borderSize) / 2; // Xác định vị trí trung tâm ngang
+      const centerY = (height - borderSize) / 2; // Xác định vị trí trung tâm dọc
+
+      Animated.timing(animatedBorderPosition, {
+        toValue: { x: centerX, y: centerY }, // Trung tâm màn hình
+        duration: 800,
+        useNativeDriver: false,
+      }).start();
+      
+      return () => {
+        clearTimeout(timeoutRef.current);
+      };
+    }, [width, height]) // Sử dụng width, height từ Dimensions để tái tạo lại vị trí viền khi kích thước màn hình thay đổi
+  );
+
+  const handleBarcodeScanned = ({ bounds, data }) => {
+    if (data && !qrLock.current) {
+      const { origin } = bounds;
+
+      // Cập nhật vị trí viền với hiệu ứng mượt
+      Animated.timing(animatedBorderPosition, {
+        toValue: { x: origin.x, y: origin.y }, // Vị trí mới của viền
+        duration: 300, // Thời gian chuyển động (ms)
+        useNativeDriver: false, // Native driver không hỗ trợ thay đổi layout
+      }).start();
+
+      // Điều hướng khi mã QR nằm trong viền
+      qrLock.current = true; // Khóa để tránh quét lại
+      clearTimeout(timeoutRef.current);
+
+      timeoutRef.current = setTimeout(() => {
+        navigation.navigate("Detail", { productId: data, userId: userId });
+      }, 200); // Chuyển sau 0.5 giây
     }
-  }, [permission]);
+  };
 
   if (!permission) {
-    // Camera permissions are still loading
-    console.log("Camera permissions are loading...");
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet
-    console.log("Camera permission denied");
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: "center" }}>
           We need your permission to show the camera
         </Text>
-        <Button onPress={requestPermission} title="Grant Permission" />
       </View>
     );
   }
-
-  // Log the camera facing state every time it changes
-  const toggleCameraFacing = () => {
-    setFacing((current) => {
-      const newFacing = current === "back" ? "front" : "back";
-      console.log(`Camera facing is now: ${newFacing}`); // Log the new facing state
-      return newFacing;
-    });
-  };
-
-  // Function to handle barcode scanned
-  const handleBarcodeScanned = ({ data }) => {
-    if (data && !qrLock.current) {
-      qrLock.current = true;
-      setQrData(data); // Save QR code data to state
-      const productId = data; // Assuming the QR code contains the productId (e.g. "10")
-      
-      // Navigate to Detail page with productId and userId
-      navigation.navigate("Detail", { productId: productId, userId: userId });
-      
-      setTimeout(() => {
-        qrLock.current = false; // Allow scanning again after timeout
-      }, 500);
-    }
-  };
 
   return (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>
       {Platform.OS === "android" ? <StatusBar hidden /> : null}
 
-      {/* Camera view to scan QR Code */}
+      {/* Camera view */}
       <CameraView
         style={StyleSheet.absoluteFillObject}
-        facing={facing}
-        onBarcodeScanned={handleBarcodeScanned} // Call the handle function when barcode is scanned
+        onBarcodeScanned={handleBarcodeScanned}
       />
 
-      {/* Display QR code data on screen */}
-      {/* <View style={styles.overlay}>
-        {qrData && <Text style={styles.qrText}>QR Code Data: {qrData}</Text>}
-      </View> */}
+      {/* Viền động */}
+      <Animated.View
+        style={[
+          styles.border,
+          {
+            width: borderSize,
+            height: borderSize,
+            transform: [
+              { translateX: animatedBorderPosition.x },
+              { translateY: animatedBorderPosition.y },
+            ],
+          },
+        ]}
+      />
 
-      <Overlay />
-
-      {/* Button to toggle camera facing */}
-      {/* <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-        <Text style={styles.text}>Flip Camera</Text>
-      </TouchableOpacity> */}
+      {/* Text trên khu vực ngoài viền */}
+      <Animated.Text
+        style={[
+          styles.text,
+          {
+            position: "absolute",
+            top: Animated.subtract(animatedBorderPosition.y, 30), // Nằm trên ngoài khu vực viền (giảm thêm giá trị)
+            left: Animated.add(animatedBorderPosition.x, borderSize / 2 - 85), // Căn giữa viền, trừ 100 để cân bằng chiều rộng chữ
+          },
+        ]}
+      >
+        Scanner QR Product
+      </Animated.Text>
     </SafeAreaView>
   );
 }
@@ -125,37 +135,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
-    alignItems: "center",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
-  },
-  overlay: {
+  border: {
     position: "absolute",
-    top: "50%",
-    left: "10%",
-    right: "10%",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    padding: 10,
+    borderWidth: 2,
+    borderColor: "#fff", // Màu viền
     borderRadius: 10,
   },
-  qrText: {
-    color: "white",
-    fontSize: 18,
+  text: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff", // Màu chữ
     textAlign: "center",
   },
 });
