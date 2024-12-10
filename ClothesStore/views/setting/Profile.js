@@ -5,7 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  FlatList
+  FlatList,
+  ImageBackground,
+  KeyboardAvoidingView,
 } from "react-native";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import {
@@ -118,7 +120,7 @@ export default function Profile({ route, navigation }) {
       setAddressSuggestions([]); // Xóa gợi ý nếu input rỗng
       return;
     }
-  
+
     try {
       const response = await fetch("https://google.serper.dev/places", {
         method: "POST",
@@ -130,15 +132,15 @@ export default function Profile({ route, navigation }) {
           q: text,
         }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
-  
+
         // Map dữ liệu để chỉ lấy `title`
         const suggestions = (data.places || []).map((place) => ({
           title: place.title, // Lấy `title` từ mỗi phần tử
         }));
-  
+
         setAddressSuggestions(suggestions); // Cập nhật danh sách gợi ý
       } else {
         console.error("Autocomplete API Error:", response.status);
@@ -147,126 +149,163 @@ export default function Profile({ route, navigation }) {
       console.error("Error during autocomplete fetch:", error);
     }
   };
-  
+
 
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text>Đang tải thông tin...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Chỉnh Sửa Thông Tin Người Dùng</Text>
+    <ImageBackground source={{
+      uri: "https://images.pexels.com/photos/8483478/pexels-photo-8483478.jpeg?auto=compress&cs=tinysrgb&w=600",
+    }}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <KeyboardAvoidingView style={styles.formContainer}>
+        <Text style={styles.title}>User's Information</Text>
 
-      <TextInput
-        style={styles.input}
-        value={userData.username}
-        onChangeText={(text) => setUserData({ ...userData, username: text })}
-        placeholder="Username"
-      />
-      <TextInput
-        style={styles.input}
-        value={userData.email}
-        onChangeText={(text) => setUserData({ ...userData, email: text })}
-        placeholder="Email"
-      />
-      <TextInput
-        style={styles.input}
-        value={userData.phone}
-        onChangeText={(text) => setUserData({ ...userData, phone: text })}
-        placeholder="Phone number"
-      />
-      {/* <TextInput
+        {/* Form Inputs */}
+        <TextInput
+          style={styles.input}
+          value={userData.username}
+          onChangeText={(text) => setUserData({ ...userData, username: text })}
+          placeholder="Username"
+        />
+        <TextInput
+          style={styles.input}
+          value={userData.email}
+          onChangeText={(text) => setUserData({ ...userData, email: text })}
+          placeholder="Email"
+        />
+        <TextInput
+          style={styles.input}
+          value={userData.phone}
+          onChangeText={(text) => setUserData({ ...userData, phone: text })}
+          placeholder="Phone number"
+        />
+        {/* <TextInput
         style={styles.input}
         value={userData.address}
         onChangeText={(text) => setUserData({ ...userData, address: text })}
         placeholder="Address"
       /> */}
 
-      <TextInput
-        style={styles.input}
-        value={userData.address}
-        onChangeText={handleAddressAutocomplete} // Gọi hàm autocomplete khi người dùng nhập
-        placeholder="Address"
-      />
+        <TextInput
+          style={styles.input}
+          value={userData.address}
+          onChangeText={handleAddressAutocomplete} // Gọi hàm autocomplete khi người dùng nhập
+          placeholder="Address"
+        />
 
-      {/* Hiển thị danh sách gợi ý địa chỉ */}
-      {addressSuggestions.length > 0 && (
-        <FlatList
-        data={addressSuggestions}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.suggestionItem}
-            onPress={() => {
-              setUserData((prev) => ({ ...prev, address: item.title })); // Cập nhật địa chỉ được chọn
-              setAddressSuggestions([]); // Xóa gợi ý
-            }}
-          >
-            <Text style={{ color: "#000" }}>{item.title}</Text> {/* Hiển thị title */}
-          </TouchableOpacity>
+        {/* Hiển thị danh sách gợi ý địa chỉ */}
+        {addressSuggestions.length > 0 && (
+          <FlatList
+            data={addressSuggestions}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.suggestionItem}
+                onPress={() => {
+                  setUserData((prev) => ({ ...prev, address: item.title })); // Cập nhật địa chỉ được chọn
+                  setAddressSuggestions([]); // Xóa gợi ý
+                }}
+              >
+                <Text style={{ color: "#000" }}>{item.title}</Text> {/* Hiển thị title */}
+              </TouchableOpacity>
+            )}
+          />
+
         )}
-      />
-      
-      )}
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Lưu Thay Đổi</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.saveButtonText}>Save</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.cancelButton}
-        onPress={() => navigation.goBack()}
-      >
-        <Text style={styles.cancelButtonText}>Hủy</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.cancelButtonText}>Cancel</Text>
+        </TouchableOpacity>
 
-      <Toast />
-    </View>
+        <Toast />
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  formContainer: {
+    width: "85%",
+    backgroundColor: "#ffffffCC", // Màu trắng với alpha 80%
+    borderRadius: 15,
     padding: 20,
-    backgroundColor: "#f9f9f9",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 20,
     textAlign: "center",
+    marginBottom: 10,
+    color: "#00000",
   },
   input: {
-    height: 40,
-    borderColor: "#ccc",
     borderWidth: 1,
-    borderRadius: 8,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
     marginBottom: 15,
-    paddingHorizontal: 10,
+    fontSize: 16,
+    backgroundColor: "#f9f9f9",
+    flexDirection: "row",
+    alignItems: "center",
   },
   saveButton: {
-    backgroundColor: "#3b82f6",
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginTop: 20,
+    backgroundColor: "#dc143c",
+    padding: 15,
+    borderRadius: 20,
     alignItems: "center",
+    width: "80%",
+    alignSelf: "center",
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Hiệu ứng bóng trên Android
   },
   saveButtonText: {
     color: "#fff",
-    fontSize: 16,
     fontWeight: "bold",
+    fontSize: 18,
   },
   cancelButton: {
-    backgroundColor: "#ef4444",
+    backgroundColor: "#008080",
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 16,
     marginTop: 10,
     alignItems: "center",
+    width: "40%",
+    alignSelf: "center",
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Hiệu ứng bóng trên Android
   },
   cancelButtonText: {
     color: "#fff",

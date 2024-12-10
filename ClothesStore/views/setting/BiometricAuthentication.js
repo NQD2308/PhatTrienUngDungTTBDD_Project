@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Switch } from "react-native";
+import { StyleSheet, Text, View, Switch, ImageBackground, } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 import { doc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
@@ -118,28 +118,65 @@ export default function BiometricAuthentication({ route }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.row}>
-        <Text style={styles.label}>Xác nhận vân tay</Text>
-        <Switch value={biometricEnabled} onValueChange={toggleBiometric} />
+    <ImageBackground source={{
+      uri: "https://images.pexels.com/photos/8483478/pexels-photo-8483478.jpeg?auto=compress&cs=tinysrgb&w=600",
+    }}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Biometric Authentication</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>Fingerprint verification</Text>
+          <Switch style={styles.switch} value={biometricEnabled} onValueChange={toggleBiometric} />
+        </View>
       </View>
-    </View>
+    </ImageBackground>
+
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
     justifyContent: "center",
-    padding: 16,
+    alignItems: "center",
+  },
+  container: {
+    width: "85%",
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 5,
+    color: "#00000",
   },
   row: {
+    borderTopWidth: 1,
+    borderColor: "#000",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    marginTop: 10,
+    padding: 10,
   },
   label: {
     fontSize: 18,
   },
+  switch: {
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 1, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+    elevation: 5, // Hiệu ứng bóng trên Android
+  }
 });
