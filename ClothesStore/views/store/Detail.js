@@ -27,6 +27,7 @@ import {
 import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function Detail({ route }) {
   const navigation = useNavigation();
@@ -41,28 +42,28 @@ export default function Detail({ route }) {
   // lấy dữ liệu từ bảng wishlist
   const getWishlistData = async () => {
     const userId = FIREBASE_AUTH.currentUser?.uid; // Lấy userId từ Firebase Auth
-  
+
     if (!userId) return; // Nếu chưa đăng nhập thì không làm gì
-  
+
     try {
       const wishlistRef = doc(FIREBASE_DB, "Wishlist", userId); // Lấy tham chiếu đến tài liệu wishlist của người dùng
       const wishlistDoc = await getDoc(wishlistRef); // Lấy tài liệu
-  
+
       if (wishlistDoc.exists()) {
         const wishlistData = wishlistDoc.data(); // Lấy dữ liệu wishlist
-  
+
         // Tìm sản phẩm trong mảng `products` có `productId` trùng khớp
         const productInWishlist = wishlistData.products.find(
           (product) => product.productId === productId
         );
-  
+
         if (productInWishlist) {
           console.log("UID: ", userId);
           console.log("Product ID: ", productId);
           console.log("Status: ", productInWishlist.status);
-  
+
           // Cập nhật trạng thái `isLiked` theo giá trị `status` của sản phẩm
-          setIsLiked(productInWishlist.status); 
+          setIsLiked(productInWishlist.status);
         }
       } else {
         console.log("Không tìm thấy wishlist cho người dùng này.");
@@ -395,90 +396,91 @@ export default function Detail({ route }) {
           )}
           showsVerticalScrollIndicator={false}
         />
-        <Text style={styles.name}>
-          {product.productName}
-          <TouchableOpacity
-            onPress={toggleWishlist}
-            style={styles.wishlistButton}
-          >
-            <FontAwesome
-              name={isLiked ? "heart" : "heart-o"} // Hiển thị "heart" nếu đã thích, "heart-o" nếu chưa
-              size={20}
-              color={isLiked ? "red" : "#000000"} // Đổi màu đỏ nếu đã thích
-            />
-          </TouchableOpacity>
-        </Text>
-        <Text style={styles.price}>
-          {parseInt(product.price).toLocaleString("vi-VN")} {product.priceUnit}
-        </Text>
-        <Text style={styles.description}>{product.description}</Text>
-        {/* Xử lý số lượng mua hàng */}
-        <View style={styles.quantityContainer}>
-          <Pressable onPress={handleDecrease} style={styles.quantityButton}>
-            <Text style={styles.quantityButtonText}>-</Text>
-          </Pressable>
-          <Text style={styles.quantityText}>{quantity}</Text>{" "}
-          {/* Hiển thị số lượng */}
-          <Pressable onPress={handleIncrease} style={styles.quantityButton}>
-            <Text style={styles.quantityButtonText}>+</Text>
-          </Pressable>
-        </View>
-        {/* Kết thúc xử lý số lượng mua hàng */}
-        {/* Xử lý chọn size */}
-        <FlatList
-          data={product.size}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => setSelectedSize(item)} // Gán size được chọn
-              style={[
-                styles.sizeBox,
-                selectedSize === item && styles.selectedSizeBox, // Highlight nếu được chọn
-              ]}
+        <ScrollView>
+          <View style={styles.headerContainer}>
+            <Text style={styles.name}>{product.productName}</Text>
+            <TouchableOpacity
+              onPress={toggleWishlist}
+              style={styles.wishlistButton}
             >
-              <Text
+              <FontAwesome
+                name={isLiked ? "heart" : "heart-o"} // Hiển thị "heart" nếu đã thích, "heart-o" nếu chưa
+                size={32} // Tăng kích thước icon
+                color={isLiked ? "red" : "#555555"} // Đổi màu đỏ nếu đã thích
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.price}>
+            {parseInt(product.price).toLocaleString("vi-VN")} {product.priceUnit}
+          </Text>
+          <Text style={styles.description}>{product.description}</Text>
+          {/* Xử lý số lượng mua hàng */}
+          <View style={styles.quantityContainer}>
+            <Pressable onPress={handleDecrease} style={styles.quantityButton}>
+              <Text style={styles.quantityButtonText}>-</Text>
+            </Pressable>
+            <Text style={styles.quantityText}>{quantity}</Text>{" "}
+            {/* Hiển thị số lượng */}
+            <Pressable onPress={handleIncrease} style={styles.quantityButton}>
+              <Text style={styles.quantityButtonText}>+</Text>
+            </Pressable>
+          </View>
+          {/* Kết thúc xử lý số lượng mua hàng */}
+          {/* Xử lý chọn size */}
+          <Text style={styles.colorTitle}>Choose a Size:</Text>
+          <View style={styles.sizeList}>
+            {product.size.map((item, index) => (
+              <Pressable
+                key={index}
+                onPress={() => setSelectedSize(item)}
                 style={[
-                  styles.sizeText,
-                  selectedSize === item && styles.selectedSizeText, // Thay đổi text khi chọn
+                  styles.sizeBox,
+                  selectedSize === item && styles.selectedSizeBox,
                 ]}
               >
-                {item}
-              </Text>
-            </Pressable>
-          )}
-          contentContainerStyle={styles.sizeList}
-        />
-        {/* Kết thúc xử lý chọn size */}
-        {/* Chọn màu */}
-        <Text style={styles.colorTitle}>Choose a Color:</Text>
-        <FlatList
-          data={product.colors}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => setSelectedColor(item)}
-              style={[
-                styles.colorBox,
-                selectedColor === item && styles.selectedColorBox,
-              ]}
-            >
-              <View
-                style={[styles.colorCircle, { backgroundColor: item }]}
-              ></View>
-            </Pressable>
-          )}
-          contentContainerStyle={styles.colorList}
-        />
+                <Text
+                  style={[
+                    styles.sizeText,
+                    selectedSize === item && styles.selectedSizeText,
+                  ]}
+                >
+                  {item}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+          {/* Kết thúc xử lý chọn size */}
+          {/* Chọn màu */}
+          <Text style={styles.colorTitle}>Choose a Color:</Text>
+          <View style={styles.colorList}>
+            {product.colors.map((item, index) => (
+              <Pressable
+                key={index}
+                onPress={() => setSelectedColor(item)}
+                style={[
+                  styles.colorBox,
+                  selectedColor === item && styles.selectedColorBox,
+                ]}
+              >
+                <View
+                  style={[styles.colorCircle, { backgroundColor: item }]}
+                ></View>
+              </Pressable>
+            ))}
+          </View>
+        </ScrollView>
       </View>
+
+      {/* Bottom Action */}
       <View style={styles.bottomArea}>
         <TouchableOpacity style={styles.btnAddToCart} onPress={handleAddToCart}>
-          <Text>Add To Cart</Text>
+          <Text style={{ color: "#dc143c", fontWeight: "500" }}>Add To Cart</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleBuyNow}
-          style={[styles.btnAddToCart, { backgroundColor: "#3b82f6" }]}
+          style={styles.btnBuyNow}
         >
-          <Text style={{ color: "white" }}>Buy Now</Text>
+          <Text style={{ color: "white", fontWeight: "700" }}>Buy Now</Text>
         </TouchableOpacity>
       </View>
 
@@ -498,114 +500,136 @@ const styles = StyleSheet.create({
     aspectRatio: 1, // Giữ nguyên tỷ lệ ảnh (có thể điều chỉnh nếu cần)
     marginBottom: 16,
   },
-  name: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 8,
+  headerContainer: {
+    flexDirection: 'row', // Căn ngang các phần tử
+    alignItems: 'center', // Căn giữa theo chiều dọc
+    marginVertical: 5,
+    paddingHorizontal: 16,
   },
   wishlistButton: {
-    borderRadius: 8,
-    padding: 10,
-    marginLeft: 5,
-    marginBottom: 8,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    backgroundColor: '#F0F0F0', // Màu nền nhẹ
+    borderRadius: 25, // Làm tròn button
+    elevation: 2, // Hiệu ứng đổ bóng
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#000',
+    flex: 1, // Cho phép tên sản phẩm chiếm phần còn lại
   },
   price: {
     fontSize: 18,
-    color: "green",
-    marginBottom: 8,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'flex-start',
+    marginLeft: 15,
+    marginBottom: 5,
   },
   description: {
-    fontSize: 16,
-    color: "#555",
-  },
-  sizeList: {
-    flexDirection: "row", // Sắp xếp hàng ngang
-    flexWrap: "wrap", // Tự động xuống dòng
-    justifyContent: "flex-start",
-    marginVertical: 10,
-    gap: 8, // Khoảng cách giữa các ô
-  },
-  sizeBox: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ccc", // Màu viền mặc định
-    borderRadius: 5,
-    margin: 4,
-    backgroundColor: "#f0f0f0", // Màu nền mặc định
-  },
-  selectedSizeBox: {
-    borderColor: "#007bff", // Màu viền khi được chọn
-    backgroundColor: "#d0eaff", // Màu nền khi được chọn
-  },
-  sizeText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  selectedSizeText: {
-    color: "#007bff", // Màu chữ khi được chọn
-    fontWeight: "bold",
+    fontSize: 14,
+    lineHeight: 22,
+    color: '#555',
+    marginHorizontal: 16,
+    textAlign: 'justify',
+    marginBottom: 12,
   },
   quantityContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: 120, // Độ rộng cố định
-    marginVertical: 10, // Khoảng cách trên dưới
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    paddingHorizontal: 5,
-    backgroundColor: "#f9f9f9",
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginLeft: 15,
+    alignItems: 'center',
+    marginVertical: 10,
   },
   quantityButton: {
     padding: 10,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 5,
   },
   quantityButtonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#007bff", // Màu chữ của nút
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
   },
   quantityText: {
+    marginHorizontal: 10,
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: '700',
+  },
+  sizeList: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginLeft: 10,
+    flexWrap: 'wrap',
+    marginVertical: 10,
+  },
+  sizeBox: {
+    padding: 10,
+    margin: 5,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 5,
+  },
+  selectedSizeBox: {
+    borderColor: '#3b82f6',
+    backgroundColor: '#e6f0ff',
+  },
+  colorTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginVertical: 10,
+    textAlign: 'left',
+    marginLeft: 15,
+  },
+  colorList: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginLeft: 10,
+    flexWrap: 'wrap',
+    marginBottom: 15,
+  },
+  colorBox: {
+    margin: 5,
+    padding: 4,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderRadius: 50,
+  },
+  selectedColorBox: {
+    borderColor: '#006400',
+  },
+  colorCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
   },
   bottomArea: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#fff",
-    flexDirection: "row",
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#EEE',
   },
   btnAddToCart: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    marginHorizontal: 10,
+    paddingVertical: 12,
+    borderColor: '#dc143c',
+    borderWidth: 1,
+    alignItems: 'center',
+    borderRadius: 10,
   },
-  colorTitle: {
-    fontSize: 18,
-    marginVertical: 10,
-  },
-  colorList: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    marginVertical: 10,
-    gap: 8,
-  },
-  colorBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "#ccc",
-    margin: 4,
-  },
-  colorCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  selectedColorBox: {
-    borderColor: "#007bff",
-    borderWidth: 3,
+  btnBuyNow: {
+    flex: 1,
+    marginHorizontal: 10,
+    paddingVertical: 12,
+    backgroundColor: '#dc143c',
+    alignItems: 'center',
+    borderRadius: 10,
   },
 });
