@@ -4,12 +4,11 @@ import {
   StyleSheet,
   Text,
   View,
-  AppState,
   Platform,
   StatusBar,
   SafeAreaView,
   Animated,
-  Dimensions, // Thêm Dimensions API
+  Dimensions,
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
@@ -23,54 +22,55 @@ export default function Scanner({ route }) {
   const [qrData, setQrData] = useState(null);
 
   const borderSize = 200; // Kích thước viền
-  const animatedBorderPosition = useRef(
-    new Animated.ValueXY({ x: 0, y: 0 }) // Vị trí khởi tạo của viền
-  ).current;
 
-  // Lấy kích thước màn hình
-  const { width, height } = Dimensions.get("window");
+  const animatedBorderPosition = useRef(
+    new Animated.ValueXY({ x: 0, y: 0 }) // Khởi tạo ở góc trên
+  ).current;
 
   useFocusEffect(
     React.useCallback(() => {
       qrLock.current = false;
       setQrData(null);
       clearTimeout(timeoutRef.current);
-      
-      
-      // Khi quay lại màn hình, viền sẽ về vị trí trung tâm
-      const centerX = (width - borderSize) / 2; // Xác định vị trí trung tâm ngang
-      const centerY = (height - borderSize) / 2; // Xác định vị trí trung tâm dọc
 
+      // Reset vị trí viền về giữa màn hình
       Animated.timing(animatedBorderPosition, {
-        toValue: { x: centerX, y: centerY }, // Trung tâm màn hình
-        duration: 800,
+        toValue: {
+          x: (Dimensions.get("window").width - borderSize) / 2,
+          y: (Dimensions.get("window").height - borderSize) / 2,
+        },
+        duration: 250,
         useNativeDriver: false,
       }).start();
-      
+
       return () => {
         clearTimeout(timeoutRef.current);
       };
-    }, [width, height]) // Sử dụng width, height từ Dimensions để tái tạo lại vị trí viền khi kích thước màn hình thay đổi
+    }, [])
   );
 
   const handleBarcodeScanned = ({ bounds, data }) => {
     if (data && !qrLock.current) {
-      const { origin } = bounds;
+      const { origin, size } = bounds;
 
-      // Cập nhật vị trí viền với hiệu ứng mượt
+      // Tính toán vị trí trung tâm của mã QR
+      const centerX = origin.x + size.width / 2;
+      const centerY = origin.y + size.height / 2;
+
+      // Di chuyển viền đến trung tâm mã QR
       Animated.timing(animatedBorderPosition, {
-        toValue: { x: origin.x, y: origin.y }, // Vị trí mới của viền
-        duration: 300, // Thời gian chuyển động (ms)
-        useNativeDriver: false, // Native driver không hỗ trợ thay đổi layout
+        toValue: { x: centerX - borderSize / 2, y: centerY - borderSize / 2 },
+        duration: 250, // Thời gian chuyển động
+        useNativeDriver: false,
       }).start();
 
-      // Điều hướng khi mã QR nằm trong viền
-      qrLock.current = true; // Khóa để tránh quét lại
+      // Điều hướng sau khi phát hiện mã QR
+      qrLock.current = true;
       clearTimeout(timeoutRef.current);
 
       timeoutRef.current = setTimeout(() => {
         navigation.navigate("Detail", { productId: data, userId: userId });
-      }, 200); // Chuyển sau 0.5 giây
+      }, 500);
     }
   };
 
@@ -113,7 +113,7 @@ export default function Scanner({ route }) {
         ]}
       />
 
-      {/* Text trên khu vực ngoài viền */}
+      {/* Text chỉ dẫn */}
       <Animated.Text
         style={[
           styles.text,
@@ -134,11 +134,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
   },
   border: {
     position: "absolute",
     borderWidth: 2,
-    borderColor: "#fff", // Màu viền
+    borderColor: "#00FF00", // Màu viền
     borderRadius: 10,
   },
   text: {
