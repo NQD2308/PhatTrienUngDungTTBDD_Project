@@ -403,7 +403,6 @@ const styles = StyleSheet.create({
       },
       ios: {
         paddingVertical: 12,
-        marginLeft: 20,
         paddingHorizontal: 120, // Make the button longer
       }
     }),
