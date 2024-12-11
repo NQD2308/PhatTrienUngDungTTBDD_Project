@@ -20,7 +20,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import { collection, where, query, getDocs } from "firebase/firestore";
-import FontAwesome from 'react-native-vector-icons/FontAwesome6';
+import FontAwesome from "react-native-vector-icons/FontAwesome6";
 import * as LocalAuthentication from "expo-local-authentication";
 import i18next, { languageResources } from "../../services/i18next";
 
@@ -216,22 +216,30 @@ export default function Login({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: '#fff' }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1, backgroundColor: "#fff" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: "#fff" }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header with Background Image */}
         <ImageBackground
           source={{
-            uri: 'https://images.pexels.com/photos/9594681/pexels-photo-9594681.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load',
+            uri: "https://images.pexels.com/photos/9594681/pexels-photo-9594681.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
           }}
           style={{
-            height: Dimensions.get('window').height / 1.7,
+            height: Dimensions.get("window").height / 1.7,
           }}
         >
           <View style={styles.brandView}>
-            <FontAwesome name="shopware" style={{ color: '#fff', fontSize: 80 }} />
-            <Text style={styles.brandViewText}>{i18next.t("Clothes's Store")}</Text>
+            <FontAwesome
+              name="shopware"
+              style={{ color: "#fff", fontSize: 80 }}
+            />
+            <Text style={styles.brandViewText}>
+              {i18next.t("Clothes's Store")}
+            </Text>
           </View>
         </ImageBackground>
 
@@ -244,11 +252,11 @@ export default function Login({ navigation }) {
                 {i18next.t("Don't have an account?")}
               </Text>
               <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                <Text style={styles.registerText}>{i18next.t("Register now")}</Text>
+                <Text style={styles.registerText}>
+                  {i18next.t("Register now")}
+                </Text>
               </TouchableOpacity>
             </View>
-
-
 
             {/* Form Inputs */}
             <View style={{ marginTop: 30 }}>
@@ -270,9 +278,11 @@ export default function Login({ navigation }) {
                   value={password}
                   onChangeText={setPassword}
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                >
                   <FontAwesome
-                    name={showPassword ? 'eye' : 'eye-slash'}
+                    name={showPassword ? "eye" : "eye-slash"}
                     style={styles.eyeIcon}
                   />
                 </TouchableOpacity>
@@ -287,26 +297,41 @@ export default function Login({ navigation }) {
                   onValueChange={setRememberMe}
                   color={rememberMe ? "#2f4f4f" : undefined}
                 />
-                <Text style={styles.rememberMeText}>{i18next.t("Remember Me")}</Text>
+                <Text style={styles.rememberMeText}>
+                  {i18next.t("Remember Me")}
+                </Text>
               </View>
-              <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-                <Text style={styles.forgotPasswordText}>{i18next.t("Forgot password")}</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("ForgotPassword")}
+              >
+                <Text style={styles.forgotPasswordText}>
+                  {i18next.t("Forgot password")}
+                </Text>
               </TouchableOpacity>
             </View>
 
             {/* Login Button & Fingerprint */}
-            <View style={styles.actionButtonsContainer}>
-              {loading ? (
-                <ActivityIndicator size="large" color="#2f4f4f" />
-              ) : (
-                <TouchableOpacity style={styles.loginButton} onPress={() => signIn()}>
-                  <Text style={styles.loginButtonText}>{i18next.t("Login")}</Text>
+
+            {loading ? (
+              <ActivityIndicator size="large" color="#2f4f4f" />
+            ) : (
+              <View style={styles.actionButtonsContainer}>
+                <TouchableOpacity
+                  style={styles.loginButton}
+                  onPress={() => signIn()}
+                >
+                  <Text style={styles.loginButtonText}>
+                    {i18next.t("Login")}
+                  </Text>
                 </TouchableOpacity>
-              )}
-              <TouchableOpacity style={styles.fingerprintButton} onPress={handleBiometricAuth}>
-                <FontAwesome name="fingerprint" size={28} color="#fff" />
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  style={styles.fingerprintButton}
+                  onPress={handleBiometricAuth}
+                >
+                  <FontAwesome name="fingerprint" size={28} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
         <Toast />
@@ -318,44 +343,44 @@ export default function Login({ navigation }) {
 const styles = StyleSheet.create({
   brandView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   brandViewText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 40,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
+    fontWeight: "bold",
+    textTransform: "uppercase",
     marginTop: 10,
   },
   bottomView: {
     flex: 1.5,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderTopStartRadius: 40,
     borderTopEndRadius: 40,
     marginTop: -40,
   },
   welcomeText: {
-    color: '#2f4f4f',
+    color: "#2f4f4f",
     fontSize: 34,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subText: {
     fontSize: 16,
     marginTop: 5,
   },
   registerText: {
-    color: 'red',
-    fontStyle: 'italic',
+    color: "red",
+    fontStyle: "italic",
     fontSize: 16,
     marginTop: 5,
-    marginLeft: 4
+    marginLeft: 4,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#2f4f4f',
+    borderBottomColor: "#2f4f4f",
     marginTop: 10,
   },
   input: {
@@ -365,77 +390,78 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     fontSize: 20,
-    color: '#2f4f4f',
+    color: "#2f4f4f",
   },
   optionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center', // Ensure vertical alignment
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center", // Ensure vertical alignment
     marginTop: 20,
   },
   rememberMeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center', // Ensure vertical alignment
+    flexDirection: "row",
+    alignItems: "center", // Ensure vertical alignment
   },
   rememberMeText: {
     fontSize: 14,
-    color: '#2f4f4f',
+    color: "#2f4f4f",
     marginLeft: 8, // Add space between checkbox and text
   },
   forgotPasswordText: {
     fontSize: 14,
-    color: 'red',
-    textDecorationLine: 'underline',
+    color: "red",
+    textDecorationLine: "underline",
   },
   actionButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    gap: 4,
+    alignItems: "center",
     marginTop: 30,
   },
   loginButton: {
-    backgroundColor: '#2f4f4f',
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "#2f4f4f",
     borderRadius: 20,
     ...Platform.select({
       android: {
-        paddingVertical: 9,
-        paddingHorizontal: 115, // Make the button longer
+        paddingVertical: 10,
       },
       ios: {
         paddingVertical: 12,
-        paddingHorizontal: 120, // Make the button longer
       }
     }),
-    alignItems: 'center',
-    shadowColor: '#000', // Tạo hiệu ứng đổ bóng
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
     shadowOffset: { width: 1, height: 2 },
     shadowOpacity: 0.6,
     shadowRadius: 4,
   },
   loginButtonText: {
-    color: '#fff',
+    textAlign: "center",
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   fingerprintButton: {
-    backgroundColor: '#2f4f4f',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#2f4f4f",
+    justifyContent: "center",
+    alignItems: "center",
     marginLeft: 5, // Space between login and fingerprint
     ...Platform.select({
       android: {
         width: 45,
         height: 45,
-        borderRadius: 40,
       },
       ios: {
         width: 50,
         height: 50,
-        borderRadius: 50,
-        marginRight: 10,
-      }
+        
+      },
     }),
-    shadowColor: '#000', // Tạo hiệu ứng đổ bóng
+    
+    paddingVertical: 10,
+    borderRadius: 50,
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
     shadowOffset: { width: 1, height: 2 },
     shadowOpacity: 0.6,
     shadowRadius: 4,
