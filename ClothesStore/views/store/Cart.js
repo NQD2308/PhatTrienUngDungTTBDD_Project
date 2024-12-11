@@ -30,6 +30,8 @@ import {
 } from "@gorhom/bottom-sheet";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
 
 const Cart = ({ route }) => {
   const { userId } = route.params; // Nhận userId từ route.params
@@ -255,7 +257,7 @@ const Cart = ({ route }) => {
       });
       return;
     }
-  
+
     try {
       await updateDoc(doc(FIREBASE_DB, "Order", orderId), {
         selectedSize: selectedSize,
@@ -263,7 +265,7 @@ const Cart = ({ route }) => {
         quantity: purchaseQuantity,
         totalPrice: purchaseQuantity * selectedProduct.price, // Cập nhật tổng giá
       });
-  
+
       Toast.show({
         type: "success",
         position: "bottom",
@@ -357,7 +359,7 @@ const Cart = ({ route }) => {
             title={selectedOrders.includes(item.id) ? "Bỏ chọn" : "Chọn"}
             onPress={() => toggleSelectOrder(item.id)}
           />
-          <Button
+          {/* <Button
             title="Xóa"
             color="red"
             onPress={() => handleDeleteOrder(item.id)}
@@ -365,7 +367,7 @@ const Cart = ({ route }) => {
           <Button
             title="Chỉnh sửa"
             onPress={() => handleOpenBottomSheet(item.productId)}
-          />
+          /> */}
           {/* <TouchableOpacity
             onPress={() => handleOpenBottomSheet(item.productId)}
           >
@@ -373,6 +375,26 @@ const Cart = ({ route }) => {
           </TouchableOpacity> */}
         </View>
       </View>
+    </TouchableOpacity>
+  );
+
+  // Left Actions (Swipe từ trái sang)
+  const renderEditActions = (item) => (
+    <TouchableOpacity
+      style={styles.editAction}
+      onPress={() => handleOpenBottomSheet(item.productId)}
+    >
+      <Text style={styles.actionText}>Edit</Text>
+    </TouchableOpacity>
+  );
+
+  // Right Actions (Swipe từ phải sang)
+  const renderDeletetActions = (item) => (
+    <TouchableOpacity
+      style={styles.deleteAction}
+      onPress={() => handleDeleteOrder(item.id)}
+    >
+      <Text style={styles.actionText}>Delete</Text>
     </TouchableOpacity>
   );
 
@@ -384,12 +406,16 @@ const Cart = ({ route }) => {
         {orders.length === 0 ? (
           <Text style={styles.emptyText}>Giỏ hàng trống.</Text>
         ) : (
-          <FlatList
-            data={orders}
-            renderItem={renderOrderItem}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.list}
-          />
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <SwipeableFlatList
+              data={orders}
+              renderItem={renderOrderItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.list}
+              renderLeftActions={renderEditActions}
+              renderRightActions={renderDeletetActions}
+            />
+          </GestureHandlerRootView>
         )}
         <BottomSheetModal
           ref={bottomSheetRef}
@@ -705,6 +731,24 @@ const styles = StyleSheet.create({
     color: '#fff',               // Màu chữ của nút
     fontSize: 16,                // Kích thước chữ
     fontWeight: 'bold',          // Chữ đậm
+  },
+
+  //Left & Right Action
+  editAction: {
+    backgroundColor: 'green',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    padding: 20,
+  },
+  deleteAction: {
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    padding: 20,
+  },
+  actionText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
