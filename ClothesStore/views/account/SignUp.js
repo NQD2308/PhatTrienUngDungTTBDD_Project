@@ -171,7 +171,7 @@ export default function SignUp() {
             <Icon
               name={showPassword ? "eye-off" : "eye"}
               size={20}
-              color="#00000"
+              color="#2f4f4f"
             />
           </TouchableOpacity>
         </View>
@@ -193,7 +193,7 @@ export default function SignUp() {
             <Icon
               name={showPassword ? "eye-off" : "eye"}
               size={20}
-              color="#00000"
+              color="#2f4f4f"
             />
           </TouchableOpacity>
         </View>
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 5,
-    color: "#00000",
+    color: "#2f4f4f",
   },
   orText: {
     textAlign: "center",
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: "#FF5733",
+    backgroundColor: "#2f4f4f",
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   loginLink: {
-    color: "#FF5733",
+    color: "red",
     fontWeight: "bold",
   },
 });

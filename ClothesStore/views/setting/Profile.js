@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 10,
-    color: "#00000",
+    color: "#2f4f4f",
   },
   input: {
     borderWidth: 1,
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   saveButton: {
-    backgroundColor: "#dc143c",
+    backgroundColor: "#2f4f4f",
     padding: 15,
     borderRadius: 20,
     alignItems: "center",
@@ -294,7 +294,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   cancelButton: {
-    backgroundColor: "#008080",
     paddingVertical: 10,
     borderRadius: 16,
     marginTop: 10,
@@ -308,8 +307,8 @@ const styles = StyleSheet.create({
     elevation: 5, // Hiệu ứng bóng trên Android
   },
   cancelButtonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: "#2f4f4f",
+    fontSize: 18,
     fontWeight: "bold",
   },
   suggestionItem: {

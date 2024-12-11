@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#000",
+    color: "#2f4f4f",
   },
   itemContainer: {
     backgroundColor: "#fff",

@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 5,
-    color: "#00000",
+    color: "#2f4f4f",
   },
   list: {
     width: "100%",
@@ -89,7 +89,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   languageItem: {
-    backgroundColor: "#f0f0f0",
+    borderColor: "#2f4f4f",
+    borderWidth: 2,
     padding: 15,
     marginBottom: 10,
     borderRadius: 20,
@@ -103,10 +104,10 @@ const styles = StyleSheet.create({
     elevation: 5, // Hiệu ứng bóng trên Android
   },
   selectedLanguage: {
-    backgroundColor: "#FF5733",
+    backgroundColor: "#2f4f4f",
   },
   languageText: {
-    color: "#fff",
+    color: "#000",
     fontWeight: "bold",
     fontSize: 18,
   },

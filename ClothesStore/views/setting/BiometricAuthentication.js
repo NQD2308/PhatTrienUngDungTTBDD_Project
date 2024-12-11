@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 5,
-    color: "#00000",
+    color: "#2f4f4f",
   },
   row: {
     borderTopWidth: 1,
