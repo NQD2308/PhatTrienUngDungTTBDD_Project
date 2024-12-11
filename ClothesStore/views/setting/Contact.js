@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   headerContainer: {
-    alignItems: "center",
+    alignItems: "344E41",
     marginBottom: 20,
   },
   header: {
@@ -169,9 +169,6 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     marginLeft: 12,
-  },
-  itemIcon: {
-    marginRight: 12, // Khoảng cách giữa icon và nội dung
   },
   itemTitle: {
     fontSize: 18, // Làm chữ lớn hơn một chút

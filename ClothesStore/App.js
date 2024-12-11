@@ -87,7 +87,7 @@ function TabNavigator({ route }) {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: "#ebf2f2",
+          backgroundColor: "#f9f9f9",
           height: 60,
           justifyContent: "center",
         },
@@ -113,12 +113,13 @@ function TabNavigator({ route }) {
                 style={{
                   width: 24,
                   height: 24,
-                  tintColor: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
+                  tintColor: focused ? "#3b82f6" : "#344E41",
                 }}
               />
               <Text
                 style={{
-                  color: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
                   fontSize: 12,
                   width: 70,
                   textAlign: "center",
@@ -150,12 +151,13 @@ function TabNavigator({ route }) {
                 style={{
                   width: 24,
                   height: 24,
-                  tintColor: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
+                  tintColor: focused ? "#344E41" : "#A3B18A",
                 }}
               />
               <Text
                 style={{
-                  color: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
                   fontSize: 12,
                   width: 70,
                   textAlign: "center",
@@ -187,12 +189,13 @@ function TabNavigator({ route }) {
                 style={{
                   width: 24,
                   height: 24,
-                  tintColor: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
+                  tintColor: focused ? "#344E41" : "#A3B18A",
                 }}
               />
               <Text
                 style={{
-                  color: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
                   fontSize: 12,
                   width: 70,
                   textAlign: "center",
@@ -224,12 +227,13 @@ function TabNavigator({ route }) {
                 style={{
                   width: 24,
                   height: 24,
-                  tintColor: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
+                  tintColor: focused ? "#344E41" : "#A3B18A",
                 }}
               />
               <Text
                 style={{
-                  color: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
                   fontSize: 12,
                   width: 70,
                   textAlign: "center",
@@ -262,12 +266,13 @@ function TabNavigator({ route }) {
                 style={{
                   width: 24,
                   height: 24,
-                  tintColor: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
+                  tintColor: focused ? "#344E41" : "#A3B18A",
                 }}
               />
               <Text
                 style={{
-                  color: focused ? "#3b82f6" : "#94a3b8",
+                  color: focused ? "#344E41" : "#A3B18A",
                   fontSize: 12,
                   width: 70,
                   textAlign: "center",
@@ -412,6 +417,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
+    justifyContent: "center",
+  },
+  bottomTab: {
+    backgroundColor: "#fff",
+    height: 60,
     justifyContent: "center",
   },
 });
