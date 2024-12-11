@@ -9,6 +9,7 @@ import {
   Image,
   ActivityIndicator,
   ImageBackground,
+  ScrollView,
 } from "react-native";
 import { signOut, deleteUser } from "firebase/auth";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
@@ -384,29 +385,44 @@ export default function User({ navigation, route }) {
       </View>
 
       {/* Lower Section: About Me */}
-      <View style={styles.aboutSection}>
-        <Text style={styles.aboutTitle}>About me</Text>
-        <Text style={styles.aboutText}>
-          An aritist of considerable range, Ryan- the name taken by Melbourner-raised, Brooklyn-based Nick murphy - writest, performs and records all of his own music
-          {/* {`Name: ${userData.username}\nEmail: ${userData.email}\nPhone: ${userData.phone}`} */}
-        </Text>
-      </View>
-      {/* <TouchableOpacity
-        style={styles.Button}
-        onPress={() => navigation.navigate("Wishlist")}
-      >
-        <Text style={styles.btnText}>Wishlist</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.Button}
-        onPress={() => navigation.navigate("Contact")}
-      >
-        <Text style={styles.btnText}>Contact</Text>
-      </TouchableOpacity> */}
-      <View style={styles.deleteContainer}>
-        <TouchableOpacity style={styles.deleteBtn} onPress={handleDeleteAccount}>
-          <Text style={styles.deleteText}>Delete account!</Text>
-        </TouchableOpacity>
+      <View style={styles.itemContainer}>
+        <ScrollView>
+          <TouchableOpacity style={styles.item} onPress={() => navigation.navigate("Wishlist")}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <FontAwesome name="heart" solid size={24} color="red" />
+              <View style={styles.itemContent}>
+                <Text style={styles.itemTitle}>Wishlist</Text>
+              </View>
+            </View>
+            <FontAwesome name="arrow-right" size={24} style={styles.arrowIcon} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => navigation.navigate("Contact")}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <FontAwesome name="circle-info" size={24} color="#3b5998" />
+              <View style={styles.itemContent}>
+                <Text style={styles.itemTitle}>Contact</Text>
+              </View>
+            </View>
+            <FontAwesome name="arrow-right" size={24} style={styles.arrowIcon} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.item}
+            onPress={handleDeleteAccount}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <FontAwesome name="user-minus" size={24} color="#000" />
+              <View style={styles.itemContent}>
+                <Text style={styles.itemTitle}>Delete Account</Text>
+              </View>
+            </View>
+            <FontAwesome name="arrow-right" size={24} style={styles.arrowIcon} />
+          </TouchableOpacity>
+        </ScrollView>
       </View>
       <Toast />
     </View>
@@ -442,7 +458,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   loginBtnGuest: {
-    backgroundColor: "#2f4f4f",
+    backgroundColor: "#344E41",
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 8,
@@ -517,7 +533,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoutButton: {
-    backgroundColor: "#2f4f4f",
+    backgroundColor: "#344E41",
     paddingVertical: 10,
     paddingHorizontal: 40,
     borderRadius: 20,
@@ -582,48 +598,37 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5, // Hiệu ứng bóng trên Android
   },
-  // Section About & Delete Btn
-  aboutSection: {
-    flex: 0.8,
-    paddingHorizontal: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  aboutTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  aboutText: {
-    fontSize: 16,
-    color: "#555",
-    textAlign: "center",
-    marginTop: 5,
-  },
 
-  //DeleteAccount Section
-  deleteContainer: {
-    flex: 0.2,
-    justifyContent: "center",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderColor: "#a9a9a9"
-  },
-  deleteBtn: {
-    backgroundColor: "#000",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    alignItems: "flex-start",
-    marginBottom: 10,
-    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+  // Section item bottom
+  itemContainer: {
+    flex: 1,
+    borderRadius: 12,
+    paddingVertical: 30,
+    paddingHorizontal: 12,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
+    elevation: 3, // Bóng đổ nhẹ
   },
-  deleteText: {
-    fontSize: 15,
-    color: "#fff"
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0", // Đường phân cách nhẹ giữa các item
+  },
+  itemContent: {
+    marginLeft: 12,
+  },
+  itemTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#555",
+  },
+  arrowIcon: {
+    color: "#ccc",
   },
 
 });
