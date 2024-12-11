@@ -322,7 +322,7 @@ export default function User({ navigation, route }) {
         {/* Stats Section */}
         <View style={styles.statsSection}>
           {/* Tổng số đơn hàng */}
-          <TouchableOpacity style={styles.statItem}>
+          <TouchableOpacity style={styles.statItem} onPress={() => navigation.navigate("Purchase")}>
             <Text style={styles.statValue}>{countOrder}</Text>
             <Text style={styles.statLabel}>Orders</Text>{" "}
           </TouchableOpacity>
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   loginBtnGuest: {
-    backgroundColor: "#f96332",
+    backgroundColor: "#2f4f4f",
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 8,
@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoutButton: {
-    backgroundColor: "#dc143c",
+    backgroundColor: "#2f4f4f",
     paddingVertical: 10,
     paddingHorizontal: 40,
     borderRadius: 20,
