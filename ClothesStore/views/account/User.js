@@ -173,11 +173,11 @@ export default function User({ navigation, route }) {
   const handleSignOut = async () => {
     try {
       await signOut(FIREBASE_AUTH);
-      Toast.show({
-        type: "success",
-        text1: "Thành công",
-        text2: "Đăng xuất thành công!",
-      });
+      // Toast.show({
+      //   type: "success",
+      //   text1: "Thành công",
+      //   text2: "Đăng xuất thành công!",
+      // });
       navigation.replace("Inside");
 
       // Reset toàn bộ điều hướng

@@ -313,7 +313,10 @@ export default function Login({ navigation }) {
             {/* Login Button & Fingerprint */}
 
             {loading ? (
-              <ActivityIndicator size="large" color="#2f4f4f" />
+             
+              <ActivityIndicator size="large" color="#2f4f4f" style={{marginTop: 15}}/>
+              
+              
             ) : (
               <View style={styles.actionButtonsContainer}>
                 <TouchableOpacity
@@ -397,6 +400,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center", // Ensure vertical alignment
     marginTop: 20,
+    marginBottom: 30,
   },
   rememberMeContainer: {
     flexDirection: "row",
@@ -416,7 +420,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 4,
     alignItems: "center",
-    marginTop: 30,
+    // marginTop: 30,
   },
   loginButton: {
     flex: 1,
