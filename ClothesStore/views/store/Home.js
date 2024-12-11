@@ -213,8 +213,8 @@ export default function Home({ route }) {
             <TouchableOpacity onPress={() => setModalVisible(true)} >
               <FontAwesome name="filter" size={20} color="#000" style={styles.icon} />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <FontAwesome name="bag-shopping" size={20} color="#000" style={styles.icon} />
+            <TouchableOpacity onPress={openCategorySheet}>
+              <FontAwesome name="layer-group" size={20} color="#000" style={styles.icon} />
             </TouchableOpacity>
           </View>
         </View>
@@ -327,7 +327,7 @@ export default function Home({ route }) {
         </View> */}
 
         {/* Category */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.categoryButton}
           onPress={openCategorySheet}
         >
@@ -337,10 +337,18 @@ export default function Home({ route }) {
               : "Category"}
           </Text>
           <FontAwesome name="layer-group" size={20} color="#fff" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* Render Item */}
         <ScrollView>
+          <View style={styles.brandView}>
+            <FontAwesome
+              name="shopware"
+              style={{ color: "#000", fontSize: 50, marginTop: 10, }}
+            />
+            <Text style={styles.nameStore}>Clothes's Store</Text>
+          </View>
+
           <View style={styles.productList}>
             {filteredProducts.map((item, index) => (
               <View
@@ -473,45 +481,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
 
-  // title: {
-  //   fontSize: 24,
-  //   fontWeight: "bold",
-  //   textAlign: "center",
-  //   marginVertical: 10,
-  // },
-  // searchContainer: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   marginBottom: 10,
-  //   borderWidth: 1,
-  //   borderColor: "#ddd",
-  //   borderRadius: 8,
-  //   paddingHorizontal: 10,
-  // },
-  // searchInput: {
-  //   flex: 1,
-  //   height: 40,
-  //   fontSize: 16,
-  // },
-  // clearIcon: {
-  //   marginLeft: 5,
-  // },
-  // searchButton: {
-  //   backgroundColor: "#007bff",
-  //   borderRadius: 8,
-  //   padding: 10,
-  //   marginLeft: 5,
-  // },
-  // sortButton: {
-  //   backgroundColor: "#28a745",
-  //   borderRadius: 8,
-  //   padding: 10,
-  //   marginLeft: 5,
-  // },
-  // sortButtonText: {
-  //   color: "#fff",
-  //   fontWeight: "bold",
-  // },
+  //BrandView & Name Store
+  brandView: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nameStore: {
+    fontSize: 23,
+    fontWeight: "bold",
+    color: "#000",
+  },
 
   //Modal
   modalOverlay: {
