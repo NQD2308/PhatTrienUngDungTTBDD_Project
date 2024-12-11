@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   border: {
     position: "absolute",
     borderWidth: 2,
-    borderColor: "#00FF00", // Màu viền
+    borderColor: "#fff", // Màu viền
     borderRadius: 10,
   },
   text: {
