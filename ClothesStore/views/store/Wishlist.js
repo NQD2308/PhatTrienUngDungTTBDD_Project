@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   RefreshControl,
+  SafeAreaView,
 } from "react-native";
 import {
   getFirestore,
@@ -18,11 +19,12 @@ import {
 import { getAuth } from "firebase/auth"; // Dùng để lấy thông tin người dùng hiện tại
 import { FIREBASE_DB } from "../../firebaseConfig"; // Đảm bảo đúng đường dẫn đến firebaseConfig
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import FontAwesome from "react-native-vector-icons/FontAwesome6";
 
 export default function Wishlist() {
   const navigation = useNavigation();
   const [products, setProducts] = useState([]); // State lưu trữ sản phẩm yêu thích
-  const [refreshing, setRefreshing] = useState(false); 
+  const [refreshing, setRefreshing] = useState(false);
 
   // Hàm lấy dữ liệu từ bảng wishlist
   const getWishlist = async () => {
@@ -110,38 +112,60 @@ export default function Wishlist() {
       <Image source={{ uri: item.image[0] }} style={styles.productImage} />
       <View style={styles.productInfo}>
         <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>{item.description}</Text>
+        {/* <Text style={styles.productPrice}>{item.description}</Text> */}
         <Text style={styles.productPrice}>
           {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
         </Text>
       </View>
+      <FontAwesome name="arrow-right" size={24} style={styles.arrowIcon} />
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Danh Sách Yêu Thích</Text>
-      <FlatList
-        data={products}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        refreshing={refreshing} // Gắn trạng thái refresh
-        onRefresh={getWishlist} // Gọi hàm getWishlist khi kéo để làm mới
-      />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>Favorite</Text>
+      </View>
+
+      <View style={styles.itemContainer}>
+        <FlatList
+          data={products}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          refreshing={refreshing} // Gắn trạng thái refresh
+          onRefresh={getWishlist} // Gọi hàm getWishlist khi kéo để làm mới
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f8f9fa",
     padding: 16,
-    backgroundColor: "#fff",
   },
-  title: {
-    fontSize: 24,
+  headerContainer: {
+    alignItems: "344E41",
+    marginBottom: 20,
+    alignItems: "center"
+  },
+  header: {
+    fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 16,
+    color: "#2f4f4f",
+  },
+  itemContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Bóng đổ nhẹ
   },
   productContainer: {
     flexDirection: "row",
@@ -169,6 +193,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#555",
     marginBottom: 8,
+  },
+  arrowIcon: {
+    color: "#ccc", // Mũi tên màu xám nhạt
   },
   likeButton: {
     backgroundColor: "#007BFF",
