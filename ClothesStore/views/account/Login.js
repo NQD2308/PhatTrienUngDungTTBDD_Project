@@ -68,12 +68,12 @@ export default function Login({ navigation }) {
           return false;
         }
       } else {
-        Alert.alert("Thông báo", "Không tìm thấy người dùng với email này.");
+        Alert.alert(i18next.t("Message"), i18next.t("User with this email was not found."));
         return false; // Trả về false nếu không tìm thấy
       }
     } catch (error) {
       console.error("Lỗi khi kiểm tra xác thực vân tay: ", error);
-      Alert.alert("Thông báo", "Đã xảy ra lỗi khi kiểm tra vân tay.");
+      Alert.alert(i18next.t("Message"), i18next.t("An error occurred while checking the fingerprint."));
       return false; // Trả về false nếu có lỗi
     }
   };
@@ -84,18 +84,18 @@ export default function Login({ navigation }) {
       setLoading(true); // Bật chế độ loading
 
       if (!email) {
-        Alert.alert("Thông báo", "Vui lòng nhập email!");
+        Alert.alert(i18next.t("Message"), "Vui lòng nhập email!");
       } else {
         const emailRemember = await AsyncStorage.getItem("rememberedEmail");
         if (!emailRemember) {
           Alert.alert(
-            "Thông báo",
-            "Vui lòng đăng nhập và chọn chức năng ghi nhớ lần đầu để sử dụng chức năng!"
+            i18next.t("Message"),
+            i18next.t("Please log in and select the remember first time function to use this feature!")
           );
         } else {
           const compatible = await LocalAuthentication.hasHardwareAsync(); // kiểm tra hệ thống có hỗ trợ sinh trác học hay không
           if (!compatible) {
-            Alert.alert("Thông báo", "Thiết bị không hỗ trợ sinh trắc học!");
+            Alert.alert(i18next.t("Message"), i18next.t("The device does not support biometrics!"));
           } else {
             // Kiểm tra xác thực vân tay trước
             const canAuthenticate = await checkBiometricLogin();
@@ -110,11 +110,11 @@ export default function Login({ navigation }) {
               });
 
               if (result.success) {
-                Toast.show({
-                  type: "success",
-                  text1: "Xác thực thành công!",
-                  text2: "Bạn đã đăng nhập thành công.",
-                });
+                // Toast.show({
+                //   type: "success",
+                //   text1: "Xác thực thành công!",
+                //   text2: "Bạn đã đăng nhập thành công.",
+                // });
                 // Tự động lấy email và mật khẩu đã lưu từ AsyncStorage
                 const savedEmail = await AsyncStorage.getItem(
                   "rememberedEmail"
@@ -128,23 +128,23 @@ export default function Login({ navigation }) {
                   await signIn(savedEmail, savedPassword);
                 } else {
                   Alert.alert(
-                    "Thông báo",
-                    "Không tìm thấy thông tin đăng nhập. Vui lòng đăng nhập thủ công."
+                    i18next.t("Message"),
+                    i18next.t("Login information not found. Please log in manually.")
                   );
                 }
                 // navigation.replace("Inside"); // Chuyển hướng đến trang chính
               } else {
                 Toast.show({
                   type: "error",
-                  text1: "Xác thực thất bại!",
-                  text2: "Vui lòng đăng nhập thủ công.",
+                  text1: i18next.t("Authentication failed!"),
+                  text2: i18next.t("Please log in manually."),
                 });
               }
             } else {
               // Hiển thị thông báo nếu không thể xác thực
               Alert.alert(
-                "Thông báo",
-                "Xác thực vân tay hiện chưa được kích hoạt. Vui lòng kích hoạt để sử dụng sau khi đăng nhập."
+                i18next.t("Message"),
+                i18next.t("Fingerprint authentication is not currently enabled. Please enable it after logging in to use this feature.")
               );
             }
           }
@@ -154,8 +154,8 @@ export default function Login({ navigation }) {
       console.error("Lỗi khi xác thực sinh trắc học: ", error);
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Đã xảy ra lỗi khi xác thực vân tay.",
+        text1: i18next.t("Error"),
+        text2: i18next.t("An error occurred during fingerprint authentication."),
       });
     } finally {
       setLoading(false); // Tắt chế độ loading sau khi hoàn tất
@@ -167,8 +167,8 @@ export default function Login({ navigation }) {
     if (!isValidEmail(emailInput)) {
       Toast.show({
         type: "error",
-        text1: "Đăng nhập thất bại",
-        text2: "Email không đúng định dạng!",
+        text1: i18next.t("Login failed"),
+        text2: i18next.t("The email format is incorrect!"),
       });
       return;
     }
@@ -191,8 +191,8 @@ export default function Login({ navigation }) {
 
       Toast.show({
         type: "success",
-        text1: "Đăng nhập thành công",
-        text2: "Chào mừng bạn quay trở lại!",
+        text1: i18next.t("Login successful"),
+        text2: i18next.t("Welcome back!"),
       });
 
       navigation.replace("Inside", { userId: response.user.uid });
@@ -200,7 +200,7 @@ export default function Login({ navigation }) {
       console.error("Login Error:", error.message);
       Toast.show({
         type: "error",
-        text1: "Đăng nhập thất bại",
+        text1: i18next.t("Login failed"),
         text2: error.message,
       });
     } finally {

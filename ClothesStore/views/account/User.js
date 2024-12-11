@@ -214,12 +214,12 @@ export default function User({ navigation, route }) {
           />
         </View>
         <Text style={styles.titleGuest}>Clothes's Store</Text>
-        <Text style={styles.subtitleGuest}>Begin to experience with us</Text>
+        <Text style={styles.subtitleGuest}>{i18next.t("Begin to experience with us")}</Text>
         <TouchableOpacity
           style={styles.loginBtnGuest}
           onPress={() => navigation.navigate("Login")}
         >
-          <Text style={styles.loginText}>Get Started</Text>
+          <Text style={styles.loginText}>{i18next.t("Get Started")}</Text>
         </TouchableOpacity>
       </ImageBackground>
     );
@@ -324,17 +324,17 @@ export default function User({ navigation, route }) {
           {/* Tổng số đơn hàng */}
           <TouchableOpacity style={styles.statItem} onPress={() => navigation.navigate("Purchase")}>
             <Text style={styles.statValue}>{countOrder}</Text>
-            <Text style={styles.statLabel}>Orders</Text>{" "}
+            <Text style={styles.statLabel}>{i18next.t("Orders")}</Text>{" "}
           </TouchableOpacity>
           {/* Lượt thích sản phẩm */}
           <TouchableOpacity style={styles.statItem}>
             <Text style={styles.statValue}>400</Text>
-            <Text style={styles.statLabel}>Likes</Text>{" "}
+            <Text style={styles.statLabel}>{i18next.t("Likes")}</Text>{" "}
           </TouchableOpacity>
           {/* Sản phẩm trong wishlist */}
           <TouchableOpacity style={styles.statItem} onPress={() => navigation.navigate("Wishlist")}>
             <Text style={styles.statValue}>{countWishList}</Text>
-            <Text style={styles.statLabel}>Wishlist</Text>{" "}
+            <Text style={styles.statLabel}>{i18next.t("Wishlist")}</Text>{" "}
           </TouchableOpacity>
 
         </View>
@@ -405,7 +405,7 @@ export default function User({ navigation, route }) {
       </TouchableOpacity> */}
       <View style={styles.deleteContainer}>
         <TouchableOpacity style={styles.deleteBtn} onPress={handleDeleteAccount}>
-          <Text style={styles.deleteText}>Delete account!</Text>
+          <Text style={styles.deleteText}>{i18next.t("Delete account!")}</Text>
         </TouchableOpacity>
       </View>
       <Toast />
