@@ -91,5 +91,12 @@
   "The device does not support fingerprint authentication.": "The device does not support fingerprint authentication.",
   "Authenticate with your fingerprint to unlock the feature": "Authenticate with your fingerprint to unlock the feature",
   "Biometric Authentication": "Biometric Authentication",
-  "Fingerprint verification": "Fingerprint verification"
+  "Fingerprint verification": "Fingerprint verification",
+  "Data not found": "Data not found",
+  "Unable to load data": "Unable to load data",
+  "Unable to open this link": "Unable to open this link",
+  "Unable to open the dialer app": "Unable to open the dialer app",
+  "Unable to open the email app": "Unable to open the email appl",
+  "Contact Us": "Contact Us",
+  "Phone Number": "Phone Number"
 }

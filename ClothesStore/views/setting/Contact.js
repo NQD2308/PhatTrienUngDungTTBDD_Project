@@ -13,6 +13,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons"; // Đừng 
 import { FIREBASE_DB } from "../../firebaseConfig"; // Firebase config của bạn
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import FontAwesome from "react-native-vector-icons/FontAwesome6"; // Đừng quên cài đặt thư viện này
+import i18next from "../../services/i18next";
 
 export default function Contact() {
   const [contactInfo, setContactInfo] = useState({
@@ -40,13 +41,13 @@ export default function Contact() {
         if (docSnap.exists()) {
           setContactInfo(docSnap.data()); // Cập nhật state với dữ liệu từ Firestore
         } else {
-          Alert.alert("Lỗi", "Không tìm thấy dữ liệu");
+          Alert.alert(i18next("Error"), i18next.t("Data not found"));
         }
       } else {
-        Alert.alert("Lỗi", "Không có document nào trong collection Contact");
+        Alert.alert(i18next("Error"), i18next.t("Data not found"));
       }
     } catch (error) {
-      Alert.alert("Lỗi", `Không thể tải dữ liệu: ${error.message}`);
+      Alert.alert(i18next("Error"), i18next.t(`Unable to load data`)+ `: ${error.message}`);
     }
   };
 
@@ -56,26 +57,26 @@ export default function Contact() {
 
   const handleLinkPress = (url) => {
     Linking.openURL(url).catch(() =>
-      Alert.alert("Lỗi", "Không thể mở liên kết này")
+      Alert.alert(i18next("Error"), i18next.t("Unable to open this link"))
     );
   };
 
   const handlePhonePress = () => {
     Linking.openURL(`tel:${contactInfo.phone}`).catch(() =>
-      Alert.alert("Lỗi", "Không thể mở ứng dụng gọi điện")
+      Alert.alert(i18next("Error"), i18next.t("Unable to open the dialer app"))
     );
   };
 
   const handleEmailPress = () => {
     Linking.openURL(`mailto:${contactInfo.email}`).catch(() =>
-      Alert.alert("Lỗi", "Không thể mở ứng dụng email")
+      Alert.alert(i18next("Error"), i18next.t("Unable to open the email app"))
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Contact Us</Text>
+        <Text style={styles.header}>{i18next.t("Contact Us")}</Text>
       </View>
 
       <View style={styles.itemContainer}>
@@ -83,7 +84,7 @@ export default function Contact() {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name="phone" size={24} color="#000" />
             <View style={styles.itemContent}>
-              <Text style={styles.itemTitle}>Phone Number</Text>
+              <Text style={styles.itemTitle}>{i18next.t("Phone Number")}</Text>
               <Text style={styles.itemSubtitle}>{contactInfo.phone}</Text>
             </View>
           </View>
@@ -119,7 +120,8 @@ export default function Contact() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.item} onPress={handleEmailPress}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>/\
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            /\
             <Icon name="email-outline" size={24} color="#000" />
             <View style={styles.itemContent}>
               <Text style={styles.itemTitle}>Email</Text>
@@ -186,4 +188,3 @@ const styles = StyleSheet.create({
     color: "#ccc", // Mũi tên màu xám nhạt
   },
 });
-

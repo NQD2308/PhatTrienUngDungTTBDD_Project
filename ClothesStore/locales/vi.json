@@ -95,5 +95,12 @@
   "The device does not support fingerprint authentication.": "Thiết bị không hỗ trợ xác thực vân tay",
   "Authenticate with your fingerprint to unlock the feature": "Xác thực vân tay để mở tính năng",
   "Biometric Authentication": "Xác thực sinh trắc học",
-  "Fingerprint verification": "Xác thực vân tay"
+  "Fingerprint verification": "Xác thực vân tay",
+  "Data not found": "Không tìm thấy dữ liệu",
+  "Unable to load data": "Không thể tải dữ liệu",
+  "Unable to open this link": "Không thể mở liên kết này",
+  "Unable to open the dialer app": "Không thể mở ứng dụng gọi điện",
+  "Unable to open the email app": "Không thể mở ứng dụng email",
+  "Contact Us": "Liên hệ",
+  "Phone Number": "Số điện thoại"
 }
