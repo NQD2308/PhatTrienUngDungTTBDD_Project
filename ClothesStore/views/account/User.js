@@ -76,16 +76,16 @@ export default function User({ navigation, route }) {
       } else {
         Toast.show({
           type: "error",
-          text1: "Lỗi",
-          text2: "Không tìm thấy người dùng!",
+          text1: i18next("Error"),
+          text2: i18next("User not found!"),
         });
       }
     } catch (error) {
       console.error("Lỗi khi lấy thông tin người dùng: ", error);
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Không thể tải thông tin người dùng!",
+        text1: i18next("Error"),
+        text2: i18next("Unable to load user information!"),
       });
     } finally {
       setLoading(false);
@@ -142,22 +142,23 @@ export default function User({ navigation, route }) {
       if (billCount > 0) {
         console.log(`Người dùng hiện có ${billCount} đơn hàng.`);
       } else {
+
         console.log("Người dùng không có đơn hàng.");
-        Toast.show({
-          type: "info",
-          text1: "Thông báo",
-          text2: "Bạn chưa có đơn hàng nào.",
-        });
+        // Toast.show({
+        //   type: "info",
+        //   text1: i18next("Message"),
+        //   text2: i18next("Bạn chưa có đơn hàng nào."),
+        // });
       }
 
       return billCount; // Trả về số lượng đơn hàng nếu cần sử dụng tiếp
     } catch (error) {
       console.error("Lỗi khi đếm đơn hàng:", error);
-      Toast.show({
-        type: "error",
-        text1: "Lỗi",
-        text2: "Không thể đếm đơn hàng. Vui lòng thử lại sau.",
-      });
+      // Toast.show({
+      //   type: "error",
+      //   text1: i18next("Error"),
+      //   text2: i18next()"Không thể đếm đơn hàng. Vui lòng thử lại sau.",
+      // });
     }
   };
 
@@ -192,8 +193,8 @@ export default function User({ navigation, route }) {
       console.error("Lỗi khi đăng xuất: ", error);
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Đã xảy ra lỗi khi đăng xuất, vui lòng thử lại!",
+        text1: i18next("Error"),
+        text2: i18next("An error occurred while logging out. Please try again!"),
       });
     }
   };

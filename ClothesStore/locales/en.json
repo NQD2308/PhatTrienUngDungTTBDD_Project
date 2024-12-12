@@ -78,5 +78,12 @@
   "Registration Failed": "Registration Failed",
   "Please enter a valid email.": "Please enter a valid email.",
   "Check your email!": "Check your email!",
-  "Unable to send the email. Please try again.": "Không thể gửi email. Vui lòng thử lại."
+  "Unable to send the email. Please try again.": "Không thể gửi email. Vui lòng thử lại.",
+  "User not found!": "User not found!",
+  "Unable to load user information!": "Unable to load user information!",
+  "The account has been deleted.": "The account has been deleted.",
+  "The current user's account could not be found!": "The current user's account could not be found!",
+  "Please log in again to perform this action.": "Please log in again to perform this action",
+  "An error occurred. Please try again.": "An error occurred. Please try again.",
+  "Current user not found!": "Current user not found!"
 }
