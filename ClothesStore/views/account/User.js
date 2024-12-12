@@ -235,11 +235,11 @@ export default function User({ navigation, route }) {
         "Bạn có chắc chắn muốn xóa tài khoản này không? Thao tác này không thể hoàn tác.",
         [
           {
-            text: "Hủy", // Nút hủy
+            text: i18next.t("Cancel"), // Nút hủy
             style: "cancel",
           },
           {
-            text: "Đồng ý", // Nút đồng ý
+            text: i18next.t("Confirm"), // Nút đồng ý
             onPress: async () => {
               try {
                 const uid = user.uid;
@@ -260,9 +260,9 @@ export default function User({ navigation, route }) {
                     console.log("Tài liệu đã bị xóa:", docSnap.id);
                   });
 
-                  alert("Xóa tài khoản thành công!");
+                  alert(i18next.t("The account has been deleted."));
                 } else {
-                  alert("Không tìm thấy tài liệu của người dùng hiện tại!");
+                  alert(i18next.t("The current user's account could not be found!"));
                 }
 
                 // Xóa tài khoản trong Firebase Authentication
@@ -274,11 +274,11 @@ export default function User({ navigation, route }) {
               } catch (error) {
                 console.error("Lỗi khi xóa tài khoản: ", error);
                 if (error.code === "auth/requires-recent-login") {
-                  alert("Vui lòng đăng nhập lại để thực hiện thao tác này.");
+                  alert(i18next.t("Please log in again to perform this action."));
                   // Điều hướng về màn hình đăng nhập
                   // navigation.navigate("Login");
                 } else {
-                  alert("Có lỗi xảy ra. Vui lòng thử lại.");
+                  alert(i18next.t("An error occurred. Please try again."));
                 }
               }
             },
@@ -286,7 +286,7 @@ export default function User({ navigation, route }) {
         ]
       );
     } else {
-      alert("Không tìm thấy người dùng hiện tại!");
+      alert(i18next.t("Current user not found!"));
     }
   };
 
