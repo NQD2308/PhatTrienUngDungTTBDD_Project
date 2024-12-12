@@ -13,6 +13,7 @@
   "Remember Me": "Nhớ tài khoản",
   "Register": "Đăng ký",
   "Username...": "Tên người dùng",
+  "Username": "Tên người dùng",
   "Phone Number...": "Số điện thoại",
   "Password must be at least 6 characters long.": "Mật khẩu phải ít nhất 6 ký tự",
   "Already have an account?": "Bạn đã có tài khoản?",
@@ -102,5 +103,9 @@
   "Unable to open the dialer app": "Không thể mở ứng dụng gọi điện",
   "Unable to open the email app": "Không thể mở ứng dụng email",
   "Contact Us": "Liên hệ",
-  "Phone Number": "Số điện thoại"
+  "Phone Number": "Số điện thoại",
+  "The information has been updated!": "Thông tin đã được cập nhật!",
+  "Unable to update the information!": "Không thể cập nhật thông tin!",
+  "User's Information": "Thông tin người dùng",
+  "Address": "Địa chỉ"
 }

@@ -20,6 +20,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import Toast from "react-native-toast-message";
+import i18next from "../../services/i18next";
 
 export default function Profile({ route, navigation }) {
   const { userId } = route.params || {}; // Nhận userId từ route.params
@@ -57,16 +58,16 @@ export default function Profile({ route, navigation }) {
       } else {
         Toast.show({
           type: "error",
-          text1: "Lỗi",
-          text2: "Không tìm thấy người dùng!",
+          text1: i18next("Error"),
+          text2: i18next("User not found!"),
         });
       }
     } catch (error) {
       console.error("Lỗi khi lấy thông tin người dùng: ", error);
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Không thể tải thông tin người dùng!",
+        text1: i18next("Error"),
+        text2: i18next("Unable to load user information!"),
       });
     } finally {
       setLoading(false);
@@ -94,22 +95,22 @@ export default function Profile({ route, navigation }) {
 
         Toast.show({
           type: "success",
-          text1: "Thành công",
-          text2: "Thông tin đã được cập nhật!",
+          text1: i18next.t("Success"),
+          text2: i18next.t("The information has been updated!"),
         });
       } else {
         Toast.show({
           type: "error",
-          text1: "Lỗi",
-          text2: "Không tìm thấy người dùng!",
+          text1: i18next("Error"),
+          text2: i18next("User not found!"),
         });
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật thông tin người dùng: ", error);
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Không thể cập nhật thông tin!",
+        text1: i18next("Error"),
+        text2: i18next.t("Unable to update the information!"),
       });
     }
   };
@@ -167,14 +168,14 @@ export default function Profile({ route, navigation }) {
       resizeMode="cover"
     >
       <KeyboardAvoidingView style={styles.formContainer}>
-        <Text style={styles.title}>User's Information</Text>
+        <Text style={styles.title}>{i18next.t("User's Information")}</Text>
 
         {/* Form Inputs */}
         <TextInput
           style={styles.input}
           value={userData.username}
           onChangeText={(text) => setUserData({ ...userData, username: text })}
-          placeholder="Username"
+          placeholder={i18next.t("Username")}
         />
         <TextInput
           style={styles.input}
@@ -186,7 +187,7 @@ export default function Profile({ route, navigation }) {
           style={styles.input}
           value={userData.phone}
           onChangeText={(text) => setUserData({ ...userData, phone: text })}
-          placeholder="Phone number"
+          placeholder={i18next.t("Phone number")}
         />
         {/* <TextInput
         style={styles.input}
@@ -199,7 +200,7 @@ export default function Profile({ route, navigation }) {
           style={styles.input}
           value={userData.address}
           onChangeText={handleAddressAutocomplete} // Gọi hàm autocomplete khi người dùng nhập
-          placeholder="Address"
+          placeholder={i18next.t("Address")}
         />
 
         {/* Hiển thị danh sách gợi ý địa chỉ */}
@@ -223,14 +224,14 @@ export default function Profile({ route, navigation }) {
         )}
 
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Text style={styles.saveButtonText}>Save</Text>
+          <Text style={styles.saveButtonText}>{i18next.t("Save")}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.cancelButton}
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={styles.cancelButtonText}>{i18next.t("Cancel")}</Text>
         </TouchableOpacity>
 
         <Toast />

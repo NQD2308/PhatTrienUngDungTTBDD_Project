@@ -98,5 +98,9 @@
   "Unable to open the dialer app": "Unable to open the dialer app",
   "Unable to open the email app": "Unable to open the email appl",
   "Contact Us": "Contact Us",
-  "Phone Number": "Phone Number"
+  "Phone Number": "Phone Number",
+  "The information has been updated!": "The information has been updated!",
+  "Unable to update the information!": "Unable to update the information!",
+  "User's Information": "User's Information",
+  "Address": "Address"
 }
