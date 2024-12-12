@@ -214,6 +214,13 @@ export default function User({ navigation, route }) {
             style={{ color: "#fff", fontSize: 60 }}
           />
         </View>
+        {/* Change Languge Button */}
+        <TouchableOpacity
+          style={styles.languageBtnGuest}
+          onPress={() => navigation.navigate("Language")}
+        >
+          <FontAwesome name="earth-americas" size={25} color="#ffff" />
+        </TouchableOpacity>
         <Text style={styles.titleGuest}>Clothes's Store</Text>
         <Text style={styles.subtitleGuest}>Begin to experience with us</Text>
         <TouchableOpacity
@@ -473,6 +480,21 @@ const styles = StyleSheet.create({
     // flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  languageBtnGuest: {
+    position: "absolute", // Đặt nút ở góc phải
+    top: 30, // Khoảng cách từ trên xuống (điều chỉnh tùy thiết kế)
+    right: 5, // Khoảng cách từ phải sang
+    width: 50, // Chiều rộng nút
+    height: 50, // Chiều cao nút
+    borderRadius: 25, // Bo tròn thành hình tròn (bằng 50% width/height)
+    justifyContent: "center", // Căn giữa icon theo chiều dọc
+    alignItems: "center", // Căn giữa icon theo chiều ngang
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Hiệu ứng bóng trên Android
   },
   //User
   container: {
