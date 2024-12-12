@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Switch, ImageBackground, } from "react-native";
+import { StyleSheet, Text, View, Switch, ImageBackground, Alert } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 import { doc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
+import Toast from "react-native-toast-message";
+import i18next from "../../services/i18next";
 
 export default function BiometricAuthentication({ route }) {
   const { userId } = route.params || {};
@@ -40,7 +42,10 @@ export default function BiometricAuthentication({ route }) {
   const authenticateBiometric = async () => {
     const hasBiometric = await LocalAuthentication.hasHardwareAsync();
     if (!hasBiometric) {
-      console.log("Thiết bị không hỗ trợ xác thực vân tay");
+      Alert.alert(
+        i18next.t("Message"),
+        i18next.t("The device does not support fingerprint authentication.")
+      );
       return false;
     }
 
@@ -52,7 +57,7 @@ export default function BiometricAuthentication({ route }) {
 
     try {
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: "Xác thực vân tay để tiếp tục",
+        promptMessage: "Authenticate with your fingerprint to unlock the feature",
         fallbackLabel: "Sử dụng mật khẩu",
       });
 
@@ -125,9 +130,9 @@ export default function BiometricAuthentication({ route }) {
       resizeMode="cover"
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Biometric Authentication</Text>
+        <Text style={styles.title}>{i18next.t("Biometric Authentication")}</Text>
         <View style={styles.row}>
-          <Text style={styles.label}>Fingerprint verification</Text>
+          <Text style={styles.label}>{i18next.t("Fingerprint verification")}</Text>
           <Switch style={styles.switch} value={biometricEnabled} onValueChange={toggleBiometric} />
         </View>
       </View>
