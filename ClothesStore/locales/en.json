@@ -22,6 +22,7 @@
   "Login": "Login",
   "SignUp": "SignUp",
   "Forgot password": "Forgot password",
+  "Send": "Send",
   "Home": "Home",
   "User": "User",
   "Cart": "Cart",
@@ -74,5 +75,8 @@
   "Password Mismatch": "Password Mismatch",
   "Passwords do not match!": "asswords do not match!",
   "Registration successful!": "Registration successful!",
-  "Registration Failed": "Registration Failed"
+  "Registration Failed": "Registration Failed",
+  "Please enter a valid email.": "Please enter a valid email.",
+  "Check your email!": "Check your email!",
+  "Unable to send the email. Please try again.": "Không thể gửi email. Vui lòng thử lại."
 }

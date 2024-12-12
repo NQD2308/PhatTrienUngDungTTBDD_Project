@@ -12,6 +12,7 @@ import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { sendPasswordResetEmail } from "firebase/auth";
 import Toast from "react-native-toast-message";
 import FontAwesome from 'react-native-vector-icons/FontAwesome6';
+import i18next from "../../services/i18next";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -20,8 +21,8 @@ export default function ForgotPassword() {
     if (!email.trim()) {
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Vui lòng nhập email hợp lệ.",
+        text1: i18next.t("Error"),
+        text2: "Please enter a valid email.",
       });
       return;
     }
@@ -30,14 +31,14 @@ export default function ForgotPassword() {
       await sendPasswordResetEmail(FIREBASE_AUTH, email);
       Toast.show({
         type: "success",
-        text1: "Thành công",
-        text2: "Email khôi phục đã được gửi!",
+        text1: i18next.t("Success"),
+        text2: i18next.t("Check your email!"),
       });
     } catch (error) {
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Không thể gửi email. Vui lòng thử lại.",
+        text1: i18next.t("Error"),
+        text2: i18next.t("Unable to send the email. Please try again."),
       });
       console.error("Error sending password reset email:", error);
     }
@@ -60,14 +61,14 @@ export default function ForgotPassword() {
         {/* Form Inputs */}
         <TextInput
           style={styles.input}
-          placeholder="Enter your email..."
+          placeholder="Email"
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
         />
         {/* Submit Button */}
         <TouchableOpacity style={styles.button} onPress={forgotPassword}>
-          <Text style={styles.buttonText}>Send it</Text>
+          <Text style={styles.buttonText}>{i18next.t("Send")}</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
       <Toast />

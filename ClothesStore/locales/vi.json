@@ -24,8 +24,6 @@
     "SignUp": "Đăng ký",
     "Forgot password": "Quên mật khẩu",
     "Send": "Gửi",
-    "Verify password": "Xác nhận mật khâu",
-    "Have a nice Day": "Chúc bạn một ngày tốt lành",
     "Home": "Trang chủ",
     "User": "Cá nhân",
     "Cart": "Giỏ hàng",
@@ -80,5 +78,8 @@
     "Password Mismatch": "Lỗi mật khẩu",
     "Passwords do not match!": "Mật khẩu không khớp!",
     "Registration successful!": "Đăng ký thành công!",
-    "Registration Failed": "Đăng ký thất bại."
+    "Registration Failed": "Đăng ký thất bại.",
+    "Please enter a valid email.": "Vui lòng nhập email hợp lệ.",
+    "Check your email!": "Kiểm tra email của bạn!",
+    "Unable to send the email. Please try again.": "Không thể gửi email. Vui lòng thử lại."
   }
