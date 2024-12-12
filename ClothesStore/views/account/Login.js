@@ -84,7 +84,7 @@ export default function Login({ navigation }) {
       setLoading(true); // Bật chế độ loading
 
       if (!email) {
-        Alert.alert(i18next.t("Message"), "Vui lòng nhập email!");
+        Alert.alert(i18next.t("Message"), "Please enter your email!");
       } else {
         const emailRemember = await AsyncStorage.getItem("rememberedEmail");
         if (!emailRemember) {
@@ -105,8 +105,8 @@ export default function Login({ navigation }) {
             if (canAuthenticate) {
               // Thực hiện xác thực nếu `biometricEnabled` là true
               const result = await LocalAuthentication.authenticateAsync({
-                promptMessage: "Xác thực để đăng nhập",
-                cancelLabel: "Hủy",
+                promptMessage: i18next.t("Authenticate with your fingerprint to log in"),
+                cancelLabel: i18next.t("Cancel"),
               });
 
               if (result.success) {

@@ -44,8 +44,8 @@ export default function SignUp() {
     if (!username || !email || !phone || !password || !confirmPassword) {
       Toast.show({
         type: "error",
-        text1: "Missing Information",
-        text2: "Please fill out all the fields.",
+        text1: i18next.t("Missing Information"),
+        text2: i18next.t("Please fill out all the fields."),
       });
       return;
     }
@@ -55,8 +55,8 @@ export default function SignUp() {
     if (!emailRegex.test(email)) {
       Toast.show({
         type: "error",
-        text1: "Invalid Email",
-        text2: "Please enter a valid email address.",
+        text1: i18next.t("Invalid Email"),
+        text2: i18next.t("Please enter a valid email address."),
       });
       return;
     }
@@ -64,8 +64,8 @@ export default function SignUp() {
     if (password !== confirmPassword) {
       Toast.show({
         type: "error",
-        text1: "Password Mismatch",
-        text2: "Passwords do not match!",
+        text1: i18next.t("Password Mismatch"),
+        text2: i18next.t("Passwords do not match!"),
       });
       return;
     }
@@ -105,15 +105,15 @@ export default function SignUp() {
 
       Toast.show({
         type: "success",
-        text1: "Success",
-        text2: "Registration successful!",
+        text1: i18next.t("Success"),
+        text2: i18next.t("Registration successful!"),
       });
       navigation.replace("Inside");
     } catch (error) {
       console.log(error);
       Toast.show({
-        type: "error",
-        text1: "Registration Failed",
+        type: i18next.t("error"),
+        text1: i18next.t("Registration Failed"),
         text2: error.message,
       });
     } finally {

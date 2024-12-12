@@ -71,5 +71,14 @@
     "Fingerprint authentication is not currently enabled. Please enable it after logging in to use this feature.": "Xác thực vân tay hiện chưa được kích hoạt. Vui lòng kích hoạt để sử dụng sau khi đăng nhập.",
     "An error occurred during fingerprint authentication.": "Đã xảy ra lỗi khi xác thực vân tay.",
     "The email format is incorrect!": "Email không đúng định dạng!",
-    "Welcome back!": "Chào mừng bạn quay trở lại!"
+    "Welcome back!": "Chào mừng bạn quay trở lại!",
+    "Please enter your email!": "Vui lòng nhập email!",
+    "Authenticate with your fingerprint to log in": "Xác thực vân tay để đăng nhập",
+    "Cancel": "Hủy",
+    "Missing Information": "Thông tin bị thiếu",
+    "Please fill out all the fields.": "Vui lòng điền đầy đủ tất cả các trường.",
+    "Password Mismatch": "Lỗi mật khẩu",
+    "Passwords do not match!": "Mật khẩu không khớp!",
+    "Registration successful!": "Đăng ký thành công!",
+    "Registration Failed": "Đăng ký thất bại."
   }
