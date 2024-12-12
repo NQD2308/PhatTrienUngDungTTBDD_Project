@@ -89,5 +89,7 @@
   "The current user's account could not be found!": "Không tìm thấy tài khoản của người dùng hiện tại!",
   "Please log in again to perform this action.": "Vui lòng đăng nhập lại để thực hiện thao tác này.",
   "An error occurred. Please try again.": "Có lỗi xảy ra. Vui lòng thử lại.",
-  "Current user not found!": "Không tìm thấy người dùng hiện tại!"
+  "Current user not found!": "Không tìm thấy người dùng hiện tại!",
+  "Scanner QR Product": "Quét QR Sản Phẩm",
+  "We need your permission to show the camera": "Chúng tôi cần sự cho phép của bạn để hiển thị camera"
 }

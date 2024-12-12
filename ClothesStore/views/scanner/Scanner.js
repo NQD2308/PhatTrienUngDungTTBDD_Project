@@ -11,6 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import i18next from "../../services/i18next";
 
 export default function Scanner({ route }) {
   const { userId } = route.params;
@@ -82,7 +83,8 @@ export default function Scanner({ route }) {
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: "center" }}>
-          We need your permission to show the camera
+          {i18next.t("We need your permission to show the camera")}
+          
         </Text>
       </View>
     );
@@ -124,7 +126,7 @@ export default function Scanner({ route }) {
           },
         ]}
       >
-        Scanner QR Product
+        {i18next.t("Scanner QR Product")}
       </Animated.Text>
     </SafeAreaView>
   );

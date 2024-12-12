@@ -85,5 +85,7 @@
   "The current user's account could not be found!": "The current user's account could not be found!",
   "Please log in again to perform this action.": "Please log in again to perform this action",
   "An error occurred. Please try again.": "An error occurred. Please try again.",
-  "Current user not found!": "Current user not found!"
+  "Current user not found!": "Current user not found!",
+  "Scanner QR Product": "Scanner QR Product",
+  "We need your permission to show the camera": "We need your permission to show the camera"
 }
