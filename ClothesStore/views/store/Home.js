@@ -23,6 +23,8 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
+import i18next from "../../services/i18next";
+
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = width / 2 - 20;
 
@@ -188,7 +190,7 @@ export default function Home({ route }) {
       <SafeAreaView style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Search</Text>
+          <Text style={styles.headerTitle}>{i18next.t("Search")}</Text>
           {/* TextInput không khung viền */}
           <View style={styles.searchContainer}>
             {searchKeyword.length > 0 && (
@@ -236,11 +238,11 @@ export default function Home({ route }) {
             <View style={styles.modalOverlay}>
               <TouchableWithoutFeedback>
                 <View style={styles.modalContainer}>
-                  <Text style={styles.modalTitle}>Filter</Text>
+                  <Text style={styles.modalTitle}>{i18next.t("Filter")}</Text>
 
                   {/* Sort Price */}
                   <View style={styles.rowContainer}>
-                    <Text style={styles.titleLabel}>Price:</Text>
+                    <Text style={styles.titleLabel}>{i18next.t("Price")}:</Text>
                     <View style={styles.buttonContainer}>
                       <TouchableOpacity
                         style={[
@@ -266,7 +268,7 @@ export default function Home({ route }) {
 
                   {/* Change Layout */}
                   <View style={styles.rowContainer}>
-                    <Text style={styles.titleLabel}>Layout:</Text>
+                    <Text style={styles.titleLabel}>{i18next.t("Layout")}:</Text>
                     <View style={styles.layoutBtnGroup}>
                       <TouchableOpacity
                         style={[
@@ -381,7 +383,7 @@ export default function Home({ route }) {
           {/* Button View More */}
           {visibleCount < filteredProducts.length && (
             <TouchableOpacity style={styles.viewMoreButton} onPress={handleViewMore}>
-              <Text style={styles.viewMoreText}>View More</Text>
+              <Text style={styles.viewMoreText}>{i18next.t("View More")}</Text>
             </TouchableOpacity>
           )}
         </ScrollView >
@@ -415,7 +417,7 @@ export default function Home({ route }) {
           )}
         >
           <View style={styles.bottomSheetContainer}>
-            <Text style={styles.sheetTitle}>Choose Category</Text>
+            <Text style={styles.sheetTitle}>{i18next.t("Category")}</Text>
             {categories.map((category) => (
               <TouchableOpacity
                 key={category.id}
@@ -434,7 +436,7 @@ export default function Home({ route }) {
                 bottomSheetModalRef.current?.dismiss(); // Đóng Bottom Sheet
               }}
             >
-              <Text style={styles.clearCategoryButtonText}>Cancel</Text>
+              <Text style={styles.clearCategoryButtonText}>{i18next.t("Cancel")}</Text>
             </TouchableOpacity>
           </View>
         </BottomSheetModal>
