@@ -322,7 +322,7 @@ export default function User({ navigation, route }) {
             </>
           ) : (
             <>
-              <Text style={styles.title}>Username</Text>
+              <Text style={styles.title}>Email</Text>
               <Text style={styles.subtitle}>example@email.com</Text>
             </>
           )}
@@ -399,7 +399,7 @@ export default function User({ navigation, route }) {
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <FontAwesome name="heart" solid size={24} color="red" />
               <View style={styles.itemContent}>
-                <Text style={styles.itemTitle}>Wishlist</Text>
+                <Text style={styles.itemTitle}>{i18next.t("Wishlist")}</Text>
               </View>
             </View>
             <FontAwesome name="arrow-right" size={24} style={styles.arrowIcon} />
@@ -412,7 +412,7 @@ export default function User({ navigation, route }) {
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <FontAwesome name="circle-info" size={24} color="#3b5998" />
               <View style={styles.itemContent}>
-                <Text style={styles.itemTitle}>Contact</Text>
+                <Text style={styles.itemTitle}>{i18next.t("Contact")}</Text>
               </View>
             </View>
             <FontAwesome name="arrow-right" size={24} style={styles.arrowIcon} />
@@ -425,7 +425,7 @@ export default function User({ navigation, route }) {
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <FontAwesome name="user-minus" size={24} color="#000" />
               <View style={styles.itemContent}>
-                <Text style={styles.itemTitle}>Delete Account</Text>
+                <Text style={styles.itemTitle}>{i18next.t("Delete Account")}</Text>
               </View>
             </View>
             <FontAwesome name="arrow-right" size={24} style={styles.arrowIcon} />
