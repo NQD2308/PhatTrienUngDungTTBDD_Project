@@ -30,6 +30,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import i18next from "../../services/i18next";
 
 const Cart = ({ route }) => {
   const { userId } = route.params; // Nhận userId từ route.params
@@ -55,22 +56,6 @@ const Cart = ({ route }) => {
   // Lấy dữ liệu từ Firestore
   useEffect(() => {
     console.log(userId);
-
-    if (userId === "guest") {
-      return (
-        <View style={styles.guestContainer}>
-          <Text style={styles.guestText}>
-            Bạn cần đăng nhập để truy cập vào giỏ hàng.
-          </Text>
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={() => navigation.navigate("Login")}
-          >
-            <Text style={styles.loginText}>Đăng nhập</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
 
     // console.log("userId tại Cart.js: " + userId);
 
@@ -186,16 +171,16 @@ const Cart = ({ route }) => {
       } else {
         Toast.show({
           type: "error",
-          text1: "Lỗi",
-          text2: "Không tìm thấy thông tin sản phẩm.",
+          text1: i18next.t("Error"),
+          text2: i18next.t("Product information not found."),
         });
       }
     } catch (error) {
       console.error("Lỗi khi lấy tài liệu từ Firebase:", error);
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Có lỗi khi kết nối với Firebase.",
+        text1: i18next.t("Error"),
+        text2: i18next.t("Có lỗi khi kết nối với Server."),
       });
     }
   };
@@ -213,21 +198,21 @@ const Cart = ({ route }) => {
   const handleDeleteOrder = async (orderId) => {
     try {
       Alert.alert(
-        "Xác nhận",
-        "Bạn có chắc chắn muốn bỏ sản phẩm này?",
+        i18next.t("Delete product"),
+        i18next.t("Are you sure you want to remove this product?"),
         [
           {
-            text: "Hủy", // Nút hủy
+            text: i18next.t("Cancel"), // Nút hủy
             style: "cancel", // Không làm gì cả
           },
           {
-            text: "Đồng ý", // Nút đồng ý
+            text: i18next.t("Delete"), // Nút đồng ý
             onPress: async () => {
               try {
                 await deleteDoc(doc(FIREBASE_DB, "Order", orderId)); // Xóa tài liệu
               } catch (error) {
                 console.error("Lỗi khi xóa tài liệu:", error);
-                alert("Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại!"); // Thông báo lỗi
+                alert(i18next.t("An error occurred while deleting the product. Please try again!")); // Thông báo lỗi
               }
             },
           },
@@ -236,8 +221,8 @@ const Cart = ({ route }) => {
     } catch (error) {
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Không thể xóa sản phẩm khỏi giỏ hàng.",
+        text1: i18next.t("Error"),
+        text2: i18next.t("Unable to remove the product from the cart."),
         visibilityTime: 3000,
       });
       console.error(error);
@@ -250,8 +235,8 @@ const Cart = ({ route }) => {
     if (!selectedSize || !selectedColor || !purchaseQuantity) {
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Vui lòng nhập đầy đủ thông tin.",
+        text1: i18next.t("Error"),
+        text2: i18next.t("Please provide all the required information."),
       });
       return;
     }
@@ -266,9 +251,8 @@ const Cart = ({ route }) => {
   
       Toast.show({
         type: "success",
-        position: "bottom",
-        text1: "Thành công",
-        text2: "Đơn hàng đã được cập nhật!",
+        text1: i18next.t("Success"),
+        text2: i18next.t("The order has been updated!"),
         visibilityTime: 3000,
       });
 
@@ -277,9 +261,8 @@ const Cart = ({ route }) => {
     } catch (error) {
       Toast.show({
         type: "error",
-        position: "bottom",
-        text1: "Lỗi",
-        text2: "Không thể cập nhật đơn hàng.",
+        text1: i18next.t("Error"),
+        text2: i18next.t("Unable to update the order."),
         visibilityTime: 3000,
       });
       console.error(error);
@@ -322,9 +305,9 @@ const Cart = ({ route }) => {
       <View style={styles.details}>
         <Text style={styles.productName}>{item.productName}</Text>
         {/* <Text>Mô tả: {item.description}</Text> */}
-        <Text>Size: {item.selectedSize}</Text>
+        <Text>{i18next.t("Size")}: {item.selectedSize}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Text>Số lượng:</Text>
+          <Text>{i18next.t("Quantity")}:</Text>
           <TouchableOpacity
             onPress={() => handleDecreaseQuantity(item.id)}
             style={styles.quantityButton}
@@ -340,37 +323,32 @@ const Cart = ({ route }) => {
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
-          <Text>Màu sắc:</Text>
+          <Text>{i18next.t("Color")}:</Text>
           <Text
             style={[styles.colorText, { backgroundColor: item.selectedColor }]}
           ></Text>
         </View>
         <Text>
-          Giá: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
+        {i18next.t("Price")}: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
         </Text>
         <Text>
-          Tổng: {parseInt(item.totalPrice).toLocaleString("vi-VN")}{" "}
+        {i18next.t("Total Price")}: {parseInt(item.totalPrice).toLocaleString("vi-VN")}{" "}
           {item.priceUnit}
         </Text>
         <View style={styles.buttons}>
           <Button
-            title={selectedOrders.includes(item.id) ? "Bỏ chọn" : "Chọn"}
+            title={selectedOrders.includes(item.id) ? "Deselect" : "Select"}
             onPress={() => toggleSelectOrder(item.id)}
           />
           <Button
-            title="Xóa"
+            title={i18next.t("Delete")}
             color="red"
             onPress={() => handleDeleteOrder(item.id)}
           />
           <Button
-            title="Chỉnh sửa"
+            title={i18next.t("Edit")}
             onPress={() => handleOpenBottomSheet(item.productId)}
           />
-          {/* <TouchableOpacity
-            onPress={() => handleOpenBottomSheet(item.productId)}
-          >
-            /<Text>Cập nhật</Text>
-          </TouchableOpacity> */}
         </View>
       </View>
     </TouchableOpacity>
@@ -380,9 +358,9 @@ const Cart = ({ route }) => {
     <BottomSheetModalProvider>
       <View style={styles.container}>
         <StatusBar style="auto" />
-        <Text style={styles.title}>Giỏ hàng của bạn</Text>
+        <Text style={styles.title}>{i18next.t("Cart")}</Text>
         {orders.length === 0 ? (
-          <Text style={styles.emptyText}>Giỏ hàng trống.</Text>
+          <Text style={styles.emptyText}>{i18next.t("Your cart is empty.")}</Text>
         ) : (
           <FlatList
             data={orders}
@@ -423,11 +401,11 @@ const Cart = ({ route }) => {
                     {selectedProduct.productName}
                   </Text>
                   <Text>
-                    Giá:{" "}
+                  {i18next.t("Price")}:{" "}
                     {parseInt(selectedProduct.price).toLocaleString("vi-VN")}{" "}
                     {selectedProduct.priceUnit}
                   </Text>
-                  <Text>Size:</Text>
+                  <Text>{i18next.t("Size")}:</Text>
                   <FlatList
                     data={selectedProduct.size}
                     keyExtractor={(item, index) => index.toString()}
@@ -452,7 +430,7 @@ const Cart = ({ route }) => {
                     contentContainerStyle={styles.sizeList}
                   />
 
-                  <Text>Colors:</Text>
+                  <Text>{i18next.t("Color")}:</Text>
                   <FlatList
                     data={selectedProduct.colors}
                     keyExtractor={(item, index) => index.toString()}
@@ -482,7 +460,7 @@ const Cart = ({ route }) => {
                       gap: 8,
                     }}
                   >
-                    <Text>Số lượng:</Text>
+                    <Text>{i18next.t("Quantity")}:</Text>
                     <TouchableOpacity
                       onPress={() => changeQuantity("decrease")}
                       style={styles.quantityButton}
@@ -498,12 +476,12 @@ const Cart = ({ route }) => {
                     </TouchableOpacity>
                   </View>
                   {/* Nút xác nhận */}
-                  <Pressable
+                  <TouchableOpacity
                     onPress={() => handleUpdateOrder()}
                     style={styles.confirmButton} // Đảm bảo có style cho nút xác nhận
                   >
-                    <Text style={styles.confirmButtonText}>Xác nhận</Text>
-                  </Pressable>
+                    <Text style={styles.confirmButtonText}>{i18next.t("Confirm")}</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
@@ -513,7 +491,7 @@ const Cart = ({ route }) => {
         </BottomSheetModal>
         {selectedOrders.length > 0 && (
           <Text style={styles.totalText}>
-            Tổng giá trị: {calculateTotalPrice().toLocaleString("vi-VN")} đ
+            {i18next.t("Total Amount")}: {calculateTotalPrice().toLocaleString("vi-VN")} đ
           </Text>
         )}
         {orders.length > 0 && (
@@ -525,7 +503,7 @@ const Cart = ({ route }) => {
             onPress={handlePayment}
             disabled={selectedOrders.length === 0}
           >
-            <Text style={styles.paymentText}>Thanh toán</Text>
+            <Text style={styles.paymentText}>{i18next.t("Checkout")}</Text>
           </TouchableOpacity>
         )}
 
