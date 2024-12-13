@@ -29,7 +29,7 @@ import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { ScrollView } from "react-native-gesture-handler";
-import i18next from "../../services/i18next"; 
+import i18next from "../../services/i18next";
 
 export default function Detail({ route }) {
   const navigation = useNavigation();
