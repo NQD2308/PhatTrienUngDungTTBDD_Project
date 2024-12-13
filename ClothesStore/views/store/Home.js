@@ -37,10 +37,16 @@ export default function Home({ route }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [layoutMode, setLayoutMode] = useState(1); // Mặc định 1 sản phẩm trên 1 hàng
+  const [visibleCount, setVisibleCount] = useState(4); // Số sản phẩm hiển thị ban đầu
 
   const [isVisible, setIsVisible] = useState(false);
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => ["40%", "60%"], []);
+
+  // Hàm xử lý khi click vào View More
+  const handleViewMore = () => {
+    setVisibleCount(filteredProducts.length); // Hiển thị tất cả sản phẩm
+  };
 
   // Đóng bottom sheet
   const closeBottomSheet = () => {
@@ -350,7 +356,7 @@ export default function Home({ route }) {
           </View>
 
           <View style={styles.productList}>
-            {filteredProducts.map((item, index) => (
+            {filteredProducts.slice(0, visibleCount).map((item, index) => (
               <View
                 key={index}
                 style={[
@@ -362,7 +368,7 @@ export default function Home({ route }) {
               >
                 <TouchableOpacity onPress={() => navigation.navigate("Detail", { productId: item.id })}>
                   <Image source={{ uri: item.images[0] }} style={styles.productImage} />
-                  <Text style={styles.productName}>{item.productName}</Text>
+                  <Text style={styles.productName} numberOfLines={1} ellipsizeMode="tail">{item.productName}</Text>
                   <Text style={styles.productPrice}>
                     {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
                   </Text>
@@ -372,6 +378,12 @@ export default function Home({ route }) {
               </View>
             ))}
           </View>
+          {/* Button View More */}
+          {visibleCount < filteredProducts.length && (
+            <TouchableOpacity style={styles.viewMoreButton} onPress={handleViewMore}>
+              <Text style={styles.viewMoreText}>View More</Text>
+            </TouchableOpacity>
+          )}
         </ScrollView >
 
 
@@ -612,13 +624,13 @@ const styles = StyleSheet.create({
   },
   productName: {
     marginTop: 10,
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',  // Căn giữa tên sản phẩm
     color: '#333',
   },
   productPrice: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#000000',
     fontWeight: 'bold',
     marginTop: 5,
@@ -629,6 +641,20 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 10,
     textAlign: 'center',
+  },
+  viewMoreButton: {
+    marginBottom: 20,
+    padding: 8,
+    width: "80%",
+    backgroundColor: "#A3B18A",
+    borderRadius: 5,
+    alignSelf: "center",
+
+  },
+  viewMoreText: {
+    color: "#666",
+    fontWeight: "bold",
+    textAlign: "center"
   },
 
   //BottomSheet
@@ -650,7 +676,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   clearCategoryButton: {
-    backgroundColor: "#dc143c", // Màu đỏ để nổi bật
+    backgroundColor: "#3A5A40",
     borderRadius: 8,
     paddingVertical: 12,
     marginTop: 20,
