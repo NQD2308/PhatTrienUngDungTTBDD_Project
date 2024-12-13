@@ -29,6 +29,7 @@ import Toast from "react-native-toast-message";
 import { useNavigation } from "@react-navigation/native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { ScrollView } from "react-native-gesture-handler";
+import i18next from "../../services/i18next"; 
 
 export default function Detail({ route }) {
   const navigation = useNavigation();
@@ -441,7 +442,7 @@ export default function Detail({ route }) {
           </View>
           {/* Kết thúc xử lý số lượng mua hàng */}
           {/* Xử lý chọn size */}
-          <Text style={styles.colorTitle}>Choose a Size:</Text>
+          <Text style={styles.colorTitle}>{i18next.t("Choose a size")}:</Text>
           <View style={styles.sizeList}>
             {product.size.map((item, index) => (
               <Pressable
@@ -465,7 +466,7 @@ export default function Detail({ route }) {
           </View>
           {/* Kết thúc xử lý chọn size */}
           {/* Chọn màu */}
-          <Text style={styles.colorTitle}>Choose a Color:</Text>
+          <Text style={styles.colorTitle}>{i18next.t("Choose a color")}:</Text>
           <View style={styles.colorList}>
             {product.colors.map((item, index) => (
               <Pressable
@@ -488,13 +489,13 @@ export default function Detail({ route }) {
       {/* Bottom Action */}
       <View style={styles.bottomArea}>
         <TouchableOpacity style={styles.btnAddToCart} onPress={handleAddToCart}>
-          <Text style={{ color: "#344E41", fontWeight: "500" }}>Add To Cart</Text>
+          <Text style={{ color: "#344E41", fontWeight: "500" }}>{i18next.t("Add To Cart")}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleBuyNow}
           style={styles.btnBuyNow}
         >
-          <Text style={{ color: "white", fontWeight: "700" }}>Buy Now</Text>
+          <Text style={{ color: "white", fontWeight: "700" }}>{i18next.t("Buy Now")}</Text>
         </TouchableOpacity>
       </View>
 
