@@ -105,7 +105,6 @@
   "Unable to open the dialer app": "Không thể mở ứng dụng gọi điện",
   "Unable to open the email app": "Không thể mở ứng dụng email",
   "Contact Us": "Liên hệ",
-  "Phone Number": "Số điện thoại",
   "The information has been updated!": "Thông tin đã được cập nhật!",
   "Unable to update the information!": "Không thể cập nhật thông tin!",
   "User's Information": "Thông tin người dùng",
@@ -139,5 +138,11 @@
   "Filter": "Lọc sản phẩm",
   "Layout": "Bố cục",
   "Category": "Loại sản phẩm",
-  "View More": "Xem thêm"
+  "View More": "Xem thêm",
+  "User information not found.": "Không tìm thấy thông tin người dùng.",
+  "Unable to retrieve user information.": "Không thể lấy thông tin người dùng.",
+  "Thank you for trusting us and making a purchase!": "Cảm ơn bạn đã tin tưởng và mua hàng!",
+  "A system error occurred during the checkout process.": "Xảy ra lỗi hệ thống trong quá trình thanh toán.",
+  "No orders have been selected.": "Không có đơn hàng nào được chọn.",
+  "Payment": "Thanh toán"
 }

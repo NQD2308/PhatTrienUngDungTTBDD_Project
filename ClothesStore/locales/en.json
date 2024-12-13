@@ -134,5 +134,11 @@
   "Filter": "Filter",
   "Layout": "Layout",
   "Category": "Category",
-  "View More": "View More"
+  "View More": "View More",
+  "User information not found.": "User information not found.",
+  "Unable to retrieve user information.": "Unable to retrieve user information.",
+  "Thank you for trusting us and making a purchase!": "Thank you for trusting us and making a purchase!",
+  "A system error occurred during the checkout process.": "A system error occurred during the checkout process.",
+  "No orders have been selected.": "No orders have been selected.",
+  "Payment": "Payment"
 }

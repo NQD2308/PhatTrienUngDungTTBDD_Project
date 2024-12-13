@@ -22,6 +22,7 @@ import {
   query,
 } from "firebase/firestore";
 import Toast from "react-native-toast-message";
+import i18next from "../../services/i18next";
 
 const Payment = () => {
   const route = useRoute();
@@ -118,8 +119,8 @@ const Payment = () => {
         } else {
           Toast.show({
             type: "error",
-            text1: "Lỗi",
-            text2: "Không tìm thấy thông tin người dùng.",
+            text1: i18next.t("Error"),
+            text2: i18next.t("User information not found."),
           });
           console.log("Không tìm thấy thông tin người dùng.");
         }
@@ -127,8 +128,8 @@ const Payment = () => {
         console.error("Lỗi khi lấy thông tin người dùng:", error);
         Toast.show({
           type: "error",
-          text1: "Lỗi",
-          text2: "Không thể lấy thông tin người dùng.",
+          text1: i18next.t("Error"),
+          text2: i18next.t("Unable to retrieve user information."),
         });
       } finally {
         setIsLoading(false);
@@ -221,8 +222,8 @@ const Payment = () => {
 
       Toast.show({
         type: "success",
-        text1: "Thành công",
-        text2: "Cảm ơn bạn đã tin tưởng và mua hàng!",
+        text1: i18next.t("Success"),
+        text2: i18next.t(""),
       });
 
       navigation.navigate("TabNavigator");
@@ -230,8 +231,8 @@ const Payment = () => {
       console.error("Lỗi khi lưu dữ liệu thanh toán:", error);
       Toast.show({
         type: "error",
-        text1: "Lỗi",
-        text2: "Xảy ra lỗi hệ thống trong quá trình thanh toán.",
+        text1: i18next.t("Error"),
+        text2: i18next.t("A system error occurred during the checkout process."),
       });
     }
   };
@@ -250,15 +251,15 @@ const Payment = () => {
       <Text style={styles.title}>Thanh toán</Text>
       <View style={styles.customerInfoContainer}>
         <Text style={styles.customerTitle}>Thông tin khách hàng</Text>
-        <Text>Người nhận: {customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật"}</Text>
-        <Text>Điện thoại: {customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật"}</Text>
-        <Text>Địa chỉ: {customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật"}</Text>
+        <Text>{i18next.t("Recipient")}: {customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật"}</Text>
+        <Text>{i18next.t("Phone Number")}: {customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật"}</Text>
+        <Text>{i18next.t("Address")}: {customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật"}</Text>
         <TouchableOpacity style={styles.editButton} onPress={handleEditInfo}>
-          <Text style={styles.editButtonText}>Chỉnh sửa</Text>
+          <Text style={styles.editButtonText}>{i18next.t("Edit")}</Text>
         </TouchableOpacity>
       </View>
       {orders.length === 0 ? (
-        <Text>Không có đơn hàng nào được chọn.</Text>
+        <Text>{i18next.t("No orders have been selected.")}</Text>
       ) : (
         <FlatList
           data={orders}
@@ -276,11 +277,11 @@ const Payment = () => {
               />
               <View style={styles.productDetails}>
                 <Text style={styles.productName}>{item.productName}</Text>
-                <Text>Size: {item.selectedSize}</Text>
+                <Text>{i18next.t("Size")}: {item.selectedSize}</Text>
                 <View
                   style={{ flexDirection: "row", gap: 6, alignItems: "center" }}
                 >
-                  <Text>Màu sắc:</Text>
+                  <Text>{i18next.t("Color")}:</Text>
                   <Text
                     style={[
                       styles.colorText,
@@ -288,7 +289,7 @@ const Payment = () => {
                     ]}
                   ></Text>
                 </View>
-                <Text>Số lượng: {item.quantity}</Text>
+                <Text>S{i18next.t("Quantity")}: {item.quantity}</Text>
                 <Text>
                   Tổng: {parseInt(item.totalPrice).toLocaleString("vi-VI")}{" "}
                   {item.priceUnit}
@@ -300,9 +301,9 @@ const Payment = () => {
         />
       )}
       <Text style={styles.totalAmount}>
-        Tổng giá trị đơn hàng: {formattedTotal}
+      {i18next.t("Total Amount")}: {formattedTotal}
       </Text>
-      <Button title="Xác nhận thanh toán" onPress={handlePayment} />
+      <Button title={i18next.t("Payment")} onPress={handlePayment} />
 
       <Toast />
     </SafeAreaView>
