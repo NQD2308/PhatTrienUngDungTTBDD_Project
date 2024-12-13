@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TextInput, Button, Alert, SafeAreaView, TouchableOpacity, FlatList } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
+import i18next from "../../services/i18next";
 
 export default function EditRecipient() {
   const route = useRoute();
@@ -54,7 +55,7 @@ export default function EditRecipient() {
   // Hàm lưu thông tin người dùng sau khi chỉnh sửa
   const handleSave = async () => {
     if (!username || !phone || !address) { 
-      Alert.alert("Lỗi", "Vui lòng điền đầy đủ thông tin.");
+      Alert.alert(i18next.t("Error"), i18next.t("Please fill out all the fields."));
       return;
     }
 
@@ -71,24 +72,24 @@ export default function EditRecipient() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Chỉnh sửa thông tin người nhận</Text>
+      <Text style={styles.title}>{i18next.t("Recipient information")}</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Tên người nhận"
+        placeholder={i18next.t("Recipient")}
         value={username}
         onChangeText={setUsername}
       />
       <TextInput
         style={styles.input}
-        placeholder="Số điện thoại"
+        placeholder={i18next.t("Phone Number")}
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
       />
       <TextInput
         style={styles.input}
-        placeholder="Địa chỉ"
+        placeholder={i18next.t("Address")}
         value={address}
         onChangeText={handleAddressAutocomplete}
         // onChangeText={setAddress}
@@ -113,7 +114,7 @@ export default function EditRecipient() {
         />
       )}
 
-      <Button title="Lưu" onPress={handleSave} />
+      <Button title={i18next.t("Save")} onPress={handleSave} />
     </SafeAreaView>
   );
 }

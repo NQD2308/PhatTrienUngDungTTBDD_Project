@@ -15,6 +15,7 @@
   "Username...": "Tên người dùng",
   "Username": "Tên người dùng",
   "Phone Number...": "Số điện thoại",
+  "Phone Number": "Số điện thoại",
   "Password must be at least 6 characters long.": "Mật khẩu phải ít nhất 6 ký tự",
   "Already have an account?": "Bạn đã có tài khoản?",
   "Login here": "Đăng nhập",
@@ -77,7 +78,7 @@
   "Confirm": "Xác nhận",
   "Delete": "Xóa",
   "Missing Information": "Thông tin bị thiếu",
-  "Please fill out all the fields.": "Vui lòng điền đầy đủ tất cả các trường.",
+  "Please fill out all the fields.": "Vui lòng điền đầy đủ thông tin.",
   "Password Mismatch": "Lỗi mật khẩu",
   "Passwords do not match!": "Mật khẩu không khớp!",
   "Registration successful!": "Đăng ký thành công!",
@@ -131,5 +132,7 @@
   "Choose a size": "Chọn kích thước",
   "Choose a color": "Chọn màu sắc",
   "Add To Cart": "Bỏ giỏ hàng",
-  "Buy Now": "Mua ngay"
+  "Buy Now": "Mua ngay",
+  "Recipient information": "Thông tin người nhận",
+  "Recipient": "Người nhận"
 }
