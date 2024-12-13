@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import i18next from "../../services/i18next";
 
 export default function Purchase({ route }) {
   const { userId } = route.params;
@@ -106,16 +107,15 @@ export default function Purchase({ route }) {
           {/* Thông tin sản phẩm */}
           <View style={styles.productDetails}>
             <Text style={styles.productName}>{product.productName}</Text>
-            <Text>Price: {product.priceUnit}</Text>
-            <Text>Quantity: {product.quantity}</Text>
-            <Text>Total: {product.totalPrice}</Text>
+            <Text>{i18next.t("Size")}: {product.size}</Text>
             <View style={styles.colorRow}>
-              <Text>Color:</Text>
+              <Text>{i18next.t("Color")}:</Text>
               <View
                 style={[styles.colorBox, { backgroundColor: product.color }]}
               />
             </View>
-            <Text>Size: {product.size}</Text>
+            <Text>{i18next.t("Quantity")}: {product.quantity}</Text>
+            <Text>{i18next.t("Total Price")}: {parseInt(product.totalPrice).toLocaleString("vi-VN")} {product.priceUnit}</Text>
           </View>
         </View>
       ))}
@@ -131,7 +131,7 @@ export default function Purchase({ route }) {
           <ActivityIndicator size="large" color="#dc143c" />
         </View>
       ) : purchases.length === 0 ? (
-        <Text>No purchases found</Text>
+        <Text>{i18next.t("No purchases found")}</Text>
       ) : (
         <FlatList
           data={purchases}

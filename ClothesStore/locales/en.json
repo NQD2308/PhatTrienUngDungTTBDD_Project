@@ -140,5 +140,6 @@
   "Thank you for trusting us and making a purchase!": "Thank you for trusting us and making a purchase!",
   "A system error occurred during the checkout process.": "A system error occurred during the checkout process.",
   "No orders have been selected.": "No orders have been selected.",
-  "Payment": "Payment"
+  "Payment": "Payment",
+  "No purchases found": "Không tìm thấy giao dịch mua nào."
 }

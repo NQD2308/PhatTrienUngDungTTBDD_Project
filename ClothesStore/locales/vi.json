@@ -144,5 +144,6 @@
   "Thank you for trusting us and making a purchase!": "Cảm ơn bạn đã tin tưởng và mua hàng!",
   "A system error occurred during the checkout process.": "Xảy ra lỗi hệ thống trong quá trình thanh toán.",
   "No orders have been selected.": "Không có đơn hàng nào được chọn.",
-  "Payment": "Thanh toán"
+  "Payment": "Thanh toán",
+  "No purchases found": "Không tìm thấy giao dịch mua nào."
 }
