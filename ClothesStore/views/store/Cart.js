@@ -186,7 +186,7 @@ const Cart = ({ route }) => {
       Toast.show({
         type: "error",
         text1: i18next.t("Error"),
-        text2: i18next.t("Có lỗi khi kết nối với Server."),
+        text2: i18next.t("An error occurred while connecting to the server."),
       });
     }
   };
@@ -388,11 +388,11 @@ const Cart = ({ route }) => {
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
-          <Text>Color:</Text>
+          <Text>{i18next.t("Color")}:</Text>
           <Text style={[styles.colorText, { backgroundColor: item.selectedColor }]} />
         </View>
-        <Text>Price: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}</Text>
-        <Text style={styles.priceUnit}>Total: {parseInt(item.totalPrice).toLocaleString("vi-VN")} {item.priceUnit}</Text>
+        <Text>{i18next.t("Price")}: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}</Text>
+        <Text style={styles.priceUnit}>{i18next.t("Total Price")}: {parseInt(item.totalPrice).toLocaleString("vi-VN")} {item.priceUnit}</Text>
         {/* toggle button */}
         <TouchableOpacity style={styles.chooseBtn} onPress={() => toggleSelectOrder(item.id)}>
           <FontAwesome name={selectedOrders.includes(item.id) ? "circle-check" : "circle"} size={24} />
@@ -407,7 +407,7 @@ const Cart = ({ route }) => {
       style={styles.editAction}
       onPress={() => handleOpenBottomSheet(item.productId)}
     >
-      <Text style={styles.actionText}>Edit</Text>
+      <Text style={styles.actionText}>{i18next.t("Edit")}</Text>
     </TouchableOpacity>
   );
 
@@ -417,7 +417,7 @@ const Cart = ({ route }) => {
       style={styles.deleteAction}
       onPress={() => handleDeleteOrder(item.id)}
     >
-      <Text style={styles.actionText}>Delete</Text>
+      <Text style={styles.actionText}>{i18next.t("Delete")}</Text>
     </TouchableOpacity>
   );
 
@@ -457,7 +457,7 @@ const Cart = ({ route }) => {
                 <View style={styles.productInfo}>
                   <Text style={styles.productName}>{selectedProduct.productName}</Text>
                   <Text style={styles.priceUnit}>Price: {parseInt(selectedProduct.price).toLocaleString("vi-VN")} {selectedProduct.priceUnit}</Text>
-                  <Text>Size:</Text>
+                  <Text>{i18next.t("Size")}:</Text>
                   <FlatList
                     data={selectedProduct.size}
                     keyExtractor={(item, index) => index.toString()}
@@ -500,7 +500,7 @@ const Cart = ({ route }) => {
                     contentContainerStyle={styles.colorList}
                   />
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                    <Text>Quantity:</Text>
+                    <Text>{i18next.t("Quantity")}:</Text>
                     <TouchableOpacity onPress={() => changeQuantity("decrease")} style={styles.quantityButton}>
                       <Text style={styles.buttonText}>-</Text>
                     </TouchableOpacity>
@@ -510,7 +510,7 @@ const Cart = ({ route }) => {
                     </TouchableOpacity>
                   </View>
                   <Pressable onPress={() => handleUpdateOrder()} style={styles.confirmButton}>
-                    <Text style={styles.confirmButtonText}>Confirm</Text>
+                    <Text style={styles.confirmButtonText}>{i18next.t("Confirm")}</Text>
                   </Pressable>
                 </View>
               </View>
@@ -523,7 +523,7 @@ const Cart = ({ route }) => {
         {selectedOrders.length > 0 && (
           <View style={styles.orderInfo}>
             <Text style={styles.totalPrice}>
-              Total: {calculateTotalPrice().toLocaleString("vi-VN")} đ
+            {i18next.t("Total Amount")}: {calculateTotalPrice().toLocaleString("vi-VN")} đ
             </Text>
           </View>
         )}
