@@ -20,6 +20,7 @@ import { getAuth } from "firebase/auth"; // Dùng để lấy thông tin ngườ
 import { FIREBASE_DB } from "../../firebaseConfig"; // Đảm bảo đúng đường dẫn đến firebaseConfig
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import FontAwesome from "react-native-vector-icons/FontAwesome6";
+import i18next from "../../services/i18next";
 
 export default function Wishlist() {
   const navigation = useNavigation();
@@ -124,7 +125,7 @@ export default function Wishlist() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>Favorite</Text>
+        <Text style={styles.header}>{i18next.t("Wishlist")}</Text>
       </View>
 
       <View style={styles.itemContainer}>
