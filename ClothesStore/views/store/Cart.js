@@ -521,25 +521,26 @@ const Cart = ({ route }) => {
           )}
         </BottomSheetModal>
         {/* Total & Payment Now Section */}
-        {selectedOrders.length > 0 && (
-          <View style={styles.orderInfo}>
+        <View style={styles.orderInfo}>
+          {selectedOrders.length > 0 && (
+
             <Text style={styles.totalPrice}>
               {i18next.t("Total Amount")}: {calculateTotalPrice().toLocaleString("vi-VN")} đ
             </Text>
-          </View>
-        )}
-        {orders.length > 0 && (
-          <TouchableOpacity
-            style={[
-              styles.paymentButton,
-              selectedOrders.length === 0 && styles.disabledButton,
-            ]}
-            onPress={handlePayment}
-            disabled={selectedOrders.length === 0}
-          >
-            <Text style={styles.paymentText}>{i18next.t("Checkout")}</Text>
-          </TouchableOpacity>
-        )}
+          )}
+          {orders.length > 0 && (
+            <TouchableOpacity
+              style={[
+                styles.paymentButton,
+                selectedOrders.length === 0 && styles.disabledButton,
+              ]}
+              onPress={handlePayment}
+              disabled={selectedOrders.length === 0}
+            >
+              <Text style={styles.paymentText}>{i18next.t("Checkout")}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
         <Toast />
       </SafeAreaView>
     </BottomSheetModalProvider>
@@ -658,19 +659,20 @@ const styles = StyleSheet.create({
 
   },
   orderInfo: {
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: "space-around",
     alignItems: "center",
     marginTop: 10,
     borderTopWidth: 1,
     borderTopColor: '#ddd',
-    paddingTop: 10,
+    // paddingTop: 10,
   },
   totalPrice: {
     paddingVertical: 10,
     paddingHorizontal: 14,
     padding: 10,
-    borderRadius: 20,
-    backgroundColor: "#6C757D",
+    // borderRadius: 20,
+    // backgroundColor: "#6C757D",
     fontSize: 16,
     marginVertical: 5,
     color: "#000",
@@ -679,10 +681,10 @@ const styles = StyleSheet.create({
   paymentButton: {
     backgroundColor: '#212529',
     paddingVertical: 20,
-    paddingHorizontal: 20,
-    marginTop: 10,
-    borderRadius: 30,
-    alignItems: 'center',
+    paddingHorizontal: 40,
+    // marginTop: 10,
+    // borderRadius: 30,
+    // alignItems: 'center',
   },
   paymentText: {
     color: '#fff',
