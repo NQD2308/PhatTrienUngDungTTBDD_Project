@@ -215,7 +215,7 @@ export default function Home({ route }) {
           </View>
           {/* Header TouchableOpacity */}
           <View style={styles.headerIcons}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Wishlist")}>
               <FontAwesome name="heart" size={20} color="#000" style={styles.icon} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setModalVisible(true)} >
