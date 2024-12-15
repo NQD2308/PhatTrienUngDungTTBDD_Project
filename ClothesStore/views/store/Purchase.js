@@ -124,6 +124,7 @@ export default function Purchase({ route }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Purchase</Text>
       {loading && !refreshing ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -152,11 +153,26 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f9f9f9",
   },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#212529',
+    marginBottom: 16,
+    textAlign: "center"
+  },
   purchaseContainer: {
-    marginBottom: 20,
-    paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Bóng đổ nhẹ
+    marginBottom: 15,
+    backgroundColor: "#fff"
   },
   dateText: {
     fontSize: 18,
