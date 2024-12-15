@@ -665,7 +665,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderTopWidth: 1,
     borderTopColor: '#ddd',
-    // paddingTop: 10,
   },
   totalPrice: {
     paddingVertical: 10,
@@ -681,10 +680,7 @@ const styles = StyleSheet.create({
   paymentButton: {
     backgroundColor: '#212529',
     paddingVertical: 20,
-    paddingHorizontal: 40,
-    // marginTop: 10,
-    // borderRadius: 30,
-    // alignItems: 'center',
+    paddingHorizontal: 45,
   },
   paymentText: {
     color: '#fff',
