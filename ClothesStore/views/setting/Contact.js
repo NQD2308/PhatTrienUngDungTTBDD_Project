@@ -47,7 +47,7 @@ export default function Contact() {
         Alert.alert(i18next("Error"), i18next.t("Data not found"));
       }
     } catch (error) {
-      Alert.alert(i18next("Error"), i18next.t(`Unable to load data`)+ `: ${error.message}`);
+      Alert.alert(i18next("Error"), i18next.t(`Unable to load data`) + `: ${error.message}`);
     }
   };
 
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#2f4f4f",
+    color: "#212529",
   },
   itemContainer: {
     backgroundColor: "#fff",
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   },
   itemSubtitle: {
     fontSize: 14,
-    color: "#888", // Màu chữ mờ hơn
+    color: "#343A40", // Màu chữ mờ hơn
   },
   arrowIcon: {
     color: "#ccc", // Mũi tên màu xám nhạt

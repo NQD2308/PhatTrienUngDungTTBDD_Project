@@ -466,10 +466,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   loginBtnGuest: {
-    backgroundColor: "#344E41",
+    backgroundColor: "#343A40",
     paddingVertical: 15,
     paddingHorizontal: 40,
-    borderRadius: 8,
+    borderRadius: 20,
     marginTop: 10,
   },
   loginText: {
@@ -497,7 +497,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5, // Hiệu ứng bóng trên Android
   },
-  //User
+
+  //User ViewView
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -556,7 +557,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoutButton: {
-    backgroundColor: "#344E41",
+    backgroundColor: "#212529",
     paddingVertical: 10,
     paddingHorizontal: 40,
     borderRadius: 20,
@@ -578,7 +579,7 @@ const styles = StyleSheet.create({
     // marginVertical: 10,
   },
   iconButton: {
-    backgroundColor: "#a9a9a9", // Màu nền cho nút
+    backgroundColor: "#6C757D", // Màu nền cho nút
     width: 40, // Chiều rộng của hình tròn
     height: 40, // Chiều cao của hình tròn (bằng width)
     borderRadius: 20, // Bán kính tròn (bằng width / 2)

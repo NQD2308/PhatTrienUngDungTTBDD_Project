@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 5,
-    color: "#2f4f4f",
+    color: "#212529",
   },
   row: {
     borderTopWidth: 1,

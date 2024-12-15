@@ -648,13 +648,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 8,
     width: "80%",
-    backgroundColor: "#A3B18A",
+    backgroundColor: "#495057",
     borderRadius: 5,
     alignSelf: "center",
 
   },
   viewMoreText: {
-    color: "#666",
+    color: "#fff",
     fontWeight: "bold",
     textAlign: "center"
   },
@@ -678,7 +678,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   clearCategoryButton: {
-    backgroundColor: "#3A5A40",
+    backgroundColor: "#212529",
     borderRadius: 8,
     paddingVertical: 12,
     marginTop: 20,

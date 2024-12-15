@@ -489,7 +489,7 @@ export default function Detail({ route }) {
       {/* Bottom Action */}
       <View style={styles.bottomArea}>
         <TouchableOpacity style={styles.btnAddToCart} onPress={handleAddToCart}>
-          <Text style={{ color: "#344E41", fontWeight: "500" }}>{i18next.t("Add To Cart")}</Text>
+          <Text style={{ color: "#212529", fontWeight: "bold" }}>{i18next.t("Add To Cart")}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleBuyNow}
@@ -507,7 +507,6 @@ export default function Detail({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // padding: 16,
   },
   image: {
     width: "100%", // Chiếm toàn bộ chiều ngang
@@ -645,7 +644,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
     paddingVertical: 12,
-    borderColor: '#344E41',
+    borderColor: '#212529',
     borderWidth: 1,
     alignItems: 'center',
     borderRadius: 10,
@@ -655,7 +654,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
     paddingVertical: 12,
-    backgroundColor: '#344E41',
+    backgroundColor: '#212529',
     alignItems: 'center',
     borderRadius: 10,
     shadowColor: "#000", // Tạo hiệu ứng đổ bóng

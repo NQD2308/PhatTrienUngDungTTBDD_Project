@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#2f4f4f",
+    color: "#212529",
   },
   list: {
     width: "100%",
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   languageItem: {
-    borderColor: "#344E41",
+    borderColor: "#495057",
     borderWidth: 2,
     padding: 15,
     marginBottom: 10,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     elevation: 5, // Hiệu ứng bóng trên Android
   },
   selectedLanguage: {
-    backgroundColor: "#344E41",
+    backgroundColor: "#6C757D",
   },
   languageText: {
     color: "#000",

@@ -365,7 +365,7 @@ const Cart = ({ route }) => {
   //   </TouchableOpacity>
   // );
   const renderOrderItem = ({ item }) => (
-    <TouchableOpacity style={[styles.cartItem, { backgroundColor: selectedOrders.includes(item.id) ? "#A3B18A" : "#DAD7CD" }]} onLongPress={() => navigation.navigate("Detail", { productId: item.productId })}>
+    <TouchableOpacity style={[styles.cartItem, { backgroundColor: selectedOrders.includes(item.id) ? "#DEE2E6" : "#f8f9fa" }]} onLongPress={() => navigation.navigate("Detail", { productId: item.productId })}>
       <Image
         source={{ uri: item.image && item.image.length > 0 ? item.image[0] : null }}
         style={styles.image}
@@ -420,6 +420,7 @@ const Cart = ({ route }) => {
       <Text style={styles.actionText}>{i18next.t("Delete")}</Text>
     </TouchableOpacity>
   );
+
 
   return (
     <BottomSheetModalProvider>
@@ -523,7 +524,7 @@ const Cart = ({ route }) => {
         {selectedOrders.length > 0 && (
           <View style={styles.orderInfo}>
             <Text style={styles.totalPrice}>
-            {i18next.t("Total Amount")}: {calculateTotalPrice().toLocaleString("vi-VN")} đ
+              {i18next.t("Total Amount")}: {calculateTotalPrice().toLocaleString("vi-VN")} đ
             </Text>
           </View>
         )}
@@ -549,12 +550,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#f9f9f9",
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#3A5A40',
+    color: '#212529',
     marginBottom: 16,
     textAlign: "center"
   },
@@ -604,7 +605,7 @@ const styles = StyleSheet.create({
   },
   priceUnit: {
     fontSize: 16,
-    color: '#588157',
+    color: '#000',
     fontWeight: "bold",
   },
   //Group quantity btn
@@ -617,7 +618,6 @@ const styles = StyleSheet.create({
   },
   quantityButton: {
     padding: 10,
-    backgroundColor: '#A3B18A',
     borderColor: "#000",
     borderWidth: 1,
     borderRadius: 30,
@@ -670,14 +670,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     padding: 10,
     borderRadius: 20,
-    backgroundColor: "#A3B18A",
+    backgroundColor: "#6C757D",
     fontSize: 16,
     marginVertical: 5,
     color: "#000",
     fontWeight: "bold"
   },
   paymentButton: {
-    backgroundColor: '#344E41',
+    backgroundColor: '#212529',
     paddingVertical: 20,
     paddingHorizontal: 20,
     marginTop: 10,

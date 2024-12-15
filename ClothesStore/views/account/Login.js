@@ -295,7 +295,7 @@ export default function Login({ navigation }) {
                 <Checkbox
                   value={rememberMe}
                   onValueChange={setRememberMe}
-                  color={rememberMe ? "#344E41" : undefined}
+                  color={rememberMe ? "#343A40" : undefined}
                 />
                 <Text style={styles.rememberMeText}>
                   {i18next.t("Remember Me")}
@@ -313,10 +313,10 @@ export default function Login({ navigation }) {
             {/* Login Button & Fingerprint */}
 
             {loading ? (
-             
-              <ActivityIndicator size="large" color="#2f4f4f" style={{marginTop: 15}}/>
-              
-              
+
+              <ActivityIndicator size="large" color="#2f4f4f" style={{ marginTop: 15 }} />
+
+
             ) : (
               <View style={styles.actionButtonsContainer}>
                 <TouchableOpacity
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     marginTop: -40,
   },
   welcomeText: {
-    color: "#344E41",
+    color: "#212529",
     fontSize: 34,
     fontWeight: "bold",
   },
@@ -373,8 +373,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   registerText: {
-    color: "#3A5A40",
+    color: "#212529",
     fontStyle: "italic",
+    fontWeight: "bold",
     fontSize: 16,
     marginTop: 5,
     marginLeft: 4,
@@ -383,7 +384,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: "#2f4f4f",
+    borderBottomColor: "#212529",
     marginTop: 10,
   },
   input: {
@@ -393,7 +394,7 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     fontSize: 20,
-    color: "#344E41",
+    color: "#212529",
   },
   optionsRow: {
     flexDirection: "row",
@@ -408,12 +409,12 @@ const styles = StyleSheet.create({
   },
   rememberMeText: {
     fontSize: 14,
-    color: "#344E41",
+    color: "#212529",
     marginLeft: 8, // Add space between checkbox and text
   },
   forgotPasswordText: {
     fontSize: 14,
-    color: "#3A5A40",
+    color: "#212529",
     textDecorationLine: "underline",
   },
   actionButtonsContainer: {
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
   loginButton: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#344E41",
+    backgroundColor: "#212529",
     borderRadius: 20,
     ...Platform.select({
       android: {
@@ -447,7 +448,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   fingerprintButton: {
-    backgroundColor: "#344E41",
+    backgroundColor: "#212529",
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 5, // Space between login and fingerprint

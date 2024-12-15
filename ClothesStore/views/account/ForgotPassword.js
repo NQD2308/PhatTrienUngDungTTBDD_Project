@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#344E41',
+    color: '#212529',
   },
   input: {
     borderWidth: 1,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: '#344E41',
+    backgroundColor: '#212529',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
