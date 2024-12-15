@@ -23,6 +23,7 @@ import {
 } from "firebase/firestore";
 import Toast from "react-native-toast-message";
 import i18next from "../../services/i18next";
+import FontAwesome from "react-native-vector-icons/FontAwesome6";
 
 const Payment = () => {
   const route = useRoute();
@@ -33,7 +34,7 @@ const Payment = () => {
     totalAmount: 0,
   };
   const { updatedUserInfo } = route.params || {}; // Lấy thông tin người dùng đã cập nhật từ EditRecipient
-  
+
   const [customerInfo, setCustomerInfo] = useState({
     username: "",
     phone: "",
@@ -163,20 +164,20 @@ const Payment = () => {
       const cartListForId = [];
 
       // Sử dụng `customerInfo` hoặc fallback sang `updatedUserInfo`
-    const finalUserInfo = {
-      username: customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật",
-      phone: customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật",
-      address: customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật",
-    };
+      const finalUserInfo = {
+        username: customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật",
+        phone: customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật",
+        address: customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật",
+      };
 
-      if(!updatedUserInfo) {
+      if (!updatedUserInfo) {
         for (const item of orders) {
           await addDoc(collection(FIREBASE_DB, "Bill"), {
-            
+
             userId,
-            receiver: finalUserInfo.username, 
-            phone: finalUserInfo.phone,       
-            address: finalUserInfo.address,   
+            receiver: finalUserInfo.username,
+            phone: finalUserInfo.phone,
+            address: finalUserInfo.address,
             productId: item.id,
             productName: item.productName,
             quantity: item.quantity,
@@ -188,17 +189,17 @@ const Payment = () => {
             image: item.image,
             timestamp: new Date().toISOString(),
           });
-  
+
           cartListForId.push(item.id);
         }
       } else {
         for (const item of orders) {
           await addDoc(collection(FIREBASE_DB, "Bill"), {
-            
+
             userId,
-            receiver: updatedUserInfo.username, 
-            phone: updatedUserInfo.phone,       
-            address: updatedUserInfo.address,   
+            receiver: updatedUserInfo.username,
+            phone: updatedUserInfo.phone,
+            address: updatedUserInfo.address,
             productId: item.id,
             productName: item.productName,
             quantity: item.quantity,
@@ -210,7 +211,7 @@ const Payment = () => {
             image: item.image,
             timestamp: new Date().toISOString(),
           });
-  
+
           cartListForId.push(item.id);
         }
       }
@@ -248,14 +249,14 @@ const Payment = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Thanh toán</Text>
+      <Text style={styles.title}>Payment</Text>
       <View style={styles.customerInfoContainer}>
-        <Text style={styles.customerTitle}>Thông tin khách hàng</Text>
-        <Text>{i18next.t("Recipient")}: {customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật"}</Text>
-        <Text>{i18next.t("Phone Number")}: {customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật"}</Text>
-        <Text>{i18next.t("Address")}: {customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật"}</Text>
+        <Text style={styles.customerTitle}>User's information</Text>
+        <Text style={styles.customerInfo}>{i18next.t("Recipient")}: {customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật"}</Text>
+        <Text style={styles.customerInfo}>{i18next.t("Phone Number")}: {customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật"}</Text>
+        <Text style={styles.customerInfo}>{i18next.t("Address")}: {customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật"}</Text>
         <TouchableOpacity style={styles.editButton} onPress={handleEditInfo}>
-          <Text style={styles.editButtonText}>{i18next.t("Edit")}</Text>
+          <FontAwesome name="pen-to-square" size={22} />
         </TouchableOpacity>
       </View>
       {orders.length === 0 ? (
@@ -300,10 +301,19 @@ const Payment = () => {
           contentContainerStyle={styles.listContainer}
         />
       )}
-      <Text style={styles.totalAmount}>
-      {i18next.t("Total Amount")}: {formattedTotal}
-      </Text>
-      <Button title={i18next.t("Payment")} onPress={handlePayment} />
+      <View style={styles.totalContainer}>
+        <Text style={styles.totalAmount}>
+          {i18next.t("Total Amount")}: {formattedTotal}
+        </Text>
+        <TouchableOpacity
+          style={styles.paymentButton}
+          onPress={handlePayment}
+        >
+          <Text style={styles.paymentText}>{i18next.t("Payment")}</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* <Button title={i18next.t("Payment")} onPress={handlePayment} /> */}
 
       <Toast />
     </SafeAreaView>
@@ -323,26 +333,38 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
-    fontSize: 23,
+    fontSize: 24,
     fontWeight: "bold",
     marginVertical: 10,
   },
   customerInfoContainer: {
     backgroundColor: "#fff",
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Bóng đổ nhẹ
     marginBottom: 16,
   },
   customerTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     marginBottom: 8,
   },
+  customerInfo: {
+    fontSize: 16,
+  },
   editButton: {
+    position: 'absolute', // Use absolute positioning
+    top: -1, // Position at the bottom
+    right: 5, // Align it to the right
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 8,
-    backgroundColor: "#007BFF",
-    padding: 8,
-    borderRadius: 4,
   },
   editButtonText: {
     color: "#fff",
@@ -350,10 +372,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   paymentItem: {
-    flexDirection: "row",
     backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 8,
+    flexDirection: 'row',
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Bóng đổ nhẹ
     marginBottom: 10,
   },
   productImage: {
@@ -375,10 +403,37 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 50,
   },
+  totalContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+    paddingTop: 10,
+  },
   totalAmount: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: "#ADB5BD",
     fontSize: 18,
     fontWeight: "bold",
-    marginVertical: 16,
+    marginVertical: 8,
+  },
+  paymentButton: {
+    width: "85%",
+    backgroundColor: '#343A40',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    borderRadius: 30,
+    alignItems: 'center',
+  },
+  paymentText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
