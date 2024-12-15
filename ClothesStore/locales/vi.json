@@ -147,5 +147,7 @@
   "A system error occurred during the checkout process.": "Xảy ra lỗi hệ thống trong quá trình thanh toán.",
   "No orders have been selected.": "Không có đơn hàng nào được chọn.",
   "Payment": "Thanh toán",
-  "No purchases found": "Không tìm thấy giao dịch mua nào."
+  "No purchases found": "Không tìm thấy giao dịch mua nào.",
+  "Confirm account deletion": "Xác nhận xóa tài khoản",
+  "Are you sure you want to delete this account? This action cannot be undone.": "Bạn có chắc chắn muốn xóa tài khoản này không? Thao tác này không thể hoàn tác."
 }
