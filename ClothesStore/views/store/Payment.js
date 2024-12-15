@@ -241,7 +241,7 @@ const Payment = () => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007BFF" />
+        <ActivityIndicator size="large" color="#6b7280" />
         <Text>Đang tải...</Text>
       </View>
     );

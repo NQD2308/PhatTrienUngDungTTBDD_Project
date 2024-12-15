@@ -167,7 +167,7 @@ export default function User({ navigation, route }) {
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#3b82f6" />
+        <ActivityIndicator size="large" color="#6b7280" />
       </SafeAreaView>
     );
   }
@@ -239,8 +239,8 @@ export default function User({ navigation, route }) {
 
     if (user) {
       Alert.alert(
-        "Xác nhận xóa tài khoản",
-        "Bạn có chắc chắn muốn xóa tài khoản này không? Thao tác này không thể hoàn tác.",
+        i18next.t("Confirm account deletion"),
+        i18next.t("Are you sure you want to delete this account? This action cannot be undone."),
         [
           {
             text: i18next.t("Cancel"), // Nút hủy
@@ -391,7 +391,7 @@ export default function User({ navigation, route }) {
           </TouchableOpacity>
         </View>
       </View>
-
+ 
       {/* Lower Section: About Me */}
       <View style={styles.itemContainer}>
         <ScrollView>
