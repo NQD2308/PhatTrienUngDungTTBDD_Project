@@ -8,6 +8,7 @@ import {
   FlatList,
   ImageBackground,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import {
@@ -151,19 +152,19 @@ export default function Profile({ route, navigation }) {
     }
   };
 
-
   if (loading) {
     return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#6b7280" />
       </View>
     );
   }
 
   return (
-    <ImageBackground source={{
-      uri: "https://images.pexels.com/photos/8483478/pexels-photo-8483478.jpeg?auto=compress&cs=tinysrgb&w=600",
-    }}
+    <ImageBackground
+      source={{
+        uri: "https://images.pexels.com/photos/8483478/pexels-photo-8483478.jpeg?auto=compress&cs=tinysrgb&w=600",
+      }}
       style={styles.background}
       resizeMode="cover"
     >
@@ -216,11 +217,11 @@ export default function Profile({ route, navigation }) {
                   setAddressSuggestions([]); // Xóa gợi ý
                 }}
               >
-                <Text style={{ color: "#000" }}>{item.title}</Text> {/* Hiển thị title */}
+                <Text style={{ color: "#000" }}>{item.title}</Text>{" "}
+                {/* Hiển thị title */}
               </TouchableOpacity>
             )}
           />
-
         )}
 
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
@@ -317,6 +318,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
     backgroundColor: "#fff",
-    color: "#333"
+    color: "#333",
   },
 });

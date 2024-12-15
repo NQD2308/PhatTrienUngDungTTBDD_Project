@@ -129,7 +129,7 @@ export default function Purchase({ route }) {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <ActivityIndicator size="large" color="#dc143c" />
+          <ActivityIndicator size="large" color="#6b7280" />
         </View>
       ) : purchases.length === 0 ? (
         <Text>{i18next.t("No purchases found")}</Text>

@@ -167,7 +167,7 @@ export default function User({ navigation, route }) {
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="#3b82f6" />
+        <ActivityIndicator size="large" color="#6b7280" />
       </SafeAreaView>
     );
   }
