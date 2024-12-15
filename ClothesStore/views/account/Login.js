@@ -313,10 +313,7 @@ export default function Login({ navigation }) {
             {/* Login Button & Fingerprint */}
 
             {loading ? (
-
-              <ActivityIndicator size="large" color="#2f4f4f" style={{ marginTop: 15 }} />
-
-
+              <ActivityIndicator size="large" color="#6b7280" style={{ marginTop: 15 }} />
             ) : (
               <View style={styles.actionButtonsContainer}>
                 <TouchableOpacity

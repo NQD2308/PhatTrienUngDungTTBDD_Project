@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Alert,
-  SafeAreaView
+  SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import {
@@ -31,14 +32,14 @@ import {
 } from "@gorhom/bottom-sheet";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import SwipeableFlatList from 'rn-gesture-swipeable-flatlist';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import SwipeableFlatList from "rn-gesture-swipeable-flatlist";
 import FontAwesome from "react-native-vector-icons/FontAwesome6"; // Đừng quên cài đặt thư viện này
 import i18next from "../../services/i18next";
 
-
 const Cart = ({ route }) => {
   const { userId } = route.params; // Nhận userId từ route.params
+  const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -52,7 +53,6 @@ const Cart = ({ route }) => {
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => ["50%", "70%"], []);
 
-
   // Đóng bottom sheet
   const closeBottomSheet = () => {
     bottomSheetRef.current?.dismiss();
@@ -65,19 +65,30 @@ const Cart = ({ route }) => {
 
     // console.log("userId tại Cart.js: " + userId);
 
-    const q = query(
-      collection(FIREBASE_DB, "Order"),
-      where("userId", "==", userId)
-    );
+    try{
+      setLoading(true);
+      const q = query(
+        collection(FIREBASE_DB, "Order"),
+        where("userId", "==", userId)
+      );
+  
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setOrders(data);
+      });
+      return () => unsubscribe();
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setOrders(data);
-    });
-    return () => unsubscribe();
+    } catch(e) {
+      console.log(e);
+      
+    } finally {
+      setLoading(false);
+    }
+
+    
   }, [userId]);
 
   useFocusEffect(
@@ -218,7 +229,11 @@ const Cart = ({ route }) => {
                 await deleteDoc(doc(FIREBASE_DB, "Order", orderId)); // Xóa tài liệu
               } catch (error) {
                 console.error("Lỗi khi xóa tài liệu:", error);
-                alert(i18next.t("An error occurred while deleting the product. Please try again!")); // Thông báo lỗi
+                alert(
+                  i18next.t(
+                    "An error occurred while deleting the product. Please try again!"
+                  )
+                ); // Thông báo lỗi
               }
             },
           },
@@ -365,15 +380,31 @@ const Cart = ({ route }) => {
   //   </TouchableOpacity>
   // );
   const renderOrderItem = ({ item }) => (
-    <TouchableOpacity style={[styles.cartItem, { backgroundColor: selectedOrders.includes(item.id) ? "#DEE2E6" : "#f8f9fa" }]} onLongPress={() => navigation.navigate("Detail", { productId: item.productId })}>
+    <TouchableOpacity
+      style={[
+        styles.cartItem,
+        {
+          backgroundColor: selectedOrders.includes(item.id)
+            ? "#DEE2E6"
+            : "#f8f9fa",
+        },
+      ]}
+      onLongPress={() =>
+        navigation.navigate("Detail", { productId: item.productId })
+      }
+    >
       <Image
-        source={{ uri: item.image && item.image.length > 0 ? item.image[0] : null }}
+        source={{
+          uri: item.image && item.image.length > 0 ? item.image[0] : null,
+        }}
         style={styles.image}
       />
       <View style={styles.details}>
         <Text style={styles.productName}>{item.productName}</Text>
         {/* <Text>Mô tả: {item.description}</Text> */}
-        <Text>{i18next.t("Size")}: {item.selectedSize}</Text>
+        <Text>
+          {i18next.t("Size")}: {item.selectedSize}
+        </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Text>{i18next.t("Quantity")}:</Text>
           <TouchableOpacity
@@ -383,19 +414,36 @@ const Cart = ({ route }) => {
             <Text style={styles.buttonText}>-</Text>
           </TouchableOpacity>
           <Text style={styles.quantityText}>{item.quantity}</Text>
-          <TouchableOpacity onPress={() => handleIncreaseQuantity(item.id)} style={styles.quantityButton}>
+          <TouchableOpacity
+            onPress={() => handleIncreaseQuantity(item.id)}
+            style={styles.quantityButton}
+          >
             <Text style={styles.buttonText}>+</Text>
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
           <Text>{i18next.t("Color")}:</Text>
-          <Text style={[styles.colorText, { backgroundColor: item.selectedColor }]} />
+          <Text
+            style={[styles.colorText, { backgroundColor: item.selectedColor }]}
+          />
         </View>
-        <Text>{i18next.t("Price")}: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}</Text>
-        <Text style={styles.priceUnit}>{i18next.t("Total Price")}: {parseInt(item.totalPrice).toLocaleString("vi-VN")} {item.priceUnit}</Text>
+        <Text>
+          {i18next.t("Price")}: {parseInt(item.price).toLocaleString("vi-VN")}{" "}
+          {item.priceUnit}
+        </Text>
+        <Text style={styles.priceUnit}>
+          {i18next.t("Total Price")}:{" "}
+          {parseInt(item.totalPrice).toLocaleString("vi-VN")} {item.priceUnit}
+        </Text>
         {/* toggle button */}
-        <TouchableOpacity style={styles.chooseBtn} onPress={() => toggleSelectOrder(item.id)}>
-          <FontAwesome name={selectedOrders.includes(item.id) ? "circle-check" : "circle"} size={24} />
+        <TouchableOpacity
+          style={styles.chooseBtn}
+          onPress={() => toggleSelectOrder(item.id)}
+        >
+          <FontAwesome
+            name={selectedOrders.includes(item.id) ? "circle-check" : "circle"}
+            size={24}
+          />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -421,13 +469,19 @@ const Cart = ({ route }) => {
     </TouchableOpacity>
   );
 
-
   return (
     <BottomSheetModalProvider>
       <SafeAreaView style={styles.container}>
         <StatusBar style="auto" />
         <Text style={styles.title}>Shopping Cart</Text>
-        {orders.length === 0 ? (
+        {loading ? (
+          <View
+                    style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+                  >
+                    <ActivityIndicator size="large" color="#6b7280" />
+                  </View>
+        ) :
+        orders.length === 0 ? (
           <Text style={styles.emptyText}>Cart is empty.</Text>
         ) : (
           <GestureHandlerRootView style={{ flex: 1 }}>
@@ -447,17 +501,28 @@ const Cart = ({ route }) => {
           snapPoints={snapPoints}
           backdropComponent={({ style }) => (
             <TouchableWithoutFeedback onPress={closeBottomSheet}>
-              <View style={[style, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]} />
+              <View
+                style={[style, { backgroundColor: "rgba(0, 0, 0, 0.5)" }]}
+              />
             </TouchableWithoutFeedback>
           )}
         >
           {selectedProduct ? (
             <View style={styles.bottomSheetContent}>
               <View style={styles.productContainer}>
-                <Image source={{ uri: selectedProduct.images[0] }} style={styles.productImage} />
+                <Image
+                  source={{ uri: selectedProduct.images[0] }}
+                  style={styles.productImage}
+                />
                 <View style={styles.productInfo}>
-                  <Text style={styles.productName}>{selectedProduct.productName}</Text>
-                  <Text style={styles.priceUnit}>Price: {parseInt(selectedProduct.price).toLocaleString("vi-VN")} {selectedProduct.priceUnit}</Text>
+                  <Text style={styles.productName}>
+                    {selectedProduct.productName}
+                  </Text>
+                  <Text style={styles.priceUnit}>
+                    Price:{" "}
+                    {parseInt(selectedProduct.price).toLocaleString("vi-VN")}{" "}
+                    {selectedProduct.priceUnit}
+                  </Text>
                   <Text>{i18next.t("Size")}:</Text>
                   <FlatList
                     data={selectedProduct.size}
@@ -495,29 +560,59 @@ const Cart = ({ route }) => {
                           selectedColor === item && styles.selectedColorBox,
                         ]}
                       >
-                        <View style={[styles.colorCircle, { backgroundColor: item }]} />
+                        <View
+                          style={[
+                            styles.colorCircle,
+                            { backgroundColor: item },
+                          ]}
+                        />
                       </Pressable>
                     )}
                     contentContainerStyle={styles.colorList}
                   />
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
                     <Text>{i18next.t("Quantity")}:</Text>
-                    <TouchableOpacity onPress={() => changeQuantity("decrease")} style={styles.quantityButton}>
+                    <TouchableOpacity
+                      onPress={() => changeQuantity("decrease")}
+                      style={styles.quantityButton}
+                    >
                       <Text style={styles.buttonText}>-</Text>
                     </TouchableOpacity>
                     <Text>{purchaseQuantity}</Text>
-                    <TouchableOpacity onPress={() => changeQuantity("increase")} style={styles.quantityButton}>
+                    <TouchableOpacity
+                      onPress={() => changeQuantity("increase")}
+                      style={styles.quantityButton}
+                    >
                       <Text style={styles.buttonText}>+</Text>
                     </TouchableOpacity>
                   </View>
-                  <Pressable onPress={() => handleUpdateOrder()} style={styles.confirmButton}>
-                    <Text style={styles.confirmButtonText}>{i18next.t("Confirm")}</Text>
+                  <Pressable
+                    onPress={() => handleUpdateOrder()}
+                    style={styles.confirmButton}
+                  >
+                    <Text style={styles.confirmButtonText}>
+                      {i18next.t("Confirm")}
+                    </Text>
                   </Pressable>
                 </View>
               </View>
             </View>
           ) : (
-            <Text>Loading...</Text>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator size="large" color="#dc143c" />
+            </View>
           )}
         </BottomSheetModal>
         {/* Total & Payment Now Section */}
@@ -525,7 +620,8 @@ const Cart = ({ route }) => {
           {selectedOrders.length > 0 && (
 
             <Text style={styles.totalPrice}>
-              {i18next.t("Total Amount")}: {calculateTotalPrice().toLocaleString("vi-VN")} đ
+              {i18next.t("Total Amount")}:{" "}
+              {calculateTotalPrice().toLocaleString("vi-VN")} đ
             </Text>
           )}
           {orders.length > 0 && (
@@ -555,10 +651,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#212529',
+    fontWeight: "bold",
+    color: "#212529",
     marginBottom: 16,
-    textAlign: "center"
+    textAlign: "center",
   },
   emptyText: {
     textAlign: "center",
@@ -569,7 +665,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   cartItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderRadius: 12,
     paddingVertical: 8,
     paddingHorizontal: 12,
@@ -579,14 +675,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3, // Bóng đổ nhẹ
     marginBottom: 15,
-    position: 'relative', // Add relative positioning
+    position: "relative", // Add relative positioning
   },
   image: {
     width: 100,
     height: 100,
     marginRight: 15,
     borderRadius: 10,
-    borderColor: "#000"
+    borderColor: "#000",
   },
   details: {
     flex: 1,
@@ -606,16 +702,16 @@ const styles = StyleSheet.create({
   },
   priceUnit: {
     fontSize: 16,
-    color: '#000',
+    color: "#000",
     fontWeight: "bold",
   },
   //Group quantity btn
   itemQuantity: {
-    position: 'absolute', // Use absolute positioning
+    position: "absolute", // Use absolute positioning
     bottom: 10, // Position at the bottom
     right: 10, // Align it to the right
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   quantityButton: {
     padding: 10,
@@ -624,11 +720,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   buttonText: {
-    position: 'absolute', // Use absolute positioning
+    position: "absolute", // Use absolute positioning
     top: 0, // Position at the bottom
     right: 0, // Align it to the right
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     color: "#fff",
     fontSize: 16,
     //fontWeight: "bold",
@@ -645,19 +741,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   chooseBtn: {
-    position: 'absolute', // Use absolute positioning
+    position: "absolute", // Use absolute positioning
     top: -1, // Position at the bottom
     right: 5, // Align it to the right
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 8,
   },
-  iconChooseBtn: {
-
-  },
-  choosedIconBtn: {
-
-  },
+  iconChooseBtn: {},
+  choosedIconBtn: {},
   orderInfo: {
     flexDirection: 'row',
     justifyContent: "space-around",
@@ -676,10 +768,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 5,
     color: "#000",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   paymentButton: {
-    backgroundColor: '#212529',
+    backgroundColor: "#212529",
     paddingVertical: 20,
     paddingHorizontal: 40,
     // marginTop: 10,
@@ -687,9 +779,9 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
   paymentText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   disabledButton: {
     backgroundColor: "#ccc",
@@ -709,7 +801,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 2, // Tạo tỷ lệ hình ảnh 1:2
     marginRight: 20, // Khoảng cách giữa ảnh và thông tin sản phẩm
     borderRadius: 10, // Bo góc ảnh nếu cần
-    resizeMode: 'cover',// Đảm bảo hình ảnh bao phủ toàn bộ không gian
+    resizeMode: "cover", // Đảm bảo hình ảnh bao phủ toàn bộ không gian
   },
   productInfo: {
     flex: 1, // Chiếm hết không gian còn lại
@@ -721,17 +813,17 @@ const styles = StyleSheet.create({
 
   // Size
   sizeList: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "flex-start",
     marginLeft: 10,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
     marginVertical: 10,
   },
   sizeBox: {
     padding: 8,
     margin: 5,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: "#E0E0E0",
     borderRadius: 5,
     shadowColor: "#000", // Tạo hiệu ứng đổ bóng
     shadowOffset: { width: 0, height: 2 },
@@ -740,8 +832,8 @@ const styles = StyleSheet.create({
     elevation: 5, // Hiệu ứng bóng trên Android
   },
   selectedSizeBox: {
-    borderColor: '#3b82f6',
-    backgroundColor: '#e6f0ff',
+    borderColor: "#3b82f6",
+    backgroundColor: "#e6f0ff",
   },
   sizeText: {
     fontSize: 16,
@@ -754,17 +846,17 @@ const styles = StyleSheet.create({
 
   // Color
   colorList: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "flex-start",
     marginLeft: 10,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
     marginBottom: 15,
   },
   colorBox: {
     margin: 5,
     padding: 4,
     borderWidth: 2,
-    borderColor: 'transparent',
+    borderColor: "transparent",
     borderRadius: 50,
   },
   colorCircle: {
@@ -778,33 +870,33 @@ const styles = StyleSheet.create({
     elevation: 5, // Hiệu ứng bóng trên Android
   },
   selectedColorBox: {
-    borderColor: '#006400',
+    borderColor: "#006400",
   },
   buttonText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 
   // Styles cho nút xác nhận
   confirmButton: {
-    backgroundColor: '#344E41',// Màu nền của nút xác nhận
-    paddingVertical: 12,// Khoảng cách dọc cho nút
+    backgroundColor: "#344E41", // Màu nền của nút xác nhận
+    paddingVertical: 12, // Khoảng cách dọc cho nút
     paddingHorizontal: 20,
     borderRadius: 30,
-    marginTop: 20,               // Khoảng cách từ phần nội dung sản phẩm
-    alignItems: 'center',        // Căn giữa nội dung trong nút
+    marginTop: 20, // Khoảng cách từ phần nội dung sản phẩm
+    alignItems: "center", // Căn giữa nội dung trong nút
   },
   confirmButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',        // Chữ đậm
+    fontWeight: "bold", // Chữ đậm
   },
 
   //Left & Right Action
   editAction: {
-    backgroundColor: 'green',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    backgroundColor: "green",
+    justifyContent: "center",
+    alignItems: "flex-start",
     padding: 20,
     borderRadius: 12,
     paddingVertical: 8,
@@ -812,9 +904,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   deleteAction: {
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "flex-end",
     padding: 20,
     borderRadius: 12,
     paddingVertical: 8,
@@ -822,8 +914,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   actionText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

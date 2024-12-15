@@ -143,5 +143,7 @@
   "A system error occurred during the checkout process.": "A system error occurred during the checkout process.",
   "No orders have been selected.": "No orders have been selected.",
   "Payment": "Payment",
-  "No purchases found": "Không tìm thấy giao dịch mua nào."
+  "No purchases found": "Không tìm thấy giao dịch mua nào.",
+  "Confirm account deletion": "Confirm account deletion",
+  "Are you sure you want to delete this account? This action cannot be undone.": "Are you sure you want to delete this account? This action cannot be undone."
 }

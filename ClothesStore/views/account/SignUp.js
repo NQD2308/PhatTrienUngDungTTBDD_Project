@@ -221,7 +221,7 @@ export default function SignUp() {
 
         {/* Submit Button */}
         {loading ? (
-          <ActivityIndicator size={"large"} color={"#0000ff"} />
+          <ActivityIndicator size={"large"} color={"#6b7280"} />
         ) : (
           <TouchableOpacity style={styles.button} onPress={() => signUp()}>
             <Text style={styles.buttonText}>{i18next.t("Register")}</Text>

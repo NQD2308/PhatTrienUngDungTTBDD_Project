@@ -106,14 +106,10 @@ export default function Detail({ route }) {
   if (loading || !product) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#dc143c" />
+        <ActivityIndicator size="large" color="#6b7280" />
       </View>
     );
   }
-
-  // if (!product) {
-  //   return <Text>Loading...</Text>;
-  // }
 
   // ========== Xử lý số lượng mua hàng ========== //
   const handleIncrease = () => {
