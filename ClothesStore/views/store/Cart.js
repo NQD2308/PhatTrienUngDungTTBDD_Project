@@ -309,76 +309,6 @@ const Cart = ({ route }) => {
     navigation.navigate("Payment", { orders: selectedData, totalAmount });
   };
 
-  // Giao diện từng đơn hàng
-  // const renderOrderItem = ({ item }) => (
-  //   <TouchableOpacity
-  //     style={styles.cartItem}
-  //     onPress={() =>
-  //       navigation.navigate("Detail", { productId: item.productId })
-  //     }
-  //   >
-  //     <Image
-  //       source={{
-  //         uri: item.image && item.image.length > 0 ? item.image[0] : null,
-  //       }}
-  //       style={styles.image}
-  //     />
-  //     <View style={styles.details}>
-  //       <Text style={styles.productName}>{item.productName}</Text>
-  //       {/* <Text>Mô tả: {item.description}</Text> */}
-  //       <Text>Size: {item.selectedSize}</Text>
-  //       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-  //         <Text>Số lượng:</Text>
-  //         <TouchableOpacity
-  //           onPress={() => handleDecreaseQuantity(item.id)}
-  //           style={styles.quantityButton}
-  //         >
-  //           <Text style={styles.buttonText}>-</Text>
-  //         </TouchableOpacity>
-  //         <Text>{item.quantity}</Text>
-  //         <TouchableOpacity
-  //           onPress={() => handleIncreaseQuantity(item.id)}
-  //           style={styles.quantityButton}
-  //         >
-  //           <Text style={styles.buttonText}>+</Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //       <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
-  //         <Text>Màu sắc:</Text>
-  //         <Text
-  //           style={[styles.colorText, { backgroundColor: item.selectedColor }]}
-  //         ></Text>
-  //       </View>
-  //       <Text>
-  //         Giá: {parseInt(item.price).toLocaleString("vi-VN")} {item.priceUnit}
-  //       </Text>
-  //       <Text>
-  //         Tổng: {parseInt(item.totalPrice).toLocaleString("vi-VN")}{" "}
-  //         {item.priceUnit}
-  //       </Text>
-  //       <View style={styles.buttons}>
-  //         <Button
-  //           title={selectedOrders.includes(item.id) ? "Bỏ chọn" : "Chọn"}
-  //           onPress={() => toggleSelectOrder(item.id)}
-  //         />
-  //         {/* <Button
-  //           title="Xóa"
-  //           color="red"
-  //           onPress={() => handleDeleteOrder(item.id)}
-  //         />
-  //         <Button
-  //           title="Chỉnh sửa"
-  //           onPress={() => handleOpenBottomSheet(item.productId)}
-  //         /> */}
-  //         {/* <TouchableOpacity
-  //           onPress={() => handleOpenBottomSheet(item.productId)}
-  //         >
-  //           /<Text>Cập nhật</Text>
-  //         </TouchableOpacity> */}
-  //       </View>
-  //     </View>
-  //   </TouchableOpacity>
-  // );
   const renderOrderItem = ({ item }) => (
     <TouchableOpacity
       style={[
@@ -617,13 +547,13 @@ const Cart = ({ route }) => {
         </BottomSheetModal>
         {/* Total & Payment Now Section */}
         <View style={styles.orderInfo}>
-          {selectedOrders.length > 0 && (
+         
 
             <Text style={styles.totalPrice}>
               {i18next.t("Total Amount")}:{" "}
               {calculateTotalPrice().toLocaleString("vi-VN")} đ
             </Text>
-          )}
+          
           {orders.length > 0 && (
             <TouchableOpacity
               style={[
