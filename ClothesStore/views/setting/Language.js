@@ -4,8 +4,12 @@ import { useTranslation } from "react-i18next";
 import i18next from "../../services/i18next";
 import languagesList from "../../services/languagesList.json";
 import { useFocusEffect } from "@react-navigation/native";
+import FontAwesome from "react-native-vector-icons/FontAwesome6";
+import { useNavigation } from '@react-navigation/native';
 
-export default function Language({ navigation }) {
+
+export default function Language() {
+  const navigation = useNavigation();
   const { t } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState(i18next.language);
 
@@ -32,26 +36,32 @@ export default function Language({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+        </TouchableOpacity>
         <Text style={styles.header}>{t("Languages")}</Text>
       </View>
-      {/* <View style={styles.itemContainer}> */}
-      <FlatList
-        data={languages}
-        keyExtractor={(item) => item.key}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.languageItem,
-              currentLanguage === item.key && styles.selectedLanguage,
-            ]}
-            onPress={() => changeLanguage(item.key)}
-          >
-            <Text style={styles.languageText}>{i18next.t(item.nativeName)}</Text>
-          </TouchableOpacity>
-        )}
-        contentContainerStyle={styles.list}
-      />
-      {/* </View> */}
+      <View style={styles.itemContainer}>
+        <FlatList
+          data={languages}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[
+                styles.languageItem,
+                currentLanguage === item.key && styles.selectedLanguage,
+              ]}
+              onPress={() => changeLanguage(item.key)}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={styles.languageText}>{i18next.t(item.nativeName)}</Text>
+              </View>
+              <FontAwesome name="arrow-right" size={24} style={styles.arrowIcon} />
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={styles.list}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -60,48 +70,67 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 16,
+    padding: 20,
   },
   headerContainer: {
-    alignItems: "344E41",
-    marginBottom: 10,
-    padding: 10,
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderColor: "#000",
+    padding: 20,
+    flexDirection: 'row',
+    backgroundColor: "#000",
+    marginBottom: 20,
   },
   header: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#212529",
+    color: "#fff",
+    marginLeft: 10,
   },
-  list: {
-    width: "100%",
-    alignItems: "center",
-    marginTop: 10,
-    padding: 10,
-  },
-  languageItem: {
-    borderColor: "#495057",
-    borderWidth: 2,
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 20,
-    alignItems: "center",
-    width: "80%",
-    alignSelf: "center",
-    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+  itemContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 5, // Hiệu ứng bóng trên Android
+    elevation: 3, // Bóng đổ nhẹ
+  },
+  // list: {
+  //   width: "100%",
+  //   alignItems: "center",
+  //   marginTop: 10,
+  //   padding: 10,
+  // },
+  languageItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0", // Đường phân cách nhẹ giữa các item
+    // borderColor: "#495057",
+    // borderWidth: 2,
+    // padding: 15,
+    // marginBottom: 10,
+    // borderRadius: 20,
+    // alignItems: "center",
+    // width: "80%",
+    // alignSelf: "center",
+    // shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 4,
+    // elevation: 5, // Hiệu ứng bóng trên Android
   },
   selectedLanguage: {
-    backgroundColor: "#6C757D",
+    backgroundColor: "#999",
   },
   languageText: {
-    color: "#000",
-    fontWeight: "bold",
     fontSize: 18,
+    fontWeight: "600",
+    color: "#555",
+  },
+  arrowIcon: {
+    color: "#ccc",
   },
 });

@@ -399,14 +399,13 @@ const Cart = ({ route }) => {
     <BottomSheetModalProvider>
       <SafeAreaView style={styles.container}>
         <StatusBar style="auto" />
-        <Text style={styles.title}>{i18next.t("Shopping Cart")}</Text>
-        {loading ? (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <ActivityIndicator size="large" color="#6b7280" />
-          </View>
-        ) : orders.length === 0 ? (
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+          </TouchableOpacity>
+          <Text style={styles.header}>{i18next.t("Shopping Cart")}</Text>
+        </View>
+        {orders.length === 0 ? (
           <Text style={styles.emptyText}>{i18next.t("Cart is empty.")}</Text>
         ) : (
           <GestureHandlerRootView style={{ flex: 1 }}>
@@ -543,25 +542,22 @@ const Cart = ({ route }) => {
         {/* Total & Payment Now Section */}
         <View style={styles.orderInfo}>
           <Text style={styles.totalPrice}>
-            {i18next.t("Total Amount")}:{" "}
-            {calculateTotalPrice().toLocaleString("vi-VN")} đ
+            {i18next.t("Total Amount")}: {calculateTotalPrice().toLocaleString("vi-VN")} đ
           </Text>
-          {orders.length > 0 && (
-            <TouchableOpacity
-              style={[
-                styles.paymentButton,
-                selectedOrders.length === 0 && styles.disabledButton,
-              ]}
-              onPress={handlePayment}
-              disabled={selectedOrders.length === 0}
-            >
-              <Text style={styles.paymentText}>
-                {i18next.t("Checkout")}({selectedOrders.length})
-              </Text>
-            </TouchableOpacity>
-          )}
+
+          <TouchableOpacity
+            style={[
+              styles.paymentButton,
+              selectedOrders.length === 0 && styles.disabledButton,
+            ]}
+            onPress={handlePayment}
+            disabled={orders.length === 0}
+          >
+            <Text style={styles.paymentText}>{i18next.t("Checkout")}</Text>
+          </TouchableOpacity>
+
+          <Toast />
         </View>
-        <Toast />
       </SafeAreaView>
     </BottomSheetModalProvider>
   );
@@ -570,15 +566,21 @@ const Cart = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: "#f9f9f9",
+    justifyContent: 'space-between',
   },
-  title: {
-    fontSize: 24,
+  headerContainer: {
+    padding: 20,
+    flexDirection: 'row',
+    backgroundColor: "#000",
+    marginBottom: 20,
+  },
+  header: {
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#212529",
-    marginBottom: 16,
-    textAlign: "center",
+    color: "#fff",
+    marginLeft: 10,
   },
   emptyText: {
     textAlign: "center",
@@ -611,10 +613,6 @@ const styles = StyleSheet.create({
   details: {
     flex: 1,
   },
-  productName: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
   colorText: {
     width: 24,
     height: 24,
@@ -628,6 +626,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000",
     fontWeight: "bold",
+  },
+  chooseBtn: {
+    position: 'absolute', // Use absolute positioning
+    top: -1, // Position at the bottom
+    right: 5, // Align it to the right
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 8,
   },
   //Group quantity btn
   itemQuantity: {
@@ -664,39 +670,29 @@ const styles = StyleSheet.create({
     marginTop: 16,
     textAlign: "center",
   },
-  chooseBtn: {
-    position: "absolute", // Use absolute positioning
-    top: -1, // Position at the bottom
-    right: 5, // Align it to the right
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 8,
-  },
-  iconChooseBtn: {},
-  choosedIconBtn: {},
   orderInfo: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: "space-between",
     alignItems: "center",
     marginTop: 10,
     borderTopWidth: 1,
     borderTopColor: "#ddd",
   },
   totalPrice: {
+    flex: 0.8, // Chiếm phần còn lại của không gian
     paddingVertical: 10,
     paddingHorizontal: 14,
     padding: 10,
-    // borderRadius: 20,
-    // backgroundColor: "#6C757D",
-    fontSize: 16,
+    fontSize: 17,
     marginVertical: 5,
     color: "#000",
     fontWeight: "bold",
   },
   paymentButton: {
-    backgroundColor: "#212529",
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    flexShrink: 0, // Giữ nguyên kích thước button, không bị co lại
+    backgroundColor: '#000',
+    paddingVertical: 25,
+    paddingHorizontal: 45,
   },
   paymentText: {
     color: "#fff",
@@ -727,8 +723,10 @@ const styles = StyleSheet.create({
     flex: 1, // Chiếm hết không gian còn lại
   },
   productName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
+    marginRight: 30, // Tạo khoảng cách để tránh đè lên dấu tích
+    flexShrink: 1, // Đảm bảo text co lại nếu không đủ chỗ
   },
 
   // Size
@@ -799,8 +797,8 @@ const styles = StyleSheet.create({
 
   // Styles cho nút xác nhận
   confirmButton: {
-    backgroundColor: "#344E41", // Màu nền của nút xác nhận
-    paddingVertical: 12, // Khoảng cách dọc cho nút
+    backgroundColor: '#000',// Màu nền của nút xác nhận
+    paddingVertical: 12,// Khoảng cách dọc cho nút
     paddingHorizontal: 20,
     borderRadius: 30,
     marginTop: 20, // Khoảng cách từ phần nội dung sản phẩm

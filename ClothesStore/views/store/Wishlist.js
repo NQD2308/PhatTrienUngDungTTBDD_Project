@@ -125,6 +125,9 @@ export default function Wishlist() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+        </TouchableOpacity>
         <Text style={styles.header}>{i18next.t("Wishlist")}</Text>
       </View>
 
@@ -148,14 +151,16 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   headerContainer: {
-    alignItems: "344E41",
+    padding: 20,
+    flexDirection: 'row',
+    backgroundColor: "#000",
     marginBottom: 20,
-    alignItems: "center"
   },
   header: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#212529",
+    color: "#fff",
+    marginLeft: 10,
   },
   itemContainer: {
     backgroundColor: "#fff",

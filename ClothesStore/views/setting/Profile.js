@@ -161,10 +161,9 @@ export default function Profile({ route, navigation }) {
   }
 
   return (
-    <ImageBackground
-      source={{
-        uri: "https://images.pexels.com/photos/8483478/pexels-photo-8483478.jpeg?auto=compress&cs=tinysrgb&w=600",
-      }}
+    <ImageBackground source={{
+      uri: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTU0fHxibGFjayUyMGFuZCUyMHdoaXRlJTIwZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D",
+    }}
       style={styles.background}
       resizeMode="cover"
     >
@@ -263,7 +262,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 10,
-    color: "#212529",
+    color: "#000",
   },
   input: {
     borderWidth: 1,

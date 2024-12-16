@@ -417,7 +417,7 @@ export default function Detail({ route }) {
               <FontAwesome
                 name={isLiked ? "heart" : "heart-o"} // Hiển thị "heart" nếu đã thích, "heart-o" nếu chưa
                 size={32} // Tăng kích thước icon
-                color={isLiked ? "red" : "#555555"} // Đổi màu đỏ nếu đã thích
+                color={isLiked ? "#000" : "#555555"} // Đổi màu đỏ nếu đã thích
               />
             </TouchableOpacity>
           </View>
@@ -485,7 +485,7 @@ export default function Detail({ route }) {
       {/* Bottom Action */}
       <View style={styles.bottomArea}>
         <TouchableOpacity style={styles.btnAddToCart} onPress={handleAddToCart}>
-          <Text style={{ color: "#212529", fontWeight: "bold" }}>{i18next.t("Add To Cart")}</Text>
+          <Text style={{ color: "#000", fontWeight: "bold" }}>{i18next.t("Add To Cart")}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleBuyNow}
@@ -640,7 +640,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
     paddingVertical: 12,
-    borderColor: '#212529',
+    borderColor: '#000',
     borderWidth: 1,
     alignItems: 'center',
     borderRadius: 10,
@@ -650,7 +650,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
     paddingVertical: 12,
-    backgroundColor: '#212529',
+    backgroundColor: '#000',
     alignItems: 'center',
     borderRadius: 10,
     shadowColor: "#000", // Tạo hiệu ứng đổ bóng
