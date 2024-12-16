@@ -417,7 +417,20 @@ export default function Home({ route }) {
           )}
         >
           <View style={styles.bottomSheetContainer}>
-            <Text style={styles.sheetTitle}>{i18next.t("Category")}</Text>
+            <View style={styles.sheetHeaderContainer}>
+              <Text style={styles.sheetTitle}>{i18next.t("Category")}</Text>
+              {/* clearCategoryButton */}
+              <TouchableOpacity
+                style={styles.clearCategoryButton}
+                onPress={() => {
+                  setFilteredProducts(products); // Hiển thị lại tất cả sản phẩm
+                  setSelectedCategory(null); // Xóa loại sản phẩm đã chọn
+                  bottomSheetModalRef.current?.dismiss(); // Đóng Bottom Sheet
+                }}
+              >
+                <Text style={styles.clearCategoryButtonText}>{i18next.t("Cancel")}</Text>
+              </TouchableOpacity>
+            </View>
             {categories.map((category) => (
               <TouchableOpacity
                 key={category.id}
@@ -427,17 +440,7 @@ export default function Home({ route }) {
                 <Text style={styles.categoryText}>{category.Name}</Text>
               </TouchableOpacity>
             ))}
-            {/* clearCategoryButton */}
-            <TouchableOpacity
-              style={styles.clearCategoryButton}
-              onPress={() => {
-                setFilteredProducts(products); // Hiển thị lại tất cả sản phẩm
-                setSelectedCategory(null); // Xóa loại sản phẩm đã chọn
-                bottomSheetModalRef.current?.dismiss(); // Đóng Bottom Sheet
-              }}
-            >
-              <Text style={styles.clearCategoryButtonText}>{i18next.t("Cancel")}</Text>
-            </TouchableOpacity>
+
           </View>
         </BottomSheetModal>
       </SafeAreaView>
@@ -667,10 +670,39 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  sheetHeaderContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10, // Thêm khoảng cách dưới header
+    paddingHorizontal: 10, // Khoảng đệm ngang
+  },
+
   sheetTitle: {
-    fontSize: 18,
+    fontSize: 20, // Tăng kích thước tiêu đề
     fontWeight: "bold",
-    marginBottom: 15,
+    color: "#333", // Màu sắc nhẹ nhàng hơn
+    flex: 1, // Đẩy tiêu đề vào giữa
+  },
+
+  clearCategoryButton: {
+    backgroundColor: "#212529",
+    borderRadius: 8,
+    paddingVertical: 10, // Giảm padding dọc để gọn hơn
+    paddingHorizontal: 60, // Padding ngang
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 1, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+
+  clearCategoryButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   categoryItem: {
     paddingVertical: 10,
@@ -678,22 +710,6 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
   },
   categoryText: {
-    fontSize: 16,
-  },
-  clearCategoryButton: {
-    backgroundColor: "#212529",
-    borderRadius: 8,
-    paddingVertical: 12,
-    marginTop: 20,
-    alignItems: "center",
-    shadowColor: '#000', // Tạo hiệu ứng đổ bóng
-    shadowOffset: { width: 1, height: 2 },
-    shadowOpacity: 0.6,
-    shadowRadius: 4,
-  },
-  clearCategoryButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
     fontSize: 16,
   },
 });

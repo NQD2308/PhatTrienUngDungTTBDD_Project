@@ -206,7 +206,7 @@ export default function User({ navigation, route }) {
       <ImageBackground
         style={styles.backgroundGuest}
         source={{
-          uri: "https://plus.unsplash.com/premium_photo-1669703777431-0aaca97d2c53?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Link ảnh nền của bạn
+          uri: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTU0fHxibGFjayUyMGFuZCUyMHdoaXRlJTIwZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D", // Link ảnh nền của bạn
         }}
       >
         <View style={styles.brandView}>
@@ -303,7 +303,7 @@ export default function User({ navigation, route }) {
       {/* Upper Section: ImageBackground */}
       <ImageBackground
         source={{
-          uri: "https://images.pexels.com/photos/9594144/pexels-photo-9594144.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+          uri: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTU0fHxibGFjayUyMGFuZCUyMHdoaXRlJTIwZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D",
         }} // Link ảnh nền
         style={styles.background}
       >
@@ -397,7 +397,7 @@ export default function User({ navigation, route }) {
         <ScrollView>
           <TouchableOpacity style={styles.item} onPress={() => navigation.navigate("Wishlist")}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <FontAwesome name="heart" solid size={24} color="red" />
+              <FontAwesome name="heart" solid size={24} />
               <View style={styles.itemContent}>
                 <Text style={styles.itemTitle}>{i18next.t("Wishlist")}</Text>
               </View>
@@ -410,7 +410,7 @@ export default function User({ navigation, route }) {
             onPress={() => navigation.navigate("Contact")}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <FontAwesome name="circle-info" size={24} color="#3b5998" />
+              <FontAwesome name="circle-info" size={24} />
               <View style={styles.itemContent}>
                 <Text style={styles.itemTitle}>{i18next.t("Contact")}</Text>
               </View>
@@ -557,7 +557,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoutButton: {
-    backgroundColor: "#212529",
+    backgroundColor: "#000",
     paddingVertical: 10,
     paddingHorizontal: 40,
     borderRadius: 20,

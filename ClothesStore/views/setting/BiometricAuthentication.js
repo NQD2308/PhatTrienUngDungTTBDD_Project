@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Switch, ImageBackground, Alert } from "react-native";
+import { StyleSheet, Text, View, Switch, Alert, SafeAreaView, TouchableOpacity } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 import { doc, updateDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import Toast from "react-native-toast-message";
 import i18next from "../../services/i18next";
+import FontAwesome from "react-native-vector-icons/FontAwesome6";
+import { useNavigation } from '@react-navigation/native';
 
 export default function BiometricAuthentication({ route }) {
   const { userId } = route.params || {};
   const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const navigation = useNavigation();
 
   // Lấy trạng thái ban đầu từ Firebase khi màn hình được tải
   useEffect(() => {
@@ -123,47 +126,37 @@ export default function BiometricAuthentication({ route }) {
   };
 
   return (
-    <ImageBackground source={{
-      uri: "https://images.pexels.com/photos/8483478/pexels-photo-8483478.jpeg?auto=compress&cs=tinysrgb&w=600",
-    }}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.container}>
-        <Text style={styles.title}>{i18next.t("Biometric Authentication")}</Text>
-        <View style={styles.row}>
-          <Text style={styles.label}>{i18next.t("Fingerprint verification")}</Text>
-          <Switch style={styles.switch} value={biometricEnabled} onValueChange={toggleBiometric} />
-        </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+        </TouchableOpacity>
+        <Text style={styles.header}>{i18next.t("Biometric Authentication")}</Text>
       </View>
-    </ImageBackground>
-
+      <View style={styles.row}>
+        <Text style={styles.label}>{i18next.t("Fingerprint verification")}</Text>
+        <Switch style={styles.switch} value={biometricEnabled} onValueChange={toggleBiometric} />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   container: {
-    width: "85%",
+    flex: 1,
     backgroundColor: "#fff",
-    borderRadius: 15,
     padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
   },
-  title: {
+  headerContainer: {
+    padding: 20,
+    flexDirection: 'row',
+    backgroundColor: "#000",
+  },
+  header: {
     fontSize: 28,
     fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 5,
-    color: "#212529",
+    color: "#fff",
+    marginLeft: 10,
   },
   row: {
     borderTopWidth: 1,

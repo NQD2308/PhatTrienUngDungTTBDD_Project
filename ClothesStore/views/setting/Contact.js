@@ -14,6 +14,7 @@ import { FIREBASE_DB } from "../../firebaseConfig"; // Firebase config của b�
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import FontAwesome from "react-native-vector-icons/FontAwesome6"; // Đừng quên cài đặt thư viện này
 import i18next from "../../services/i18next";
+import { useNavigation } from '@react-navigation/native';
 
 export default function Contact() {
   const [contactInfo, setContactInfo] = useState({
@@ -22,6 +23,7 @@ export default function Contact() {
     facebook: "",
     instagram: "",
   });
+  const navigation = useNavigation();
 
   // Hàm đọc dữ liệu từ Firestore
   const fetchContactInfo = async () => {
@@ -76,6 +78,9 @@ export default function Contact() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+        </TouchableOpacity>
         <Text style={styles.header}>{i18next.t("Contact Us")}</Text>
       </View>
 
@@ -139,16 +144,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8f9fa",
-    padding: 16,
+    padding: 20,
   },
   headerContainer: {
-    alignItems: "344E41",
+    padding: 20,
+    flexDirection: 'row',
+    backgroundColor: "#000",
     marginBottom: 20,
   },
   header: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#212529",
+    color: "#fff",
+    marginLeft: 10,
   },
   itemContainer: {
     backgroundColor: "#fff",

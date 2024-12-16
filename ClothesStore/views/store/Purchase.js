@@ -7,17 +7,21 @@ import {
   RefreshControl,
   SafeAreaView,
   ActivityIndicator,
+  TouchableOpacity
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import i18next from "../../services/i18next";
+import FontAwesome from "react-native-vector-icons/FontAwesome6";
+import { useNavigation } from '@react-navigation/native';
 
 export default function Purchase({ route }) {
   const { userId } = route.params;
   const [purchases, setPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation();
 
   // Lấy dữ liệu từ Firestore
   const fetchPurchases = async () => {
@@ -92,9 +96,17 @@ export default function Purchase({ route }) {
     fetchPurchases();
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0"); // Lấy ngày (2 chữ số)
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Lấy tháng (tháng bắt đầu từ 0)
+    const year = date.getFullYear(); // Lấy năm đầy đủ
+    return `${day}-${month}-${year}`; // Ghép lại thành dd-mm-yyyy
+  };
+
   const renderPurchase = ({ item }) => (
     <View style={styles.purchaseContainer}>
-      <Text style={styles.dateText}>{item.date}</Text>
+      <Text style={styles.dateText}>{formatDate(item.date)}</Text>
       {item.products.map((product, index) => (
         <View key={index} style={styles.productContainer}>
           {/* Hình ảnh sản phẩm */}
@@ -124,7 +136,12 @@ export default function Purchase({ route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{i18next.t("Purchase")}</Text>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+        </TouchableOpacity>
+        <Text style={styles.header}>{i18next.t("Purchase")}</Text>
+      </View>
       {loading && !refreshing ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -132,7 +149,7 @@ export default function Purchase({ route }) {
           <ActivityIndicator size="large" color="#6b7280" />
         </View>
       ) : purchases.length === 0 ? (
-        <Text>{i18next.t("No purchases found")}</Text>
+        <Text style={{ textAlign: "center" }}>{i18next.t("No purchases found")}</Text>
       ) : (
         <FlatList
           data={purchases}
@@ -153,12 +170,17 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f9f9f9",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#212529',
-    marginBottom: 16,
-    textAlign: "center"
+  headerContainer: {
+    padding: 20,
+    flexDirection: 'row',
+    backgroundColor: "#000",
+    marginBottom: 20,
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#fff",
+    marginLeft: 10,
   },
   purchaseContainer: {
     borderBottomWidth: 1,

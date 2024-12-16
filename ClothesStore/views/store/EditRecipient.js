@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button, Alert, KeyboardAvoidingView, TouchableOpacity, FlatList, ImageBackground } from "react-native";
+import { StyleSheet, Text, View, TextInput, Alert, KeyboardAvoidingView, TouchableOpacity, FlatList, ImageBackground } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import i18next from "../../services/i18next";
 
@@ -72,7 +72,7 @@ export default function EditRecipient() {
 
   return (
     <ImageBackground source={{
-      uri: "https://images.pexels.com/photos/8483478/pexels-photo-8483478.jpeg?auto=compress&cs=tinysrgb&w=600",
+      uri: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTU0fHxibGFjayUyMGFuZCUyMHdoaXRlJTIwZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D",
     }}
       style={styles.background}
       resizeMode="cover"
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     color: "#333"
   },
   saveButton: {
-    backgroundColor: "#343A40",
+    backgroundColor: "#000",
     padding: 15,
     borderRadius: 20,
     alignItems: "center",

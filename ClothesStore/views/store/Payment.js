@@ -249,7 +249,12 @@ const Payment = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Payment</Text>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+        </TouchableOpacity>
+        <Text style={styles.header}>Payment</Text>
+      </View>
       <View style={styles.customerInfoContainer}>
         <Text style={styles.customerTitle}>User's information</Text>
         <Text style={styles.customerInfo}>{i18next.t("Recipient")}: {customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật"}</Text>
@@ -323,8 +328,20 @@ const Payment = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: "#f5f5f5",
+  },
+  headerContainer: {
+    padding: 20,
+    flexDirection: 'row',
+    backgroundColor: "#000",
+    marginBottom: 20,
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#fff",
+    marginLeft: 10,
   },
   loadingContainer: {
     flex: 1,
@@ -336,6 +353,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginVertical: 10,
+    color: "#000",
   },
   customerInfoContainer: {
     backgroundColor: "#fff",
@@ -412,14 +430,19 @@ const styles = StyleSheet.create({
     borderTopColor: '#ddd',
   },
   totalAmount: {
+    flex: 0.8, // Chiếm phần còn lại của không gian
     paddingVertical: 10,
     paddingHorizontal: 14,
-    fontSize: 16,
+    padding: 10,
+    fontSize: 17,
+    marginVertical: 5,
+    color: "#000",
     fontWeight: "bold",
   },
   paymentButton: {
-    backgroundColor: '#212529',
-    paddingVertical: 20,
+    flexShrink: 0, // Giữ nguyên kích thước button, không bị co lại
+    backgroundColor: '#000',
+    paddingVertical: 25,
     paddingHorizontal: 45,
   },
   paymentText: {
