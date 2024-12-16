@@ -307,46 +307,6 @@ export default function Home({ route }) {
           </TouchableWithoutFeedback>
         </Modal>
 
-        {/* Content */}
-        {/* <Text style={styles.title}>Danh sách sản phẩm</Text>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search..."
-            value={searchKeyword}
-            onChangeText={setSearchKeyword}
-          />
-          {searchKeyword.length > 0 && (
-            <TouchableOpacity
-              onPress={handleClearSearch}
-              style={styles.clearIcon}
-            >
-              <Icon name="close-circle" size={24} color="#888" />
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
-            <Icon name="search" size={20} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSort} style={styles.sortButton}>
-            <Text style={styles.sortButtonText}>
-              {sortOrder === "asc" ? "Price ↑" : "Price ↓"}
-            </Text>
-          </TouchableOpacity>
-        </View> */}
-
-        {/* Category */}
-        {/* <TouchableOpacity
-          style={styles.categoryButton}
-          onPress={openCategorySheet}
-        >
-          <Text style={styles.categoryButtonText}>
-            {selectedCategory
-              ? `Category: ${getCategoryName(selectedCategory)}`
-              : "Category"}
-          </Text>
-          <FontAwesome name="layer-group" size={20} color="#fff" />
-        </TouchableOpacity> */}
-
         {/* Render Item */}
         <ScrollView>
           <View style={styles.brandView}>
