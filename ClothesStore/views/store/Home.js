@@ -483,9 +483,12 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   searchButton: {
-    // marginLeft: 8,
+    marginRight: 6,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  clearIcon: {
+    marginLeft: 6
   },
   headerIcons: {
     flexDirection: 'row',
