@@ -9,9 +9,12 @@ export default function Language({ navigation }) {
   const { t } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState(i18next.language);
 
+  // Thay đổi ngôn ngữ
   const changeLanguage = (lang) => {
-    i18next.changeLanguage(lang);
-    setCurrentLanguage(lang);
+    if (lang !== currentLanguage) {
+      i18next.changeLanguage(lang); // Thay đổi ngôn ngữ trong i18next
+      setCurrentLanguage(lang); // Cập nhật trạng thái
+    }
   };
 
   // Chuyển danh sách ngôn ngữ thành mảng cho FlatList
