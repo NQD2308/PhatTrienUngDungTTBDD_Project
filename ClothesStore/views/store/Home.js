@@ -388,7 +388,7 @@ export default function Home({ route }) {
                   bottomSheetModalRef.current?.dismiss(); // Đóng Bottom Sheet
                 }}
               >
-                <Text style={styles.clearCategoryButtonText}>{i18next.t("Cancel")}</Text>
+                <Text style={styles.clearCategoryButtonText}>{i18next.t("Clear filter")}</Text>
               </TouchableOpacity>
             </View>
             {categories.map((category) => (
@@ -647,16 +647,12 @@ const styles = StyleSheet.create({
 
   clearCategoryButton: {
     backgroundColor: "#212529",
-    borderRadius: 8,
-    paddingVertical: 10, // Giảm padding dọc để gọn hơn
-    paddingHorizontal: 60, // Padding ngang
+    borderRadius: 24,
+    paddingVertical: 8, // Giảm padding dọc để gọn hơn
+    paddingHorizontal: 16, // Padding ngang
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 1, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+
   },
 
   clearCategoryButtonText: {
