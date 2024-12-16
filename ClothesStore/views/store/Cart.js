@@ -399,7 +399,7 @@ const Cart = ({ route }) => {
     <BottomSheetModalProvider>
       <SafeAreaView style={styles.container}>
         <StatusBar style="auto" />
-        <Text style={styles.title}>Shopping Cart</Text>
+        <Text style={styles.title}>{i18next.t("Shopping Cart")}</Text>
         {loading ? (
           <View
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
@@ -407,7 +407,7 @@ const Cart = ({ route }) => {
             <ActivityIndicator size="large" color="#6b7280" />
           </View>
         ) : orders.length === 0 ? (
-          <Text style={styles.emptyText}>Cart is empty.</Text>
+          <Text style={styles.emptyText}>{i18next.t("Cart is empty.")}</Text>
         ) : (
           <GestureHandlerRootView style={{ flex: 1 }}>
             <SwipeableFlatList

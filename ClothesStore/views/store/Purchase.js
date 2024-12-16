@@ -124,7 +124,7 @@ export default function Purchase({ route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Purchase</Text>
+      <Text style={styles.title}>{i18next.t("Purchase")}</Text>
       {loading && !refreshing ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
