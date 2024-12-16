@@ -326,51 +326,77 @@ const Cart = ({ route }) => {
         style={styles.image}
       />
       <View style={styles.details}>
-        <Text style={styles.productName}>{item.productName}</Text>
-        {/* <Text>Mô tả: {item.description}</Text> */}
-        <Text>
-          {i18next.t("Size")}: {item.selectedSize}
-        </Text>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Text>{i18next.t("Quantity")}:</Text>
+        <View style={styles.headerCart}>
+          <Text style={styles.productName}>{item.productName}</Text>
           <TouchableOpacity
-            onPress={() => handleDecreaseQuantity(item.id)}
-            style={styles.quantityButton}
+            style={styles.chooseBtn}
+            onPress={() => toggleSelectOrder(item.id)}
           >
-            <Text style={styles.buttonText}>-</Text>
-          </TouchableOpacity>
-          <Text style={styles.quantityText}>{item.quantity}</Text>
-          <TouchableOpacity
-            onPress={() => handleIncreaseQuantity(item.id)}
-            style={styles.quantityButton}
-          >
-            <Text style={styles.buttonText}>+</Text>
+            <FontAwesome
+              name={
+                selectedOrders.includes(item.id) ? "circle-check" : "circle"
+              }
+              size={24}
+            />
           </TouchableOpacity>
         </View>
-        <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
+
+        <View style={styles.colorSizeArea}>
+          <Text>
+            {i18next.t("Size")}: {item.selectedSize}
+          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Text>{i18next.t("Quantity")}:</Text>
+            <View style={styles.quantityButtonArea}>
+              <TouchableOpacity
+                onPress={() => handleDecreaseQuantity(item.id)}
+                style={styles.quantityButton}
+              >
+                <Text style={styles.buttonText}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+              <TouchableOpacity
+                onPress={() => handleIncreaseQuantity(item.id)}
+                style={styles.quantityButton}
+              >
+                <Text style={styles.buttonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 6,
+            alignItems: "center",
+            marginVertical: 2,
+          }}
+        >
           <Text>{i18next.t("Color")}:</Text>
           <Text
             style={[styles.colorText, { backgroundColor: item.selectedColor }]}
           />
         </View>
-        <Text>
-          {i18next.t("Price")}: {parseInt(item.price).toLocaleString("vi-VN")}{" "}
-          {item.priceUnit}
+        <View style={[styles.price, {marginRight: 4}]}>
+          <Text>
+            {i18next.t("Price")}:
+          </Text>
+          <Text>
+            {parseInt(item.price).toLocaleString("vi-VN")}{" "}
+            {item.priceUnit}
+          </Text>
+        </View>
+        <View style={styles.totalPrice}>
+          <Text style={styles.priceUnit}>
+          {i18next.t("Total Price")}:
         </Text>
-        <Text style={styles.priceUnit}>
-          {i18next.t("Total Price")}:{" "}
+          <Text style={[styles.priceUnit, {marginRight: 4}]}>
+          {" "}
           {parseInt(item.totalPrice).toLocaleString("vi-VN")} {item.priceUnit}
         </Text>
-        {/* toggle button */}
-        <TouchableOpacity
-          style={styles.chooseBtn}
-          onPress={() => toggleSelectOrder(item.id)}
-        >
-          <FontAwesome
-            name={selectedOrders.includes(item.id) ? "circle-check" : "circle"}
-            size={24}
-          />
-        </TouchableOpacity>
+        </View>
+        
       </View>
     </TouchableOpacity>
   );
@@ -401,7 +427,7 @@ const Cart = ({ route }) => {
         <StatusBar style="auto" />
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+            <FontAwesome name="arrow-left" size={26} color={"#000"} />
           </TouchableOpacity>
           <Text style={styles.header}>{i18next.t("Shopping Cart")}</Text>
         </View>
@@ -541,8 +567,9 @@ const Cart = ({ route }) => {
         </BottomSheetModal>
         {/* Total & Payment Now Section */}
         <View style={styles.orderInfo}>
-          <Text style={styles.totalPrice}>
-            {i18next.t("Total Amount")}: {calculateTotalPrice().toLocaleString("vi-VN")} đ
+          <Text style={styles.priceAmount}>
+            {i18next.t("Total Amount")}:{" "}
+            {calculateTotalPrice().toLocaleString("vi-VN")} đ
           </Text>
 
           <TouchableOpacity
@@ -553,7 +580,9 @@ const Cart = ({ route }) => {
             onPress={handlePayment}
             disabled={orders.length === 0}
           >
-            <Text style={styles.paymentText}>{i18next.t("Checkout")}</Text>
+            <Text style={styles.paymentText}>
+              {i18next.t("Checkout")} ({selectedOrders.length})
+            </Text>
           </TouchableOpacity>
 
           <Toast />
@@ -568,19 +597,22 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#f9f9f9",
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   headerContainer: {
-    padding: 20,
-    flexDirection: 'row',
-    backgroundColor: "#000",
-    marginBottom: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
   },
   header: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#fff",
-    marginLeft: 10,
+    color: "#000",
+    marginLeft: 14,
   },
   emptyText: {
     textAlign: "center",
@@ -613,13 +645,23 @@ const styles = StyleSheet.create({
   details: {
     flex: 1,
   },
+  headerCart: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 14,
+  },
+  colorSizeArea: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 26,
+    marginVertical: 2,
+  },
   colorText: {
-    width: 24,
-    height: 24,
-    marginTop: 8,
+    width: 20,
+    height: 20,
     padding: 8,
     color: "#fff", // Đảm bảo chữ hiển thị rõ trên nền màu
-    borderRadius: 50,
+    borderRadius: 4,
     textAlign: "center",
   },
   priceUnit: {
@@ -628,36 +670,23 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   chooseBtn: {
-    position: 'absolute', // Use absolute positioning
-    top: -1, // Position at the bottom
-    right: 5, // Align it to the right
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 8,
   },
-  //Group quantity btn
-  itemQuantity: {
-    position: "absolute", // Use absolute positioning
-    bottom: 10, // Position at the bottom
-    right: 10, // Align it to the right
+  quantityButtonArea: {
     flexDirection: "row",
-    alignItems: "center",
   },
   quantityButton: {
-    padding: 10,
+    width: 24,
+    height: 24,
     borderColor: "#000",
     borderWidth: 1,
-    borderRadius: 30,
+    borderRadius: 6,
   },
   buttonText: {
-    position: "absolute", // Use absolute positioning
-    top: 0, // Position at the bottom
-    right: 0, // Align it to the right
-    flexDirection: "row",
-    alignItems: "center",
-    color: "#fff",
+    textAlign: "center",
+    color: "#333",
     fontSize: 16,
-    //fontWeight: "bold",
   },
   quantityText: {
     marginHorizontal: 10,
@@ -671,14 +700,26 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   orderInfo: {
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: 10,
     borderTopWidth: 1,
     borderTopColor: "#ddd",
   },
+  price: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 2
+  },
   totalPrice: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    marginVertical: 2
+  },
+  priceAmount: {
     flex: 0.8, // Chiếm phần còn lại của không gian
     paddingVertical: 10,
     paddingHorizontal: 14,
@@ -690,7 +731,7 @@ const styles = StyleSheet.create({
   },
   paymentButton: {
     flexShrink: 0, // Giữ nguyên kích thước button, không bị co lại
-    backgroundColor: '#000',
+    backgroundColor: "#000",
     paddingVertical: 25,
     paddingHorizontal: 45,
   },
@@ -723,7 +764,7 @@ const styles = StyleSheet.create({
     flex: 1, // Chiếm hết không gian còn lại
   },
   productName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     marginRight: 30, // Tạo khoảng cách để tránh đè lên dấu tích
     flexShrink: 1, // Đảm bảo text co lại nếu không đủ chỗ
@@ -790,15 +831,11 @@ const styles = StyleSheet.create({
   selectedColorBox: {
     borderColor: "#006400",
   },
-  buttonText: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
 
   // Styles cho nút xác nhận
   confirmButton: {
-    backgroundColor: '#000',// Màu nền của nút xác nhận
-    paddingVertical: 12,// Khoảng cách dọc cho nút
+    backgroundColor: "#000", // Màu nền của nút xác nhận
+    paddingVertical: 12, // Khoảng cách dọc cho nút
     paddingHorizontal: 20,
     borderRadius: 30,
     marginTop: 20, // Khoảng cách từ phần nội dung sản phẩm

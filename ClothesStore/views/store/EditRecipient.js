@@ -125,6 +125,13 @@ export default function EditRecipient() {
           <Text style={styles.saveButtonText}>{i18next.t("Save")}</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.cancelButtonText}>{i18next.t("Cancel")}</Text>
+        </TouchableOpacity>
+
       </KeyboardAvoidingView>
     </ImageBackground>
   );
@@ -190,5 +197,23 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 18,
+  },
+  cancelButton: {
+    paddingVertical: 10,
+    borderRadius: 16,
+    marginTop: 10,
+    alignItems: "center",
+    width: "40%",
+    alignSelf: "center",
+    shadowColor: "#000", // Tạo hiệu ứng đổ bóng
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Hiệu ứng bóng trên Android
+  },
+  cancelButtonText: {
+    color: "#212529",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

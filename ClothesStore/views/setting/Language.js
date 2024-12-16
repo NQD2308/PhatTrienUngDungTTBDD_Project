@@ -37,7 +37,7 @@ export default function Language() {
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+          <FontAwesome name="arrow-left" size={26} color={"#000"} />
         </TouchableOpacity>
         <Text style={styles.header}>{t("Languages")}</Text>
       </View>
@@ -53,10 +53,14 @@ export default function Language() {
               ]}
               onPress={() => changeLanguage(item.key)}
             >
+              {currentLanguage === item.key && (
+                <FontAwesome name="check" size={24} style={styles.arrowIcon} />
+              )}
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={styles.languageText}>{i18next.t(item.nativeName)}</Text>
               </View>
-              <FontAwesome name="arrow-right" size={24} style={styles.arrowIcon} />
+              
+              
             </TouchableOpacity>
           )}
           contentContainerStyle={styles.list}
@@ -73,16 +77,19 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   headerContainer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     flexDirection: 'row',
-    backgroundColor: "#000",
-    marginBottom: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
   },
   header: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#fff",
-    marginLeft: 10,
+    color: "#000",
+    marginLeft: 14,
   },
   itemContainer: {
     backgroundColor: "#fff",
@@ -104,7 +111,8 @@ const styles = StyleSheet.create({
   languageItem: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 6,
+    // justifyContent: "space-between",
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0", // Đường phân cách nhẹ giữa các item
@@ -122,15 +130,12 @@ const styles = StyleSheet.create({
     // shadowRadius: 4,
     // elevation: 5, // Hiệu ứng bóng trên Android
   },
-  selectedLanguage: {
-    backgroundColor: "#999",
-  },
   languageText: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#555",
+    color: "#333",
   },
   arrowIcon: {
-    color: "#ccc",
+    color: "#333",
   },
 });

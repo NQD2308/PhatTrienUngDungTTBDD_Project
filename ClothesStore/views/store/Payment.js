@@ -251,7 +251,7 @@ const Payment = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+          <FontAwesome name="arrow-left" size={26} color={"#000"}/>
         </TouchableOpacity>
         <Text style={styles.header}>Payment</Text>
       </View>
@@ -332,16 +332,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   headerContainer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     flexDirection: 'row',
-    backgroundColor: "#000",
-    marginBottom: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
   },
   header: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#fff",
-    marginLeft: 10,
+    color: "#000",
+    marginLeft: 14,
   },
   loadingContainer: {
     flex: 1,

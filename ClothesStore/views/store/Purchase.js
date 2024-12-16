@@ -7,14 +7,14 @@ import {
   RefreshControl,
   SafeAreaView,
   ActivityIndicator,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FIREBASE_DB } from "../../firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import i18next from "../../services/i18next";
 import FontAwesome from "react-native-vector-icons/FontAwesome6";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
 export default function Purchase({ route }) {
   const { userId } = route.params;
@@ -119,15 +119,30 @@ export default function Purchase({ route }) {
           {/* Thông tin sản phẩm */}
           <View style={styles.productDetails}>
             <Text style={styles.productName}>{product.productName}</Text>
-            <Text>{i18next.t("Size")}: {product.size}</Text>
-            <View style={styles.colorRow}>
-              <Text>{i18next.t("Color")}:</Text>
-              <View
-                style={[styles.colorBox, { backgroundColor: product.color }]}
-              />
+            <View style={styles.colorSizeArea}>
+              <Text>
+                {i18next.t("Size")}: {product.size}
+              </Text>
+              <View style={styles.colorRow}>
+                <Text>{i18next.t("Color")}:</Text>
+                <View
+                  style={[styles.colorBox, { backgroundColor: product.color }]}
+                />
+              </View>
             </View>
-            <Text>{i18next.t("Quantity")}: {product.quantity}</Text>
-            <Text>{i18next.t("Total Price")}: {parseInt(product.totalPrice).toLocaleString("vi-VN")} {product.priceUnit}</Text>
+            <Text style={{marginVertical: 2}}>
+              {i18next.t("Quantity")}: {product.quantity}
+            </Text>
+            <View style={styles.totalAmount}>
+              <Text style={{marginVertical: 2}}>
+              {i18next.t("Total Price")}:{" "}
+            </Text>
+              <Text style={{marginVertical: 2, marginRight: 4}}>
+              {parseInt(product.totalPrice).toLocaleString("vi-VN")}{" "}
+              {product.priceUnit}
+            </Text>
+            </View>
+            
           </View>
         </View>
       ))}
@@ -138,7 +153,7 @@ export default function Purchase({ route }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="arrow-left" size={24} color={"#fff"} style={{ marginTop: 5 }} />
+          <FontAwesome name="arrow-left" size={26} color={"#000"} />
         </TouchableOpacity>
         <Text style={styles.header}>{i18next.t("Purchase")}</Text>
       </View>
@@ -149,7 +164,9 @@ export default function Purchase({ route }) {
           <ActivityIndicator size="large" color="#6b7280" />
         </View>
       ) : purchases.length === 0 ? (
-        <Text style={{ textAlign: "center" }}>{i18next.t("No purchases found")}</Text>
+        <Text style={{ textAlign: "center" }}>
+          {i18next.t("No purchases found")}
+        </Text>
       ) : (
         <FlatList
           data={purchases}
@@ -171,16 +188,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   headerContainer: {
-    padding: 20,
-    flexDirection: 'row',
-    backgroundColor: "#000",
-    marginBottom: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
   },
   header: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#fff",
-    marginLeft: 10,
+    color: "#000",
+    marginLeft: 14,
   },
   purchaseContainer: {
     borderBottomWidth: 1,
@@ -194,7 +214,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3, // Bóng đổ nhẹ
     marginBottom: 15,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   dateText: {
     fontSize: 18,
@@ -218,12 +238,11 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: 4,
   },
   colorRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 5,
   },
   colorBox: {
     width: 20,
@@ -231,4 +250,16 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     borderRadius: 4,
   },
+  colorSizeArea: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 30,
+    marginVertical: 2
+  },
+  totalAmount: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderTopWidth: 1,
+    borderBottomWidth: 1
+  }
 });
