@@ -65,13 +65,13 @@ const Cart = ({ route }) => {
 
     // console.log("userId tại Cart.js: " + userId);
 
-    try{
+    try {
       setLoading(true);
       const q = query(
         collection(FIREBASE_DB, "Order"),
         where("userId", "==", userId)
       );
-  
+
       const unsubscribe = onSnapshot(q, (snapshot) => {
         const data = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -80,15 +80,11 @@ const Cart = ({ route }) => {
         setOrders(data);
       });
       return () => unsubscribe();
-
-    } catch(e) {
+    } catch (e) {
       console.log(e);
-      
     } finally {
       setLoading(false);
     }
-
-    
   }, [userId]);
 
   useFocusEffect(
@@ -406,12 +402,11 @@ const Cart = ({ route }) => {
         <Text style={styles.title}>Shopping Cart</Text>
         {loading ? (
           <View
-                    style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-                  >
-                    <ActivityIndicator size="large" color="#6b7280" />
-                  </View>
-        ) :
-        orders.length === 0 ? (
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ActivityIndicator size="large" color="#6b7280" />
+          </View>
+        ) : orders.length === 0 ? (
           <Text style={styles.emptyText}>Cart is empty.</Text>
         ) : (
           <GestureHandlerRootView style={{ flex: 1 }}>
@@ -547,13 +542,10 @@ const Cart = ({ route }) => {
         </BottomSheetModal>
         {/* Total & Payment Now Section */}
         <View style={styles.orderInfo}>
-         
-
-            <Text style={styles.totalPrice}>
-              {i18next.t("Total Amount")}:{" "}
-              {calculateTotalPrice().toLocaleString("vi-VN")} đ
-            </Text>
-          
+          <Text style={styles.totalPrice}>
+            {i18next.t("Total Amount")}:{" "}
+            {calculateTotalPrice().toLocaleString("vi-VN")} đ
+          </Text>
           {orders.length > 0 && (
             <TouchableOpacity
               style={[
@@ -563,7 +555,9 @@ const Cart = ({ route }) => {
               onPress={handlePayment}
               disabled={selectedOrders.length === 0}
             >
-              <Text style={styles.paymentText}>{i18next.t("Checkout")}</Text>
+              <Text style={styles.paymentText}>
+                {i18next.t("Checkout")}({selectedOrders.length})
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -681,12 +675,12 @@ const styles = StyleSheet.create({
   iconChooseBtn: {},
   choosedIconBtn: {},
   orderInfo: {
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     marginTop: 10,
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    borderTopColor: "#ddd",
   },
   totalPrice: {
     paddingVertical: 10,
@@ -702,11 +696,11 @@ const styles = StyleSheet.create({
   paymentButton: {
     backgroundColor: "#212529",
     paddingVertical: 20,
-    paddingHorizontal: 45,
+    paddingHorizontal: 10,
   },
   paymentText: {
     color: "#fff",
-    fontSize: 18,
+    // fontSize: 16,
     fontWeight: "bold",
   },
   disabledButton: {
