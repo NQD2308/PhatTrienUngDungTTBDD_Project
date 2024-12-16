@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     backgroundColor: '#F0F0F0', // Màu nền nhẹ
     borderRadius: 25, // Làm tròn button
-    elevation: 2, // Hiệu ứng đổ bóng
+    // elevation: 2, // Hiệu ứng đổ bóng
   },
   name: {
     fontSize: 20,
