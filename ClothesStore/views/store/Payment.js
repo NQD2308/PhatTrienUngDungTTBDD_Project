@@ -24,6 +24,8 @@ import {
 import Toast from "react-native-toast-message";
 import i18next from "../../services/i18next";
 import FontAwesome from "react-native-vector-icons/FontAwesome6";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { reload } from "firebase/auth";
 
 const Payment = () => {
   const route = useRoute();
@@ -221,13 +223,23 @@ const Payment = () => {
         await deleteDoc(cartRef);
       }
 
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: "TabNavigator",
+            params: { showToast: true },
+          },
+        ],
+      });
+
       Toast.show({
         type: "success",
         text1: i18next.t("Success"),
         text2: i18next.t(""),
       });
 
-      navigation.navigate("TabNavigator");
+      
     } catch (error) {
       console.error("Lỗi khi lưu dữ liệu thanh toán:", error);
       Toast.show({
@@ -255,10 +267,16 @@ const Payment = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FontAwesome name="arrow-left" size={26} color={"#000"} />
         </TouchableOpacity>
-        <Text style={styles.header}>Payment</Text>
+        <Text style={styles.header}>{i18next.t("Payment")}</Text>
       </View>
       <View style={styles.customerInfoContainer}>
-        <Text style={styles.customerTitle}>User's information</Text>
+        <View style={styles.titleRecipientInformation}>
+          <Ionicons name="information-circle" size={22} />
+          <Text style={styles.customerTitle}>
+            {i18next.t("Recipient information")}
+          </Text>
+        </View>
+
         <Text style={styles.customerInfo}>
           {i18next.t("Recipient")}:{" "}
           {customerInfo.username ||
@@ -317,14 +335,12 @@ const Payment = () => {
                   </View>
                 </View>
 
-                <Text style= {{marginVertical: 2}}>
+                <Text style={{ marginVertical: 2 }}>
                   {i18next.t("Quantity")}: {item.quantity}
                 </Text>
-                <View style={[styles.totalPrice, {marginVertical: 2}]}>
-                  <Text>
-                    {i18next.t("Total Price")}:
-                  </Text>
-                  <Text style={{marginRight: 4}}>
+                <View style={[styles.totalPrice, { marginVertical: 2 }]}>
+                  <Text>{i18next.t("Total Price")}:</Text>
+                  <Text style={{ marginRight: 4 }}>
                     {parseInt(item.totalPrice).toLocaleString("vi-VI")}{" "}
                     {item.priceUnit}
                   </Text>
@@ -340,7 +356,7 @@ const Payment = () => {
           {i18next.t("Total Amount")}: {formattedTotal}
         </Text>
         <TouchableOpacity style={styles.paymentButton} onPress={handlePayment}>
-          <Text style={styles.paymentText}>{i18next.t("Payment")}</Text>
+          <Text style={styles.paymentText}>{i18next.t("Payment")} ({orders.length})</Text>
         </TouchableOpacity>
       </View>
 
@@ -384,12 +400,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     color: "#000",
   },
+  titleRecipientInformation: {
+    flexDirection: "row",
+    gap: 4,
+  },
   customerInfoContainer: {
     backgroundColor: "#fff",
     padding: 12,
     borderRadius: 12,
     paddingVertical: 8,
-    paddingHorizontal: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -398,12 +417,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   customerTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 8,
   },
   customerInfo: {
     fontSize: 16,
+    marginVertical: 2,
   },
   editButton: {
     position: "absolute", // Use absolute positioning
@@ -452,7 +472,7 @@ const styles = StyleSheet.create({
   },
   totalContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
     marginTop: 10,
     borderTopWidth: 1,
@@ -472,7 +492,7 @@ const styles = StyleSheet.create({
     flexShrink: 0, // Giữ nguyên kích thước button, không bị co lại
     backgroundColor: "#000",
     paddingVertical: 25,
-    paddingHorizontal: 45,
+    paddingHorizontal: 40,
   },
   paymentText: {
     color: "#fff",
