@@ -469,7 +469,7 @@ const Cart = ({ route }) => {
                     {selectedProduct.productName}
                   </Text>
                   <Text style={styles.priceUnit}>
-                    Price:{" "}
+                    {i18next.t("Price")}:{" "}
                     {parseInt(selectedProduct.price).toLocaleString("vi-VN")}{" "}
                     {selectedProduct.priceUnit}
                   </Text>
