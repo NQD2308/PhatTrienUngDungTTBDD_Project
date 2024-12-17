@@ -77,16 +77,16 @@ export default function User({ navigation, route }) {
       } else {
         Toast.show({
           type: "error",
-          text1: i18next("Error"),
-          text2: i18next("User not found!"),
+          text1: i18next.t("Error"),
+          text2: i18next.t("User not found!"),
         });
       }
     } catch (error) {
       console.error("Lỗi khi lấy thông tin người dùng: ", error);
       Toast.show({
         type: "error",
-        text1: i18next("Error"),
-        text2: i18next("Unable to load user information!"),
+        text1: i18next.t("Error"),
+        text2: i18next.t("Unable to load user information!"),
       });
     } finally {
       setLoading(false);
@@ -147,8 +147,8 @@ export default function User({ navigation, route }) {
         console.log("Người dùng không có đơn hàng.");
         // Toast.show({
         //   type: "info",
-        //   text1: i18next("Message"),
-        //   text2: i18next("Bạn chưa có đơn hàng nào."),
+        //   text1: i18next.t("Message"),
+        //   text2: i18next.t("Bạn chưa có đơn hàng nào."),
         // });
       }
 
@@ -157,8 +157,8 @@ export default function User({ navigation, route }) {
       console.error("Lỗi khi đếm đơn hàng:", error);
       // Toast.show({
       //   type: "error",
-      //   text1: i18next("Error"),
-      //   text2: i18next()"Không thể đếm đơn hàng. Vui lòng thử lại sau.",
+      //   text1: i18next.t("Error"),
+      //   text2: i18next.t()"Không thể đếm đơn hàng. Vui lòng thử lại sau.",
       // });
     }
   };
@@ -194,8 +194,8 @@ export default function User({ navigation, route }) {
       console.error("Lỗi khi đăng xuất: ", error);
       Toast.show({
         type: "error",
-        text1: i18next("Error"),
-        text2: i18next("An error occurred while logging out. Please try again!"),
+        text1: i18next.t("Error"),
+        text2: i18next.t("An error occurred while logging out. Please try again!"),
       });
     }
   };
