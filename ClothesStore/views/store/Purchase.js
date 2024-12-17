@@ -104,6 +104,10 @@ export default function Purchase({ route }) {
     return `${day}-${month}-${year}`; // Ghép lại thành dd-mm-yyyy
   };
 
+  const sortedPurchases = purchases.sort((a, b) => {
+    return new Date(b.date) - new Date(a.date);
+  });
+
   const renderPurchase = ({ item }) => (
     <View style={styles.purchaseContainer}>
       <Text style={styles.dateText}>{formatDate(item.date)}</Text>
@@ -169,7 +173,7 @@ export default function Purchase({ route }) {
         </Text>
       ) : (
         <FlatList
-          data={purchases}
+          data={sortedPurchases}
           keyExtractor={(item) => item.date}
           renderItem={renderPurchase}
           refreshControl={
