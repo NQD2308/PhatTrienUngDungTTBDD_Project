@@ -10,6 +10,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  RefreshControl,
   Alert,
   SafeAreaView,
   ActivityIndicator,
@@ -47,6 +48,7 @@ const Cart = ({ route }) => {
   const [selectedColor, setSelectedColor] = useState(null); // Lưu màu được chọn
   const [purchaseQuantity, setPurchaseQuantity] = useState(1); // Lưu số lượng mua
   const [orderId, setOrderId] = useState(null); // Lưu số lượng mua
+  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
 
   const [isVisible, setIsVisible] = useState(false);
@@ -59,8 +61,33 @@ const Cart = ({ route }) => {
     setIsVisible(false);
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true); // Hiển thị spinner khi đang làm mới
+    try {
+      const q = query(
+        collection(FIREBASE_DB, "Order"),
+        where("userId", "==", userId)
+      );
+  
+      const snapshot = await getDocs(q);
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+  
+      setOrders(data); // Cập nhật danh sách đơn hàng
+    } catch (e) {
+      console.log("Lỗi khi làm mới dữ liệu:", e);
+    } finally {
+      setRefreshing(false); // Ẩn spinner
+    }
+  };
+  
+
   // Lấy dữ liệu từ Firestore
   useEffect(() => {
+    console.log(selectedOrders);
+    
     console.log(userId);
 
     // console.log("userId tại Cart.js: " + userId);
@@ -223,6 +250,10 @@ const Cart = ({ route }) => {
             onPress: async () => {
               try {
                 await deleteDoc(doc(FIREBASE_DB, "Order", orderId)); // Xóa tài liệu
+
+                setSelectedOrders((prevOrders) =>
+                  prevOrders.filter((id) => id !== orderId) // Loại bỏ sản phẩm theo `orderId`
+                );
               } catch (error) {
                 console.error("Lỗi khi xóa tài liệu:", error);
                 alert(
@@ -442,6 +473,9 @@ const Cart = ({ route }) => {
               contentContainerStyle={styles.list}
               renderLeftActions={renderEditActions}
               renderRightActions={renderDeletetActions}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
             />
           </GestureHandlerRootView>
         )}
