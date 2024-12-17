@@ -653,8 +653,10 @@ const styles = StyleSheet.create({
   colorSizeArea: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 26,
+    justifyContent: "space-between",
+    // gap: 26,
     marginVertical: 2,
+    marginRight: 0
   },
   colorText: {
     width: 20,
@@ -689,7 +691,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   quantityText: {
-    marginHorizontal: 10,
+    marginHorizontal: 8,
     fontSize: 16,
   },
   totalText: {

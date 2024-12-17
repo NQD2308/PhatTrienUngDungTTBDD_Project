@@ -652,7 +652,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, // Padding ngang
     alignItems: "center",
     justifyContent: "center",
-
   },
 
   clearCategoryButtonText: {

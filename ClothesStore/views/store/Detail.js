@@ -133,29 +133,37 @@ export default function Detail({ route }) {
       }
       const userId = user.uid;
 
-      // Kiểm tra chọn size
-      if (!selectedColor) {
+      //Kiểm tra chọn màu 
+      if (!selectedSize) {
         Toast.show({
           type: "error",
-          text1: "Message",
-          text2: "Vui lòng chọn size sản phẩm!",
+          text1: i18next.t("Message"),
+          text2: i18next.t("Please select a product size!"),
           visibilityTime: 3000,
           autoHide: true,
         });
         return;
       }
 
-      //Kiểm tra chọn màu
-      if (!selectedSize) {
+      // Kiểm tra chọn size
+      if (!selectedColor) {
         Toast.show({
           type: "error",
-          text1: "Message",
-          text2: "Vui lòng chọn màu sản phẩm!",
+          text1: i18next.t("Message"),
+          text2: i18next.t("Please select a product color!"),
           visibilityTime: 3000,
           autoHide: true,
         });
         return;
       }
+
+      Toast.show({
+        type: "success",
+        text1: i18next.t("Message"),
+        text2: i18next.t("Added to cart successfully."),
+        visibilityTime: 3000,
+        autoHide: true,
+      });
 
       // Tính toán tổng giá
       const totalPrice = quantity * parseInt(product.price);
@@ -205,17 +213,13 @@ export default function Detail({ route }) {
           totalPrice: updatedTotalPrice,
         });
 
-        console.log("Cart updated successfully:", {
-          quantity: updatedQuantity,
-          totalPrice: updatedTotalPrice,
-        });
-        Toast.show({
-          type: "success",
-          text1: "Message",
-          text2: "Cập nhật giỏ hàng thành công.",
-          visibilityTime: 3000,
-          autoHide: true,
-        });
+        
+
+        // console.log("Cart updated successfully:", {
+        //   quantity: updatedQuantity,
+        //   totalPrice: updatedTotalPrice,
+        // });
+        
       } else {
         // Nếu chưa có sản phẩm trong giỏ hàng, tạo mới đơn hàng
         const docRef = await addDoc(orderRef, orderData);
@@ -223,15 +227,16 @@ export default function Detail({ route }) {
         // Lưu ID của document vào orderData
         orderData.id = docRef.id;
 
-        console.log("Order added successfully:", orderData);
-        Toast.show({
-          type: "success",
-          text1: "Message",
-          text2: "Thêm vào giỏ hàng thành công.",
-          visibilityTime: 3000,
-          autoHide: true,
-        });
+        // console.log("Order added successfully:", orderData);
+        // Toast.show({
+        //   type: "success",
+        //   text1: i18next.t("Message"),
+        //   text2: i18next.t("Added to cart successfully."),
+        //   visibilityTime: 3000,
+        //   autoHide: true,
+        // });
       }
+      
     } catch (error) {
       console.error("Error adding to cart:", error);
     }
@@ -253,20 +258,20 @@ export default function Detail({ route }) {
       if (!selectedSize) {
         Toast.show({
           type: "error",
-          text1: "Message",
-          text2: "Vui lòng chọn size sản phẩm!",
+          text1: i18next.t("Message"),
+          text2: i18next.t("Please select a product size!"),
           visibilityTime: 3000, // Duration of toast
           autoHide: true, // Automatically hide after a duration
         });
         return;
       }
 
-      //Kiểm tra chọn màu
-      if (!selectedSize) {
+      // Kiểm tra chọn size
+      if (!selectedColor) {
         Toast.show({
           type: "error",
-          text1: "Message",
-          text2: "Vui lòng chọn màu sản phẩm!",
+          text1: i18next.t("Message"),
+          text2: i18next.t("Please select a product color!"),
           visibilityTime: 3000,
           autoHide: true,
         });
@@ -323,18 +328,18 @@ export default function Detail({ route }) {
     if (!userId) {
       // Nếu người dùng chưa đăng nhập
       Alert.alert(
-        "Đăng nhập yêu cầu",
-        "Vui lòng đăng nhập để thêm vào danh sách yêu thích.",
+        i18next.t("Login required"),
+        i18next.t("Please log in to add to your wishlist."),
         [
           {
-            text: "Đăng nhập",
+            text: i18next.t("Login"),
             onPress: () => {
               // Điều hướng tới màn hình đăng nhập
               navigation.navigate("Login");
             },
           },
           {
-            text: "Hủy",
+            text: i18next.t("Cancel"),
             style: "cancel",
           },
         ]

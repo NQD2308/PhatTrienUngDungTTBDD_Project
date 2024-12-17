@@ -152,5 +152,10 @@
   "Are you sure you want to delete this account? This action cannot be undone.": "Bạn có chắc chắn muốn xóa tài khoản này không? Thao tác này không thể hoàn tác.",
   "Shopping Cart": "Giỏ hàng", 
   "Cart is empty.": "Giỏ hàng đang trống",
-  "Clear filter": "Bỏ lọc"
+  "Clear filter": "Bỏ lọc",
+  "Please select a product size!": "Vui lòng chọn kích thước sản phẩm!",
+  "Please select a product color!": "Vui lòng chọn màu sản phẩm!",
+  "Added to cart successfully.": "Thêm vào giỏ hàng thành công.",
+  "Login required": "Đăng nhập yêu cầu",
+  "Please log in to add to your wishlist.": "Vui lòng đăng nhập để thêm vào danh sách yêu thích."
 }

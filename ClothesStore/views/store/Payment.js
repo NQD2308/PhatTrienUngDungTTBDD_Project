@@ -145,7 +145,7 @@ const Payment = () => {
       userId,
       customerInfo,
       orders,
-      totalAmount
+      totalAmount,
     });
   };
 
@@ -165,15 +165,16 @@ const Payment = () => {
 
       // Sử dụng `customerInfo` hoặc fallback sang `updatedUserInfo`
       const finalUserInfo = {
-        username: customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật",
+        username:
+          customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật",
         phone: customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật",
-        address: customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật",
+        address:
+          customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật",
       };
 
       if (!updatedUserInfo) {
         for (const item of orders) {
           await addDoc(collection(FIREBASE_DB, "Bill"), {
-
             userId,
             receiver: finalUserInfo.username,
             phone: finalUserInfo.phone,
@@ -195,7 +196,6 @@ const Payment = () => {
       } else {
         for (const item of orders) {
           await addDoc(collection(FIREBASE_DB, "Bill"), {
-
             userId,
             receiver: updatedUserInfo.username,
             phone: updatedUserInfo.phone,
@@ -233,7 +233,9 @@ const Payment = () => {
       Toast.show({
         type: "error",
         text1: i18next.t("Error"),
-        text2: i18next.t("A system error occurred during the checkout process."),
+        text2: i18next.t(
+          "A system error occurred during the checkout process."
+        ),
       });
     }
   };
@@ -251,15 +253,26 @@ const Payment = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="arrow-left" size={26} color={"#000"}/>
+          <FontAwesome name="arrow-left" size={26} color={"#000"} />
         </TouchableOpacity>
         <Text style={styles.header}>Payment</Text>
       </View>
       <View style={styles.customerInfoContainer}>
         <Text style={styles.customerTitle}>User's information</Text>
-        <Text style={styles.customerInfo}>{i18next.t("Recipient")}: {customerInfo.username || updatedUserInfo?.username || "Chưa cập nhật"}</Text>
-        <Text style={styles.customerInfo}>{i18next.t("Phone Number")}: {customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật"}</Text>
-        <Text style={styles.customerInfo}>{i18next.t("Address")}: {customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật"}</Text>
+        <Text style={styles.customerInfo}>
+          {i18next.t("Recipient")}:{" "}
+          {customerInfo.username ||
+            updatedUserInfo?.username ||
+            "Chưa cập nhật"}
+        </Text>
+        <Text style={styles.customerInfo}>
+          {i18next.t("Phone Number")}:{" "}
+          {customerInfo.phone || updatedUserInfo?.phone || "Chưa cập nhật"}
+        </Text>
+        <Text style={styles.customerInfo}>
+          {i18next.t("Address")}:{" "}
+          {customerInfo.address || updatedUserInfo?.address || "Chưa cập nhật"}
+        </Text>
         <TouchableOpacity style={styles.editButton} onPress={handleEditInfo}>
           <FontAwesome name="pen-to-square" size={22} />
         </TouchableOpacity>
@@ -283,23 +296,39 @@ const Payment = () => {
               />
               <View style={styles.productDetails}>
                 <Text style={styles.productName}>{item.productName}</Text>
-                <Text>{i18next.t("Size")}: {item.selectedSize}</Text>
-                <View
-                  style={{ flexDirection: "row", gap: 6, alignItems: "center" }}
-                >
-                  <Text>{i18next.t("Color")}:</Text>
-                  <Text
-                    style={[
-                      styles.colorText,
-                      { backgroundColor: item.selectedColor },
-                    ]}
-                  ></Text>
+                <View style={styles.colorSizeArea}>
+                  <Text>
+                    {i18next.t("Size")}: {item.selectedSize}
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 6,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text>{i18next.t("Color")}:</Text>
+                    <Text
+                      style={[
+                        styles.colorText,
+                        { backgroundColor: item.selectedColor },
+                      ]}
+                    ></Text>
+                  </View>
                 </View>
-                <Text>S{i18next.t("Quantity")}: {item.quantity}</Text>
-                <Text>
-                  Tổng: {parseInt(item.totalPrice).toLocaleString("vi-VI")}{" "}
-                  {item.priceUnit}
+
+                <Text style= {{marginVertical: 2}}>
+                  {i18next.t("Quantity")}: {item.quantity}
                 </Text>
+                <View style={[styles.totalPrice, {marginVertical: 2}]}>
+                  <Text>
+                    {i18next.t("Total Price")}:
+                  </Text>
+                  <Text style={{marginRight: 4}}>
+                    {parseInt(item.totalPrice).toLocaleString("vi-VI")}{" "}
+                    {item.priceUnit}
+                  </Text>
+                </View>
               </View>
             </View>
           )}
@@ -310,10 +339,7 @@ const Payment = () => {
         <Text style={styles.totalAmount}>
           {i18next.t("Total Amount")}: {formattedTotal}
         </Text>
-        <TouchableOpacity
-          style={styles.paymentButton}
-          onPress={handlePayment}
-        >
+        <TouchableOpacity style={styles.paymentButton} onPress={handlePayment}>
           <Text style={styles.paymentText}>{i18next.t("Payment")}</Text>
         </TouchableOpacity>
       </View>
@@ -334,7 +360,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    flexDirection: 'row',
+    flexDirection: "row",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -380,7 +406,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   editButton: {
-    position: 'absolute', // Use absolute positioning
+    position: "absolute", // Use absolute positioning
     top: -1, // Position at the bottom
     right: 5, // Align it to the right
     flexDirection: "row",
@@ -394,7 +420,7 @@ const styles = StyleSheet.create({
   },
   paymentItem: {
     backgroundColor: "#fff",
-    flexDirection: 'row',
+    flexDirection: "row",
     borderRadius: 12,
     paddingVertical: 8,
     paddingHorizontal: 12,
@@ -420,17 +446,17 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   colorText: {
-    width: 24,
-    height: 24,
-    borderRadius: 50,
+    width: 20,
+    height: 20,
+    borderRadius: 4,
   },
   totalContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     marginTop: 10,
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    borderTopColor: "#ddd",
   },
   totalAmount: {
     flex: 0.8, // Chiếm phần còn lại của không gian
@@ -444,14 +470,26 @@ const styles = StyleSheet.create({
   },
   paymentButton: {
     flexShrink: 0, // Giữ nguyên kích thước button, không bị co lại
-    backgroundColor: '#000',
+    backgroundColor: "#000",
     paddingVertical: 25,
     paddingHorizontal: 45,
   },
   paymentText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  colorSizeArea: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 30,
+    marginVertical: 2,
+  },
+  totalPrice: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
   },
 });
 
