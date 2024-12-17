@@ -571,7 +571,6 @@ const Cart = ({ route }) => {
             {i18next.t("Total Amount")}:{" "}
             {calculateTotalPrice().toLocaleString("vi-VN")} đ
           </Text>
-
           <TouchableOpacity
             style={[
               styles.paymentButton,
@@ -584,9 +583,9 @@ const Cart = ({ route }) => {
               {i18next.t("Checkout")} ({selectedOrders.length})
             </Text>
           </TouchableOpacity>
-
-          <Toast />
         </View>
+
+        <Toast />
       </SafeAreaView>
     </BottomSheetModalProvider>
   );
@@ -735,11 +734,11 @@ const styles = StyleSheet.create({
     flexShrink: 0, // Giữ nguyên kích thước button, không bị co lại
     backgroundColor: "#000",
     paddingVertical: 25,
-    paddingHorizontal: 45,
+    paddingHorizontal: 40,
   },
   paymentText: {
     color: "#fff",
-    // fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
   disabledButton: {
