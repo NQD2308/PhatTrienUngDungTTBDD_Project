@@ -102,12 +102,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3, // Bóng đổ nhẹ
   },
-  // list: {
-  //   width: "100%",
-  //   alignItems: "center",
-  //   marginTop: 10,
-  //   padding: 10,
-  // },
   languageItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -116,19 +110,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0", // Đường phân cách nhẹ giữa các item
-    // borderColor: "#495057",
-    // borderWidth: 2,
-    // padding: 15,
-    // marginBottom: 10,
-    // borderRadius: 20,
-    // alignItems: "center",
-    // width: "80%",
-    // alignSelf: "center",
-    // shadowColor: "#000", // Tạo hiệu ứng đổ bóng
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 4,
-    // elevation: 5, // Hiệu ứng bóng trên Android
   },
   languageText: {
     fontSize: 18,

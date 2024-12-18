@@ -4,6 +4,30 @@
   },
   "en": {
     "nativeName": "English"
+  },
+  "es": {
+    "nativeName": "Spanish"
+  },
+  "zh": {
+    "nativeName": "Chinese"
+  },
+  "fr": {
+    "nativeName": "French"
+  },
+  "de": {
+    "nativeName": "German"
+  },
+  "ja": {
+    "nativeName": "Japanese"
+  },
+  "ko": {
+    "nativeName": "Korean"
+  },
+  "ru": {
+    "nativeName": "Russian"
+  },
+  "it": {
+    "nativeName": "Italian"
   }
 }
   
