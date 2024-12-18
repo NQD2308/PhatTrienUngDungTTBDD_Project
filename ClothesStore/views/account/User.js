@@ -34,12 +34,14 @@ export default function User({ navigation, route }) {
   const [userData, setUserData] = useState(null); // Lưu thông tin người dùng
   const [countWishList, setCountWishList] = useState(null); // Lưu số lượng sản phẩm yêu thích
   const [countOrder, setCountOrder] = useState(null); // Lưu số lượng sản phẩm yêu thích
+  const [currentLanguage, setCurrentLanguage] = useState(i18next.language);
 
   console.log("User ID tại User.js: ", safeUserId);
 
   // Sử dụng useFocusEffect để refresh lại dữ liệu mỗi khi tab được focus
   useFocusEffect(
     useCallback(() => {
+      setCurrentLanguage(i18next.language);
       fetchUserData(); // Gọi hàm lấy dữ liệu
       fetchWishListData();
       fetchBillCount();
@@ -51,6 +53,8 @@ export default function User({ navigation, route }) {
   );
 
   useEffect(() => {
+    setCurrentLanguage(i18next.language);
+
     if (safeUserId !== "guest") {
       fetchUserData(); // Gọi hàm lấy dữ liệu
       fetchWishListData();
