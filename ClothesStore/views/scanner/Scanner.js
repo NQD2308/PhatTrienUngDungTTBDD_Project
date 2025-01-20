@@ -1,5 +1,5 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,12 +10,13 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import i18next from "../../services/i18next";
 
 export default function Scanner({ route }) {
   const { userId } = route.params;
   const navigation = useNavigation();
+  const isFocused = useIsFocused(); // Theo dõi trạng thái focus của tab
   const qrLock = useRef(false);
   const timeoutRef = useRef(null);
 
@@ -28,27 +29,13 @@ export default function Scanner({ route }) {
     new Animated.ValueXY({ x: 0, y: 0 }) // Khởi tạo ở góc trên
   ).current;
 
-  useFocusEffect(
-    React.useCallback(() => {
+  React.useEffect(() => {
+    if (!isFocused) {
       qrLock.current = false;
       setQrData(null);
       clearTimeout(timeoutRef.current);
-
-      // Reset vị trí viền về giữa màn hình
-      Animated.timing(animatedBorderPosition, {
-        toValue: {
-          x: (Dimensions.get("window").width - borderSize) / 2,
-          y: (Dimensions.get("window").height - borderSize) / 2,
-        },
-        duration: 250,
-        useNativeDriver: false,
-      }).start();
-
-      return () => {
-        clearTimeout(timeoutRef.current);
-      };
-    }, [])
-  );
+    }
+  }, [isFocused]);
 
   const handleBarcodeScanned = ({ bounds, data }) => {
     if (data && !qrLock.current) {
@@ -84,10 +71,13 @@ export default function Scanner({ route }) {
       <View style={styles.container}>
         <Text style={{ textAlign: "center" }}>
           {i18next.t("We need your permission to show the camera")}
-          
         </Text>
       </View>
     );
+  }
+
+  if (!isFocused) {
+    return <View style={{ flex: 1, backgroundColor: "#000" }} />; // Ẩn camera khi không ở tab
   }
 
   return (
