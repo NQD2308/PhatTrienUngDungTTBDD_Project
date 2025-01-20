@@ -438,7 +438,7 @@ const Cart = ({ route }) => {
       style={styles.editAction}
       onPress={() => handleOpenBottomSheet(item.productId)}
     >
-      <Text style={styles.actionText}>{i18next.t("Edit")}</Text>
+      <Text style={styles.editText}>{i18next.t("Edit")}</Text>
     </TouchableOpacity>
   );
 
@@ -448,7 +448,7 @@ const Cart = ({ route }) => {
       style={styles.deleteAction}
       onPress={() => handleDeleteOrder(item.id)}
     >
-      <Text style={styles.actionText}>{i18next.t("Delete")}</Text>
+      <Text style={styles.deleteText}>{i18next.t("Delete")}</Text>
     </TouchableOpacity>
   );
 
@@ -884,7 +884,7 @@ const styles = StyleSheet.create({
 
   //Left & Right Action
   editAction: {
-    backgroundColor: "green",
+    backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "flex-start",
     padding: 20,
@@ -894,7 +894,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   deleteAction: {
-    backgroundColor: "red",
+    // backgroundColor: "",
+    color: "#000",
     justifyContent: "center",
     alignItems: "flex-end",
     padding: 20,
@@ -903,8 +904,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 15,
   },
-  actionText: {
+  editText: {
     color: "#fff",
+    fontWeight: "bold",
+  },
+  deleteText: {
+    color: "#000",
     fontWeight: "bold",
   },
 });
